@@ -15,7 +15,7 @@ def run(paths):
     diameter = setup.determine_spanning_diameter(blank)[0]
     largest_diameter = main_body.determine_blank_gripping_diameter(blank)
     _lower, _upper, device_file, _jaw = setup.select_jaw(diameter, paths.device_root)
-    machine = setup.open_display(session, paths.part("SETUP"))
+    machine = setup.open_display(session, paths.part("SETUP"), paths.custom_dir)
     occurrence = setup.require_local_product(machine, paths)
     was_hidden = bool(occurrence.IsBlanked)
     existing_jaws = [
@@ -36,7 +36,7 @@ def run(paths):
     input_file = paths.part("ASSY")
     product._delete_product_center_constraints(machine, input_file)
     expected_p3, expected_radius = jaws.refresh_jaw_parameter(session, machine, diameter, paths.device_root)
-    machine = product._save_reopen_product_setup(machine, input_file, paths.work_dir)
+    machine = product._save_reopen_product_setup(machine, input_file, paths.work_dir, paths.custom_dir)
     occurrence = setup.require_local_product(machine, paths)
     occurrence.Unblank()
     main_curve.move_flow6_main_curve_to_cad4cam_far_face(machine, input_file)
@@ -50,7 +50,7 @@ def run(paths):
     session.UpdateManager.DoUpdate(session.NewestVisibleUndoMark)
 
     final_file = paths.work_dir / f"{paths.name}_REFRESH_FINAL.prt"
-    machine = setup.save_reopen(machine, final_file)
+    machine = setup.save_reopen(machine, final_file, paths.custom_dir)
     setup.require_local_product(machine, paths)
     validate_flow4_reopen(machine, input_file, device_file, expected_p3, expected_radius, expect_journal_touch=True)
     stops.validate_product_stop_and_top(machine, input_file, device_file)

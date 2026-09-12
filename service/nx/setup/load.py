@@ -12,7 +12,7 @@ def run(paths):
     blank_part = setup.open_base(session, paths.part("BLANK"))
     spanning_diameter = setup.determine_spanning_diameter(blank_part)[0]
     _lower, _upper, device_file, _jaw_file = setup.select_jaw(spanning_diameter, paths.device_root)
-    machine_part = setup.open_display(session, paths.template)
+    machine_part = setup.open_display(session, paths.template, paths.custom_dir)
     # All subsequent edits belong to this setup, never to the machine template.
     setup.save_setup(machine_part, paths.work_dir / f"{paths.name}_SETUP_LOADING.prt")
     assy_component, status = machine_part.ComponentAssembly.AddMasterPartComponent(
@@ -43,7 +43,7 @@ def run(paths):
             raise RuntimeError(f"Device {index} must contain exactly one nested _PART")
 
     machine_part = setup.save_reopen(
-        machine_part, paths.work_dir / f"{paths.name}_DEVICES_LOADED.prt"
+        machine_part, paths.work_dir / f"{paths.name}_DEVICES_LOADED.prt", paths.custom_dir
     )
     setup.publish_setup(machine_part, paths, "load")
     # The caller must now terminate NX and invoke constraints in a fresh process.

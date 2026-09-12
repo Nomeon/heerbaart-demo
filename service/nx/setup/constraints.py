@@ -17,13 +17,7 @@ def run(paths):
     working_file = paths.part("SETUP")
     if not working_file.exists():
         raise RuntimeError(f"Stage 1 tussenbestand ontbreekt: {working_file}")
-    machine_result = session.Parts.OpenBaseDisplay(str(working_file))
-    if isinstance(machine_result, tuple):
-        machine_part, status = machine_result
-        setup.dispose(status)
-    else:
-        machine_part = machine_result
-    session.Parts.EnsurePartsLoadedFully([machine_part], True)
+    machine_part = setup.open_display(session, working_file, paths.custom_dir)
 
     setup.open_base(session, paths.device_root / "__Components" / "GBK_400_out.prt")
     device_part = setup.open_base(session, device_file)
@@ -120,7 +114,7 @@ def run(paths):
 
     # Validate the persisted constraint state only after the native save/reopen.
     verification = paths.work_dir / f"{paths.name}_CONSTRAINTS_VERIFIED.prt"
-    machine_part = setup.save_reopen(machine_part, verification)
+    machine_part = setup.save_reopen(machine_part, verification, paths.custom_dir)
     setup.open_base(session, device_file)
     setup.open_base(session, jaw_file)
     session.Parts.EnsurePartsLoadedFully([machine_part], True)

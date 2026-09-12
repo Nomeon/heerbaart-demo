@@ -13,7 +13,7 @@ def attach_holders(paths):
     blank = setup.open_base(session, paths.part("BLANK"))
     diameter = setup.determine_spanning_diameter(blank)[0]
     _lower, _upper, device_file, _jaw = setup.select_jaw(diameter, paths.device_root)
-    machine = setup.open_display(session, paths.part("SETUP"))
+    machine = setup.open_display(session, paths.part("SETUP"), paths.custom_dir)
     existing = [
         child for child in machine.ComponentAssembly.RootComponent.GetChildren()
         if child.DisplayName.upper() == device_file.stem.upper()
@@ -31,7 +31,7 @@ def position_and_reference(paths, references):
     diameter = setup.determine_spanning_diameter(blank)[0]
     largest_diameter = main_body.determine_blank_gripping_diameter(blank) if references else None
     _lower, _upper, device_file, _jaw = setup.select_jaw(diameter, paths.device_root)
-    machine = setup.open_display(session, paths.part("SETUP"))
+    machine = setup.open_display(session, paths.part("SETUP"), paths.custom_dir)
     setup.require_local_product(machine, paths)
     existing = [
         child for child in machine.ComponentAssembly.RootComponent.GetChildren()
@@ -49,14 +49,14 @@ def position_and_reference(paths, references):
     # The active source's substitution branch is unnecessary for a local ASSY.
     # Keep its occurrence intact and retain its positioning/reopen sequence.
     product._move_product_to_chuck_midpoint(machine, input_file)
-    machine = product._save_reopen_product_setup(machine, input_file, paths.work_dir)
+    machine = product._save_reopen_product_setup(machine, input_file, paths.work_dir, paths.custom_dir)
     product._delete_product_center_constraints(machine, input_file)
     view.restore_input_product_visibility(machine, input_file)
     view.apply_saved_view_visibility(machine, input_file)
     view.apply_input_blank_transparency(machine, input_file)
     view.apply_journal_final_view(machine, NXOpen)
 
-    machine = setup.save_reopen(machine, paths.work_dir / f"{paths.name}_POSITION_STAGED.prt")
+    machine = setup.save_reopen(machine, paths.work_dir / f"{paths.name}_POSITION_STAGED.prt", paths.custom_dir)
     setup.load_product_parts(session, paths)
     final_product = setup.require_local_product(machine, paths)
     opened = machine.ComponentAssembly.OpenComponents(
@@ -71,7 +71,7 @@ def position_and_reference(paths, references):
     setup.dispose(opened[0] if isinstance(opened, tuple) else opened)
     final_blank.UpdateStructure([final_blank], 2, True)
     jaws._journal_base_jaw_components(machine, paths.device_root)
-    machine = product._save_reopen_product_setup(machine, input_file, paths.work_dir)
+    machine = product._save_reopen_product_setup(machine, input_file, paths.work_dir, paths.custom_dir)
     product._delete_product_center_constraints(machine, input_file)
     if references:
         # WAVE must precede the final parallel constraint, as in active Flow 6.
@@ -86,7 +86,7 @@ def position_and_reference(paths, references):
 
     label = "REFERENCES" if references else "POSITION"
     final_file = paths.work_dir / f"{paths.name}_{label}_FINAL.prt"
-    machine = setup.save_reopen(machine, final_file)
+    machine = setup.save_reopen(machine, final_file, paths.custom_dir)
     position_checks.validate_flow4_reopen(
         machine, input_file, device_file, expected_p3, expected_radius, expect_journal_touch=True
     )

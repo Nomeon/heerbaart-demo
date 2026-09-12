@@ -141,7 +141,7 @@ def _move_product_to_chuck_midpoint(machine_part, input_file):
 
 
 
-def _save_reopen_product_setup(machine_part, input_file, work_dir):
+def _save_reopen_product_setup(machine_part, input_file, work_dir, custom_dir):
     """Persist the p3/input state and reload it for the final checks."""
     session = NXOpen.Session.GetSession()
     center_stage = (
@@ -149,7 +149,7 @@ def _save_reopen_product_setup(machine_part, input_file, work_dir):
         f"{input_file.stem}_FLOW4_CENTER_STAGE.prt"
     )
     center_stage.parent.mkdir(parents=True, exist_ok=True)
-    reopened = setup.save_reopen(machine_part, center_stage)
+    reopened = setup.save_reopen(machine_part, center_stage, custom_dir)
     session.Parts.EnsurePartsLoadedFully([reopened], True)
     input_part = setup.open_base(session, input_file)
     setup.dispose(session.Parts.EnsurePartsLoadedFully([input_part], True))

@@ -123,24 +123,32 @@ def select_jaw(spanning_diameter, device_root):
     return sorted(matches, key=lambda item: (item[1] - item[0], item[0]))[0]
 
 
-def prototype_path(component):
+def prototype_path(component, *, allow_unloaded=False):
     prototype = component.Prototype
     path = getattr(prototype, "FullPath", "")
     if not path:
-        path = prototype.OwningPart.FullPath
+        path = getattr(getattr(prototype, "OwningPart", None), "FullPath", "")
     if not path:
+        if allow_unloaded:
+            return None
         raise RuntimeError(f"Component prototype is not loaded: {component.DisplayName}")
     return Path(path).resolve()
 
 
 def find_product_component(parent, stem):
     """Cloning remaps filenames, not necessarily occurrence display names."""
-    matches = [
-        child for child in parent.GetChildren()
-        if prototype_path(child).stem.casefold() == stem.casefold()
-    ]
+    matches, unloaded = [], []
+    for child in parent.GetChildren():
+        path = prototype_path(child, allow_unloaded=True)
+        if path is None:
+            unloaded.append(child.DisplayName)
+        elif path.stem.casefold() == stem.casefold():
+            matches.append(child)
     if len(matches) != 1:
-        raise RuntimeError(f"Expected one prototype {stem} under {parent.DisplayName}; found {len(matches)}")
+        raise RuntimeError(
+            f"Expected one prototype {stem} under {parent.DisplayName}; found {len(matches)}; "
+            f"unloaded components: {unloaded}"
+        )
     return matches[0]
 
 
@@ -149,10 +157,46 @@ def require_setup_owned(obj, machine_part):
         raise RuntimeError(f"Refusing to modify a shared library object: {obj.JournalIdentifier}")
 
 
-def open_display(session, path):
+def check_load_status(status, context):
+    """Report unresolved references before disposing NX's diagnostic details."""
+    if status is None:
+        return
+    try:
+        failures = [
+            f"{status.GetPartName(index)}: {status.GetStatusDescription(index)}"
+            for index in range(status.NumberUnloadedParts)
+        ]
+    finally:
+        dispose(status)
+    if failures:
+        raise RuntimeError(f"{context}: " + "; ".join(failures))
+
+
+def load_setup_library_parts(session, custom_dir):
+    """Resolve the fixed machine template's legacy paths in the current library.
+
+    CloseWholeTree unloads these parts, so load them at every setup reopen.
+    Opening the existing files does not save or edit the shared library.
+    """
+    resource = Path(custom_dir) / "MACH" / "resource"
+    paths = (
+        resource / "template_part/metric/template_part_BL01.prt",
+        resource / "template_part/metric/template_part.prt",
+        resource / "library/machine/installed_machines/Okuma_MultusU4000/graphics/Okuma_Multus_U4000_Door.prt",
+        resource / "library/device/graphics/__Components/GBK_400_out.prt",
+        resource / "library/device/graphics/__Components/KNCS-N_400-128_chuck.prt",
+        resource / "library/device/graphics/__Components/KNCS-N_400-128_adapter.prt",
+        resource / "library/device/graphics/SMW_KNCS-N_400-128-A8_OUT/SMW_KNCS-N_400-128-A8_out_assy.prt",
+        resource / "library/device/graphics/SMW_KNCS-N_400-128-A8_OUT/SMW_KNCS-N_400-128-A8_OUT.prt",
+    )
+    return [open_base(session, path) for path in paths]
+
+
+def open_display(session, path, custom_dir):
     path = Path(path).resolve()
     if not path.is_file():
         raise FileNotFoundError(path)
+    library_parts = load_setup_library_parts(session, custom_dir)
     part = next(
         (loaded for loaded in session.Parts
          if loaded.FullPath and Path(loaded.FullPath).resolve() == path),
@@ -165,10 +209,13 @@ def open_display(session, path):
         result = session.Parts.OpenBaseDisplay(str(path))
         if isinstance(result, tuple):
             part, status = result
-            dispose(status)
+            check_load_status(status, f"Could not load setup {path}")
         else:
             part = result
-    dispose(session.Parts.EnsurePartsLoadedFully([part], True))
+    check_load_status(
+        session.Parts.EnsurePartsLoadedFully([part, *library_parts], True),
+        f"Could not fully load setup {path}",
+    )
     return part
 
 
@@ -197,12 +244,12 @@ def close_setup(machine_part):
     )
 
 
-def save_reopen(machine_part, path):
+def save_reopen(machine_part, path, custom_dir):
     import NXOpen
 
     save_setup(machine_part, path)
     close_setup(machine_part)
-    return open_display(NXOpen.Session.GetSession(), path)
+    return open_display(NXOpen.Session.GetSession(), path, custom_dir)
 
 
 def publish_setup(machine_part, paths, label):

@@ -73,20 +73,6 @@ def reopen(session, part):
     return reopened
 
 
-def pin_thread(builder, entry):
-    # ThreadSize alone can leave generic NX tap-drill, tip, and chamfer defaults.
-    builder.RelateHoleDepthToThreadDepth = False
-    builder.TapDrillDiameter.SetFormula(str(entry["tap_drill_diameter_mm"]))
-    builder.ThreadedTipAngle.SetFormula(str(entry["hole_tip_angle_deg"]))
-    for end in ("Start", "End"):
-        getattr(builder, "Threaded" + end + "ChamferDiameter").SetFormula(
-            str(entry[end.lower() + "_chamfer_diameter_mm"])
-        )
-        getattr(builder, "Threaded" + end + "ChamferAngle").SetFormula(
-            str(entry[end.lower() + "_chamfer_angle_deg"])
-        )
-
-
 def verify_thread(part, feature, entry, thread_depth, drill_depth, *, end_chamfer=False):
     builder = part.Features.CreateHolePackageBuilder(feature)
     try:
@@ -106,9 +92,14 @@ def verify_thread(part, feature, entry, thread_depth, drill_depth, *, end_chamfe
             "ThreadedTipAngle": entry["hole_tip_angle_deg"],
             "ThreadedStartChamferDiameter": entry["start_chamfer_diameter_mm"],
             "ThreadedStartChamferAngle": entry["start_chamfer_angle_deg"],
-            "ThreadedEndChamferDiameter": entry["end_chamfer_diameter_mm"],
-            "ThreadedEndChamferAngle": entry["end_chamfer_angle_deg"],
         }
+        # The original STAP5-9 journals check that the end chamfer is disabled,
+        # without requiring values for its unused diameter and angle.
+        if end_chamfer:
+            checks.update({
+                "ThreadedEndChamferDiameter": entry["end_chamfer_diameter_mm"],
+                "ThreadedEndChamferAngle": entry["end_chamfer_angle_deg"],
+            })
         for field, expected in checks.items():
             actual = float(getattr(builder, field).Value)
             if not math.isclose(actual, expected, rel_tol=0, abs_tol=0.001):

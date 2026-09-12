@@ -20,6 +20,13 @@ their nested `_PART` components. NX's machine/device resource tables must be
 configured for this same custom library so `RetrieveDeviceAndMount` resolves
 the selected device by its native library name.
 
+At each setup open/reopen, the loader opens the fixed template's chuck,
+template helpers, and machine door from `custom_dir` before opening the setup.
+This resolves legacy saved paths without changing the shared library files.
+Remaining setup load failures report NX's part names and error descriptions.
+Product lookup ignores unloaded unrelated occurrences, but requires exactly one
+loaded prototype match and still verifies the item-local product paths.
+
 ## Initial Sequence
 
 1. Build and save `<item_dir>/<name>_PART.prt` with the model entry point.

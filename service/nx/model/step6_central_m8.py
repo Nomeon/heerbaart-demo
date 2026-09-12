@@ -6,7 +6,7 @@ import NXOpen
 import NXOpen.Features
 import NXOpen.GeometricUtilities
 
-from .common import scalar_expression, set_attributes, pin_thread
+from .common import scalar_expression, set_attributes
 
 STEP_NAME = "STAP6_HB_M8_HOLES"
 CAM_RULE_SCHEMA = "ELSTER_CAM_RULES_V1"
@@ -42,7 +42,6 @@ def create_m8_hole(work_part, body, position: dict, contract: dict):
         builder.ThreadStandard = hb["standard"]
         builder.ThreadSize = hb["size"]
         builder.RadialEngageOption = hb["radial_engage"]
-        pin_thread(builder, hb)
         builder.ThreadLengthOption = NXOpen.Features.HolePackageBuilder.ThreadLengthOptions.Custom
         builder.ThreadDepth.SetFormula("STEP6_M8_THREAD_DEPTH")
         builder.ThreadedHoleDepth.SetFormula("STEP6_M8_TOTAL_DEPTH")

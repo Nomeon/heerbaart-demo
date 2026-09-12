@@ -8,7 +8,7 @@ import NXOpen
 import NXOpen.Features
 import NXOpen.GeometricUtilities
 
-from .common import scalar_expression, set_attributes, pin_thread
+from .common import scalar_expression, set_attributes
 
 STEP_NAME = "STAP4_FLANGE_THREAD_HOLES"
 CAM_RULE_SCHEMA = "ELSTER_CAM_RULES_V1"
@@ -37,7 +37,6 @@ def create_threaded_hole(work_part, body, side: str, position: dict, contract: d
         builder.ThreadStandard = hb["standard"]
         builder.ThreadSize = hb["size"]
         builder.RadialEngageOption = hb["radial_engage"]
-        pin_thread(builder, hb)
         builder.ThreadLengthOption = NXOpen.Features.HolePackageBuilder.ThreadLengthOptions.Custom
         builder.ThreadDepth.SetFormula("STEP4_THREAD_DEPTH")
         builder.ThreadedHoleDepth.SetFormula("STEP4_DRILL_DEPTH")
