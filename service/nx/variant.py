@@ -35,11 +35,10 @@ def _values(request):
         raise ValueError("Article expressions must be finite millimeter values") from exc
     if not all(math.isfinite(value) for value in values.values()):
         raise ValueError("Article expressions must be finite millimeter values")
-    if values["DT"] <= 180:
+    if values["DT"] < 180:
         raise ValueError(
-            f"DT={values['DT']:g} mm is unsupported: DT must be greater than 180 mm. "
-            "The retained baseline STAP1 inlet topology collapses or reverses at "
-            "DT <= 180 mm; support is pending NX laptop review."
+            f"DT={values['DT']:g} mm is unsupported: DT must be at least 180 mm. "
+            "The retained baseline STAP1 inlet profile reverses below 180 mm."
         )
     if any(value <= 0 for value in values.values()):
         raise ValueError("Article expressions must be positive millimeter values")
@@ -112,18 +111,40 @@ def _fresh_session():
 
 
 def _uf_status(code, operation):
-    # UF Clone methods without output arguments document an integer return code.
-    if code != 0:
+    # NX Python wrappers return None for successful calls without outputs.
+    if code is not None and code != 0:
         raise RuntimeError(f"Native UF clone {operation} returned {code!r}; refusing to continue")
 
 
-def _configure_clone(clone, sources, targets):
+def _clone_sources(clone):
+    _uf_status(clone.StartIteration(), "StartIteration")
+    paths = set()
+    while source := clone.Iterate():
+        paths.add(Path(source).resolve())
+    return paths
+
+
+def _configure_clone(clone, sources, targets, custom_dir):
+    import NXOpen
     from NXOpen.UF import Clone
 
-    _uf_status(clone.SetDefAction(Clone.Action.UF_CLONE_retain), "SetDefAction(retain)")
-    _uf_status(clone.SetDefAssocFileCopy(False), "SetDefAssocFileCopy(False)")
-    _uf_status(clone.SetDryrun(False), "SetDryrun(False)")
-    status = clone.AddAssembly(str(sources["setup"]))
+    status, code = clone.AddAssembly(str(sources["setup"]))
+    _uf_status(code, "AddAssembly")
+    if status.Failed and not status.UserAbort:
+        # Legacy library children may have stale saved paths. Prefer directories
+        # already referenced by this assembly, then the configured resource tree.
+        existing = {path for path in _clone_sources(clone) if path.is_file()}
+        directories = sorted({str(path.parent) for path in existing})
+        directories.append(str(Path(custom_dir) / "MACH" / "resource"))
+        options = NXOpen.Session.GetSession().Parts.LoadOptions
+        options.SetSearchDirectories(directories, [False] * (len(directories) - 1) + [True])
+        options.ComponentLoadMethod = NXOpen.LoadOptions.LoadMethod.SearchDirectories
+        _uf_status(clone.Terminate(), "Terminate unresolved assembly")
+        _uf_status(clone.Initialise(Clone.OperationClass.CLONE_OPERATION), "Reinitialise")
+        status, code = clone.AddAssembly(str(sources["setup"]))
+        _uf_status(code, "AddAssembly with library search")
+        if not existing.issubset(_clone_sources(clone)):
+            raise RuntimeError("Clone search changed an existing part reference")
     # UF.Part.LoadStatus is a data structure, not NXOpen.PartLoadStatus/Dispose.
     if status.Failed or status.UserAbort or status.NParts:
         raise RuntimeError(
@@ -131,23 +152,20 @@ def _configure_clone(clone, sources, targets):
             f"failed={status.Failed}, aborted={status.UserAbort}, "
             f"files={status.FileNames!r}, statuses={status.Statuses!r}"
         )
-    _uf_status(clone.StartIteration(), "StartIteration")
-    present = frozenset()
-    while True:
-        source = clone.Iterate()
-        if not source:
-            break
-        present = present | {Path(source).resolve()}
+    _uf_status(clone.SetDefAction(Clone.Action.RETAIN), "SetDefAction(retain)")
+    _uf_status(clone.SetDefAssocFileCopy(False), "SetDefAssocFileCopy(False)")
+    _uf_status(clone.SetDryrun(False), "SetDryrun(False)")
+    present = _clone_sources(clone)
     # Iterate terminates at end; AddPart is forbidden while iteration is active.
     for key, source in sources.items():
         if source not in present:
             _uf_status(clone.AddPart(str(source)), f"AddPart({source})")
         _uf_status(
-            clone.SetAction(str(source), Clone.Action.UF_CLONE_clone, None),
+            clone.SetAction(str(source), Clone.Action.CLONE, None),
             f"SetAction(clone, {source})",
         )
         _uf_status(
-            clone.SetNaming(str(source), Clone.NamingTechnique.UF_CLONE_user_name, str(targets[key])),
+            clone.SetNaming(str(source), Clone.NamingTechnique.USER_NAME, str(targets[key])),
             f"SetNaming({source}, {targets[key]})",
         )
 
@@ -170,11 +188,11 @@ def clone_article(request: dict) -> dict:
     _uf_status(clone.Terminate(), "Terminate before initialise")
     try:
         _uf_status(
-            clone.Initialise(NXOpen.UF.Clone.OperationClass.UF_CLONE_clone_operation),
+            clone.Initialise(NXOpen.UF.Clone.OperationClass.CLONE_OPERATION),
             "Initialise(clone)",
         )
         targets["part"].parent.mkdir(parents=True, exist_ok=True)
-        _configure_clone(clone, sources, targets)
+        _configure_clone(clone, sources, targets, request["custom_dir"])
         _require_absent(targets)
         failures = clone.InitNamingFailures()
         failures = clone.PerformClone(failures)
@@ -249,6 +267,16 @@ def _edit_parameters(part, values):
             or expression.IsInterpartExpression or expression.IsNoUpdate
         ):
             raise ValueError(f"{key} must be a local, updatable millimeter number expression in the cloned PART")
+    if values["DT"] == 180:
+        # At DT=180 the tapered edges become collinear with the bore. Keep their
+        # existing axial split points so no sketch line collapses to zero length.
+        # This edits only the cloned PART, retaining the original sketch/revolve.
+        right = part.Expressions.FindObject("MODEL_X_P13")
+        left = part.Expressions.FindObject("MODEL_X_P14")
+        if not -300 < left.Value < right.Value < 300:
+            raise ValueError("STAP1 bore split points must lie strictly inside the end faces")
+        right.SetFormula(repr(float(right.Value)))
+        left.SetFormula(repr(float(left.Value)))
     for key, expression in expressions.items():
         expression.SetFormula(repr(values[key]))
 

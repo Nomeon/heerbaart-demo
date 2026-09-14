@@ -183,12 +183,13 @@ overwriting a programmed baseline.
 
 ## Known Laptop Work
 
-- Articles `73024126` and `73024154` have `DT = 180`. They are currently rejected
-  before cloning because the inherited inlet-profile segments collapse. No
-  speculative topology workaround or false success has been added.
-- ASME 600 updates and the remaining article dimensions need actual NX evaluation.
-- UF Clone uses documented NX Python APIs, but installed bindings and WAVE
-  remapping must be confirmed in NX 2512.
+- Articles with `DT = 180` use an exact straight bore. The cloned PART retains
+  its axial sketch split points so the inlet segments become collinear instead
+  of collapsing. `DT < 180` remains unsupported; initial BASELINE construction
+  still requires `DT > 180`.
+- Native cloning, CAD updates, and setup refresh have passed NX 2512 checks for
+  `73023059`, `73023060`, `73024126`, and `73024154`. The remaining article
+  dimensions and programmed CAM geometry/toolpaths still need verification.
 - Jaw geometry selections, library calibration, saved constraints, and retained
   manual CAM data need laptop verification. A changed jaw-device selection is
   rejected rather than silently replacing fixtures.
