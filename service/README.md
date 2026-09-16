@@ -81,7 +81,7 @@ pixi run stage baseline --drawing "C:\drawings\ELSTER_GEHAEUSE_T73023059_REV_D.p
 Alternatively, start from a fresh data directory and run the stages separately:
 
 ```powershell
-pixi run stage extract --drawing "C:\drawings\ELSTER_GEHAEUSE_T73023059_REV_D.pdf"
+pixi run stage extract --drawing "C:\Users\Bob\Desktop\heerbaart-demo\service\ELSTER_GEHAEUSE_T73023059_REV_D.pdf"
 pixi run stage part
 pixi run stage structure
 pixi run stage setup
