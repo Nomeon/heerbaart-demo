@@ -2,6 +2,7 @@
 
 from pathlib import Path
 import math
+import filecmp
 import re
 
 def dispose(status):
@@ -133,6 +134,24 @@ def prototype_path(component, *, allow_unloaded=False):
             return None
         raise RuntimeError(f"Component prototype is not loaded: {component.DisplayName}")
     return Path(path).resolve()
+
+
+def require_jaw_components(machine_part, device_file):
+    """Match the selected jaw, including identical old/current library copies."""
+    expected = device_file.resolve()
+    children = machine_part.ComponentAssembly.RootComponent.GetChildren()
+    loaded = [(child, prototype_path(child)) for child in children]
+    matches = [child for child, path in loaded if path == expected or (
+        path.name.casefold() == expected.name.casefold()
+        and path.is_file() and expected.is_file()
+        and filecmp.cmp(path, expected, shallow=False)
+    )]
+    if len(matches) != 3:
+        raise RuntimeError(
+            f"Refresh expected 3 matching jaw components for {expected}; found {len(matches)}. "
+            f"Loaded root parts: {[str(path) for _child, path in loaded]}"
+        )
+    return matches
 
 
 def find_product_component(parent, stem):

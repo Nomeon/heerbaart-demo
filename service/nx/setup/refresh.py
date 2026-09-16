@@ -18,19 +18,18 @@ def run(paths):
     machine = setup.open_display(session, paths.part("SETUP"), paths.custom_dir)
     occurrence = setup.require_local_product(machine, paths)
     was_hidden = bool(occurrence.IsBlanked)
-    existing_jaws = [
-        child for child in machine.ComponentAssembly.RootComponent.GetChildren()
-        if setup.prototype_path(child) == device_file.resolve()
-    ]
-    if len(existing_jaws) != 3:
-        raise RuntimeError("Refresh cannot replace the cloned jaw device; the new diameter requires the same library device")
+    setup.require_jaw_components(machine, device_file)
     generated_names = {"ELSTER_AXIS_TOUCH", "FLOW5_AXIAL_TOUCH", "FLOW5_TOP_PARALLEL"}
     existing_names = {
         constraint.Name for constraint, _owner in product._all_component_constraints(machine)
         if constraint.OwningPart.Tag == machine.Tag and not constraint.Suppressed
     }
     if not generated_names.issubset(existing_names):
-        raise RuntimeError("Refresh requires a completed extracted baseline setup with its generated positioning constraints")
+        missing = ", ".join(sorted(generated_names - existing_names))
+        # These relations are removed and rebuilt below from the current faces.
+        # Require the resulting constraints/position in the final validation,
+        # rather than requiring the obsolete relations before rebuilding them.
+        print(f"Refresh will rebuild missing positioning constraints: {missing}", flush=True)
 
     # Never call load, holder mounting, product substitution, or initial p3 copying here.
     input_file = paths.part("ASSY")

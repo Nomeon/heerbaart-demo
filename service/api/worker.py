@@ -24,6 +24,7 @@ async def run_nx_job(job: Job, progress=None) -> dict:
     material=job.start.material,
     amount=job.start.amount,
     progress=progress,
+    resume_from=job.start.resume_from,
   )
 
 
@@ -79,7 +80,8 @@ class JobWorker:
 
     try:
       await self._report(update)
-      await progress("family_check", "article" if job.start.action == "approve_baseline_and_generate" else "baseline")
+      await progress(job.start.resume_from if job.start.action == "retry_article" else "family_check",
+                     "article" if job.start.action in {"approve_baseline_and_generate", "retry_article"} else "baseline")
       result = await run_nx_job(job, progress)
       update.outcome = result.get("outcome")
       update.setup_path = result.get("setup")

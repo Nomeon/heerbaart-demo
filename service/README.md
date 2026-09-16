@@ -123,6 +123,7 @@ used to change the family geometry.
 | --- | --- | --- |
 | `prepare_quotation` | `drawing`, `article_number` | Prepare a missing family, hand off an existing unreleased baseline, or generate the requested article if released. |
 | `approve_baseline_and_generate` | `article_number` | Record saved manual programming, reload the family, then generate the originally requested article. |
+| `retry_article` | `article_number`, `resume_from` | Resume `article_clone`, `geometry_update`, or `setup_refresh` after repair; update/refresh reuse existing article files. |
 | `baseline` (default) | `drawing` PDF upload | Extract table, build PART, structure, and initial SETUP. |
 | `extract` | `drawing` PDF upload | Extract and persist the table only. |
 | `part` | None | Build BASELINE PART using the persisted first row. |
@@ -166,6 +167,8 @@ No separate result callback, file download, or machining metadata extraction is 
 Callback failures are logged without changing the NX outcome. Queue and job
 statuses are in memory and are lost on service restart; family data and parts
 remain on disk. A new caller job ID does not authorize overwriting existing parts.
+The live app's retry keeps the quotation and drawing, with a new current job ID.
+Corrections made only to BASELINE are not copied into an existing article on resume.
 
 ## Files And Failures
 
@@ -212,6 +215,16 @@ overwriting a programmed baseline.
 - Only the five known article-owned parts are cloned. Keep manual baseline work
   within those files; extra article-specific dependent parts need an explicit
   clone-map change.
+- Clone library search accepts a changed shared-resource path only when the
+  same-named file in the configured resource tree is byte-identical. BASELINE
+  source paths remain fixed. This resolved the duplicated old/current jaw library
+  on this laptop; native five-part cloning was verified on 2026-09-16 in
+  `data/clone-check-b39b4de7`. This check did not rerun update/refresh or CAM.
+- A subsequent native clone/update/refresh check passed in
+  `data/refresh-check-1eac4448/73023059`. Refresh now recognizes identical jaw
+  library copies and uses the loaded jaw instance for stop faces. It reconstructs
+  missing old positioning constraints and validates the resulting constraints and
+  position after saving/reopening. CAM finishing remains outside this check.
 
 ## Code Map
 

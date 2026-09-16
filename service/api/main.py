@@ -75,8 +75,10 @@ async def start_nx_job(
   """
   if form.action in {"extract", "baseline", "prepare_quotation"} and form.drawing is None:
     raise HTTPException(status_code=422, detail=f"drawing is required for {form.action}")
-  if form.action in {"article", "prepare_quotation", "approve_baseline_and_generate"} and form.article_number is None:
+  if form.action in {"article", "prepare_quotation", "approve_baseline_and_generate", "retry_article"} and form.article_number is None:
     raise HTTPException(status_code=422, detail="article_number is required for article")
+  if form.action == "retry_article" and form.resume_from is None:
+    raise HTTPException(status_code=422, detail="resume_from is required for retry_article")
 
   job_id = form.job_id
   # Claim the id first, so a replay does not overwrite a drawing or queue the
@@ -105,6 +107,7 @@ async def start_nx_job(
         amount=form.amount,
         action=form.action,
         article_number=form.article_number,
+        resume_from=form.resume_from,
       ),
       drawing_path=drawing_path,
     )

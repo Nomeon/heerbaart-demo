@@ -102,14 +102,16 @@ def _flow5_product_position_faces(machine_part, input_file, device_file):
     if len(flats) != 1:
         raise RuntimeError(f"Verwacht één centraal vlak met vier gaten; gevonden: {len(flats)}.")
     top = occurrence(cad, flats[0])
-    for path in (device_file, device_file.with_name(device_file.stem + "_PART.prt")):
+    jaw_components = setup.require_jaw_components(machine_part, device_file)
+    # Use the library instance actually referenced by SETUP. Opening an
+    # identical copy from the other library root makes NX report "File already exists".
+    loaded_device = setup.prototype_path(jaw_components[0])
+    for path in (loaded_device, loaded_device.with_name(loaded_device.stem + "_PART.prt")):
         if not any(p.FullPath and Path(p.FullPath).resolve() == path.resolve() for p in session.Parts):
             setup.open_base(session, path)
     session.Parts.EnsurePartsLoadedFully([machine_part], True)
     jaws = []
-    for component in machine_part.ComponentAssembly.RootComponent.GetChildren():
-        if component.DisplayName != device_file.stem:
-            continue
+    for component in jaw_components:
         jaw = setup.find_component_occurrence(component, device_file.stem + "_PART")
         # This unchanged library's broad shoulder is FACE 9 at local Z=36 mm.
         shoulder = jaw.FindObject("PROTO#.Features|UNPARAMETERIZED_FEATURE(1)|FACE 9")

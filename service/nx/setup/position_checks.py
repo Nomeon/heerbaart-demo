@@ -20,14 +20,7 @@ def validate_flow4_reopen(
 ):
     """Validate the staged Flow4 file after NX has saved and reopened it."""
     root = machine_part.ComponentAssembly.RootComponent
-    existing_jaws = [
-        component for component in root.GetChildren()
-        if component.DisplayName.upper() == device_file.stem.upper()
-    ]
-    if len(existing_jaws) != 3:
-        raise RuntimeError(
-            f"Flow 4 reopencontrole vond {len(existing_jaws)} jaws; verwacht exact 3."
-        )
+    setup.require_jaw_components(machine_part, device_file)
     # The full chuck structure is loaded once by main before the final
     # constraint validation.
     _z, _base_assy, base_jaws = setup.find_left_chuck_and_jaws(machine_part)

@@ -10,6 +10,8 @@ from api.dependencies import Job, JobQueue
 from api.schema import JobStart, JobStatus
 from api.store import JobStatusStore
 from api.worker import JobWorker
+from api.main import start_nx_job
+from api.schema import JobStartForm
 
 
 class QuotationFlowTests(unittest.IsolatedAsyncioTestCase):
@@ -77,3 +79,55 @@ class QuotationFlowTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(result.status, JobStatus.FAILED)
         self.assertEqual(result.stage, "article_clone")
         self.assertEqual(result.error, "NX clone failed")
+
+    def prepare_article_retry(self):
+        pipeline._save_family({**self.family, "baseline_ready": True})
+        article = self.root / "73023059"
+        article.mkdir()
+        for kind in pipeline.PART_KINDS:
+            (article / f"73023059_{kind}.prt").write_text("operator-repaired article")
+        return article
+
+    async def test_refresh_retry_keeps_repaired_parts_and_skips_clone_update(self):
+        article = self.prepare_article_retry()
+        store = JobStatusStore()
+        queue = JobQueue()
+        form = JobStartForm(job_id="cretry001", material="LF2", amount=5,
+                            article_number="73023059", action="retry_article", resume_from="setup_refresh")
+        await start_nx_job(form, store, queue, AsyncMock())
+        job = await queue.get()
+        notifier = AsyncMock()
+        with patch.object(pipeline, "run_nx", new_callable=AsyncMock,
+                          return_value={"setup": str(article / "73023059_SETUP.prt")}) as nx:
+            await JobWorker(queue, store, notifier)._process(job)
+        self.assertEqual([call.args[0] for call in nx.await_args_list], ["refresh"])
+        self.assertEqual(nx.await_args.args[1]["amount"], 5)
+        self.assertEqual(store.get_status_by_id("cretry001").outcome, "ARTICLE_CREATED")
+        self.assertEqual(store.get_status_by_id("cretry001").stage, "setup_refresh")
+        self.assertEqual((article / "73023059_SETUP.prt").read_text(), "operator-repaired article")
+
+    async def test_geometry_retry_runs_update_then_refresh(self):
+        self.prepare_article_retry()
+        with patch.object(pipeline, "run_nx", new_callable=AsyncMock, return_value={}) as nx:
+            await pipeline.run_job("retry_article", article_number="73023059", resume_from="geometry_update")
+        self.assertEqual([call.args[0] for call in nx.await_args_list], ["update", "refresh"])
+
+    async def test_missing_retry_part_does_not_reclone(self):
+        article = self.prepare_article_retry()
+        (article / "73023059_SETUP.prt").unlink()
+        with patch.object(pipeline, "run_nx", new_callable=AsyncMock) as nx:
+            with self.assertRaises(FileNotFoundError):
+                await pipeline.run_job("retry_article", article_number="73023059", resume_from="setup_refresh")
+        nx.assert_not_awaited()
+
+    async def test_failed_retry_keeps_stage_for_another_attempt(self):
+        self.prepare_article_retry()
+        store = JobStatusStore()
+        store.create("cretry002")
+        job = Job(JobStart(job_id="cretry002", material="LF2", amount=1,
+                           action="retry_article", article_number="73023059", resume_from="setup_refresh"))
+        with patch.object(pipeline, "run_nx", new_callable=AsyncMock, side_effect=RuntimeError("Still missing constraints")):
+            with self.assertLogs("api.worker", level="ERROR"):
+                await JobWorker(JobQueue(), store, AsyncMock())._process(job)
+        self.assertEqual(store.get_status_by_id("cretry002").status, JobStatus.FAILED)
+        self.assertEqual(store.get_status_by_id("cretry002").stage, "setup_refresh")

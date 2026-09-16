@@ -24,7 +24,8 @@ class JobStart(BaseModel):
   material: str = Field(min_length=1)
   amount: int = Field(gt=0)
   action: Literal["extract", "baseline", "part", "structure", "setup", "ready", "article",
-                  "prepare_quotation", "approve_baseline_and_generate"] = "baseline"
+                  "prepare_quotation", "approve_baseline_and_generate", "retry_article"] = "baseline"
+  resume_from: Literal["article_clone", "geometry_update", "setup_refresh"] | None = None
   article_number: Annotated[str, StringConstraints(pattern=r"^[0-9]{8}$")] | None = None
 
 

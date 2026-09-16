@@ -7,6 +7,7 @@ https://docs.sw.siemens.com/documentation/external/PL20230425446868577/en-US/cus
 """
 
 import math
+import filecmp
 import logging
 from pathlib import Path
 import re
@@ -130,6 +131,8 @@ def _configure_clone(clone, sources, targets, custom_dir):
 
     status, code = clone.AddAssembly(str(sources["setup"]))
     _uf_status(code, "AddAssembly")
+    print(f"Clone AsSaved: failed={status.Failed}, aborted={status.UserAbort}, "
+          f"files={status.FileNames!r}, statuses={status.Statuses!r}", flush=True)
     if status.Failed and not status.UserAbort:
         # Legacy library children may have stale saved paths. Prefer directories
         # already referenced by this assembly, then the configured resource tree.
@@ -143,15 +146,13 @@ def _configure_clone(clone, sources, targets, custom_dir):
         _uf_status(clone.Initialise(Clone.OperationClass.CLONE_OPERATION), "Reinitialise")
         status, code = clone.AddAssembly(str(sources["setup"]))
         _uf_status(code, "AddAssembly with library search")
-        if not existing.issubset(_clone_sources(clone)):
-            raise RuntimeError("Clone search changed an existing part reference")
+        found = _clone_sources(clone)
+        print(f"Clone search: failed={status.Failed}, aborted={status.UserAbort}, "
+              f"files={status.FileNames!r}, statuses={status.Statuses!r}", flush=True)
+        _require_clone_loaded(status)
+        _check_clone_references(existing, found, sources, custom_dir)
     # UF.Part.LoadStatus is a data structure, not NXOpen.PartLoadStatus/Dispose.
-    if status.Failed or status.UserAbort or status.NParts:
-        raise RuntimeError(
-            "Native clone could not resolve the complete baseline SETUP: "
-            f"failed={status.Failed}, aborted={status.UserAbort}, "
-            f"files={status.FileNames!r}, statuses={status.Statuses!r}"
-        )
+    _require_clone_loaded(status)
     _uf_status(clone.SetDefAction(Clone.Action.RETAIN), "SetDefAction(retain)")
     _uf_status(clone.SetDefAssocFileCopy(False), "SetDefAssocFileCopy(False)")
     _uf_status(clone.SetDryrun(False), "SetDryrun(False)")
@@ -167,6 +168,34 @@ def _configure_clone(clone, sources, targets, custom_dir):
         _uf_status(
             clone.SetNaming(str(source), Clone.NamingTechnique.USER_NAME, str(targets[key])),
             f"SetNaming({source}, {targets[key]})",
+        )
+
+
+def _require_clone_loaded(status):
+    if status.Failed or status.UserAbort or status.NParts:
+        raise RuntimeError(
+            "Native clone could not resolve the complete baseline SETUP: "
+            f"failed={status.Failed}, aborted={status.UserAbort}, "
+            f"files={status.FileNames!r}, statuses={status.Statuses!r}"
+        )
+
+
+def _check_clone_references(existing, found, sources, custom_dir):
+    library = (Path(custom_dir) / "MACH" / "resource").resolve()
+    for original in sorted(existing - found):
+        candidates = [path for path in found
+                      if path.name.casefold() == original.name.casefold()
+                      and path.is_relative_to(library) and path.is_file()]
+        # The laptop has old/new copies of the resource library. A different
+        # path is harmless only for a byte-identical shared part, never BASELINE.
+        if original not in sources.values() and any(
+            filecmp.cmp(original, candidate, shallow=False) for candidate in candidates
+        ):
+            print(f"Clone retained identical library part: {original} -> {candidates}", flush=True)
+            continue
+        raise RuntimeError(
+            f"Clone search changed an existing part reference: {original}; "
+            f"same-name library candidates: {candidates}"
         )
 
 

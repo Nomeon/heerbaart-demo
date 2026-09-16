@@ -13,6 +13,27 @@ def component(name, path=None):
 
 
 class SetupLoadingTests(unittest.TestCase):
+    def test_jaws_accept_identical_library_copy_but_reject_changed_device(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            current = root / "current" / "jaw.prt"
+            old = root / "old" / "jaw.prt"
+            current.parent.mkdir()
+            old.parent.mkdir()
+            current.write_bytes(b"selected jaw")
+            old.write_bytes(b"selected jaw")
+            children = [component(f"jaw {i}", old) for i in range(3)]
+            machine = SimpleNamespace(ComponentAssembly=SimpleNamespace(
+                RootComponent=SimpleNamespace(GetChildren=lambda: children)))
+            self.assertEqual(common.require_jaw_components(machine, current), children)
+            children.pop()
+            with self.assertRaisesRegex(RuntimeError, "found 2"):
+                common.require_jaw_components(machine, current)
+            children.append(component("jaw 3", old))
+            old.write_bytes(b"different jaw")
+            with self.assertRaisesRegex(RuntimeError, "found 0"):
+                common.require_jaw_components(machine, current)
+
     def test_product_lookup_skips_unloaded_helpers_and_uses_prototype(self):
         product = component("BASELINE_ASSY", Path("73023060_ASSY.prt").resolve())
         children = [component("template_part"), product, component("unloaded_chuck")]

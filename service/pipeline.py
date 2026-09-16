@@ -121,7 +121,10 @@ def mark_baseline_ready(family: dict) -> dict:
   return {"baseline_ready": True, "setup": str(baseline / "BASELINE_SETUP.prt")}
 
 
-async def generate_article(family: dict, article_number: str, progress=None, material=None, amount=1) -> dict:
+async def generate_article(family: dict, article_number: str, progress=None, material=None, amount=1,
+                           resume_from="article_clone") -> dict:
+  if resume_from not in {"article_clone", "geometry_update", "setup_refresh"}:
+    raise ValueError(f"Unsupported article retry stage: {resume_from}")
   if not family["baseline_ready"]:
     raise ValueError("Save the manually programmed BASELINE and mark it ready first")
   row = article_row(family, article_number)
@@ -134,10 +137,19 @@ async def generate_article(family: dict, article_number: str, progress=None, mat
     "expressions": row["expressions"],
     "material": material, "amount": amount,
   }
-  await report(progress, "article_clone", "article")
-  outputs = await run_nx("clone", request, root / "work")
-  await report(progress, "geometry_update", "article")
-  await run_nx("update", request, root / "work")
+  outputs = {kind.lower(): str(root / article_number / f"{article_number}_{kind}.prt")
+             for kind in PART_KINDS}
+  if resume_from == "article_clone":
+    await report(progress, "article_clone", "article")
+    outputs = await run_nx("clone", request, root / "work")
+  else:
+    # Resume the repaired article in place; never copy over it from BASELINE.
+    for filename in outputs.values():
+      if not Path(filename).is_file():
+        raise FileNotFoundError(f"Cannot resume article; required part is missing: {filename}")
+  if resume_from != "setup_refresh":
+    await report(progress, "geometry_update", "article")
+    await run_nx("update", request, root / "work")
   await report(progress, "setup_refresh", "article")
   refreshed = await run_nx("refresh", request, root / "work")
   return {**outputs, **refreshed}
@@ -161,10 +173,13 @@ async def prepare_quotation(drawing_path, article_number, progress=None, materia
 
 
 async def run_job(action: str, *, drawing_path=None, article_number=None, job_id=None,
-                  material=None, amount=1, progress=None) -> dict:
+                  material=None, amount=1, progress=None, resume_from=None) -> dict:
   logger.info("Job %s: %s %s", job_id or "local", action, article_number or "BASELINE")
   if action == "prepare_quotation":
     return await prepare_quotation(drawing_path, article_number, progress, material, amount)
+  if action == "retry_article":
+    result = await generate_article(_load_family(), article_number, progress, material, amount, resume_from)
+    return {**result, "outcome": "ARTICLE_CREATED", "workflow": "article"}
   if action == "approve_baseline_and_generate":
     family = _load_family()
     article_row(family, article_number)
