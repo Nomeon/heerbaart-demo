@@ -34,6 +34,12 @@ def dispatch(request):
     if stage == "cam":
         from nx.cam import regenerate_toolpaths
         return regenerate_toolpaths(request)
+    if stage == "post":
+        from nx.post import post_article
+        return post_article(request)
+    if stage == "simulation":
+        from nx.simulation import simulate_article
+        return simulate_article(request)
     raise ValueError(f"Unknown NX stage: {stage}")
 
 

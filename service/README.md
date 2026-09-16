@@ -11,11 +11,11 @@ OpenAI, builds an independent BASELINE, and later generates requested articles
 from its manually programmed setup. Generated files remain on the laptop.
 Status callbacks include the current stage, error, and workflow outcome/setup path.
 
-The 2026-09-16 checks passed thirteen Python unit tests and a real app request
-through PDF storage, the service, and the programming-handoff callback. Native
-generation after release has not been rerun through this new app flow.
-Earlier reported laptop checks and remaining limitations are listed below;
-current acceptance evidence is tracked in DEMO.md.
+The 2026-09-16 checks include 37 Python tests and native API simulation of the
+external NC files for 73023059 and 73023060 through SimEnd, with zero reported
+collisions, limits, gouges or singularities. Downloads stay blocked until this
+result is recorded for the exact NC hash. Current acceptance evidence and the
+remaining fresh-family, measurement and result-storage work are in DEMO.md.
 
 ## Currently Implemented Scope
 
@@ -25,7 +25,10 @@ current acceptance evidence is tracked in DEMO.md.
 - BLANK always uses Revolve Outline, a 360-degree revolve, and a 5 mm offset.
 - One machine/jaw strategy, with article-dependent opening and clearance values.
 - Automatic regeneration of CAM program `O1234` after setup refresh.
-- No simulation, posting, or machining measurements yet.
+- Automatic Okuma posting of `O1234` to `<article>-SETUP.min`.
+- External NC simulation after posting; download requires complete, clean CSE
+  results for the same NC SHA-256. Native acceptance is tracked in DEMO.md.
+- Machining times and weights are deferred and do not block posting.
 - No NATS, database, new UI, or distributed job system.
 
 The service runs directly on Windows, using loopback for the local demo. Legacy
@@ -51,7 +54,8 @@ Important settings:
 | `OPENAI_MODEL` | Structured table extraction model; `gpt-4.1`. |
 | `NX_INSTALL_DIR` | `C:/Program Files/Siemens/DesigncenterNX2512`. |
 | `NX_CUSTOM_DIR` | `C:/Heerbaart/NX2512_Custom/NX2512_Custom`. |
-| `NX_PYTHON_HOME` | Optional; defaults to the active Pixi Python 3.12 environment. |
+| `NX_SIMULATION_CUSTOM_DIR` | Simulation-only CSE machine/tool library root; this laptop uses `C:/Heerbaart_Custom/__Custom`, matching the working interactive launcher. Other stages and setup references keep `NX_CUSTOM_DIR`. |
+| `NX_PYTHON_HOME` | Optional; defaults to the active Pixi Python 3.12 environment. Simulation always uses NX's bundled Python. |
 | `NX_JOURNAL_TIMEOUT` | Seconds per NX process; `900`. Increase if full model construction needs longer. |
 | `NX_DATA_DIR` | Local uploads, family files, parts, and logs; `data`. |
 | `NX_HOST` | `127.0.0.1` locally; set the laptop's NetBird address for remote requests. |
@@ -116,8 +120,17 @@ The article pipeline finds program group `O1234` by name in Program Order and
 regenerates only that group after refresh. It saves the article SETUP, reopens it
 and checks statuses/path presence only for operations within `O1234`. Other groups
 (including `ONLYNOTES`) are outside this step; a missing `O1234` is an error. This is automatic
-within the API flow, without a separate UI button. The first native regeneration
-run remains to be verified; the current automated tests mock NX generation.
+within the API flow, without a separate UI button. Native generation/save/reopen
+passed for 73023059. Posting then follows `../journal.py`: `DeleteMachineCode`,
+`OutputBallCenter=False`, `PostprocessWithPostModeSetting`, postprocessor
+`Okuma_MultusU4000_1SW`, PostDefined units/warnings/review, Normal mode. A fresh
+run directory prevents stale output counting as success; the nonempty `.min`
+is copied to the article directory after saving the setup.
+The Okuma post normalizes underscores to hyphens in output filenames; the API
+uses `<article>-SETUP.min` directly. Native API posting and service downloads
+passed for 73023059 and 73023060 on 2026-09-16 (31 Python tests also pass).
+Simulation remains pending. The manual 59 reference has extra coolant codes at
+three drilling operations; see DEMO.md N3c before claiming equivalent NC output.
 
 ## HTTP Contract
 
@@ -129,14 +142,14 @@ used to change the family geometry.
 | --- | --- | --- |
 | `prepare_quotation` | `drawing`, `article_number` | Prepare a missing family, hand off an existing unreleased baseline, or generate the requested article if released. |
 | `approve_baseline_and_generate` | `article_number` | Record saved manual programming, reload the family, then generate the originally requested article. |
-| `retry_article` | `article_number`, `resume_from` | Resume `article_clone`, `geometry_update`, `setup_refresh`, or `cam_regeneration` after repair; reuse existing article files for all steps after clone. |
+| `retry_article` | `article_number`, `resume_from` | Resume `article_clone`, `geometry_update`, `setup_refresh`, `cam_regeneration`, or `postprocessing`; reuse existing article files for all steps after clone. |
 | `baseline` (default) | `drawing` PDF upload | Extract table, build PART, structure, and initial SETUP. |
 | `extract` | `drawing` PDF upload | Extract and persist the table only. |
 | `part` | None | Build BASELINE PART using the persisted first row. |
 | `structure` | None | Build BASELINE ASSY, CAD4CAM, and BLANK from existing PART. |
 | `setup` | None | Run or resume the five initial setup stages. |
 | `ready` | None | Record that manual baseline programming is saved. |
-| `article` | `article_number` | Native clone, CAD update, setup refresh, and CAM toolpath regeneration. |
+| `article` | `article_number` | Native clone, CAD update, setup refresh, CAM toolpath regeneration, and NC posting. |
 
 Drawing uploads are consumed by `extract`, `baseline`, and `prepare_quotation`. Article numbers
 are eight-digit strings looked up in the extracted table, not arbitrary formulas.
@@ -166,12 +179,15 @@ reusing an unreleased baseline, the completion looks like this (path abbreviated
 ```
 
 App actions return `AWAITING_PROGRAMMING` or `ARTICLE_CREATED`; the latter only
-means the current native pipeline completed. New jobs also complete toolpath
-regeneration, identified by final stage `cam_regeneration`. Older jobs ending at
-`setup_refresh` do not have regenerated paths. Neither outcome means NC is ready.
+means the current native pipeline completed. New jobs finish at `postprocessing`
+with a generated NC file. Older jobs at `cam_regeneration` only regenerated paths,
+and jobs at `setup_refresh` did neither. Posting does not mean simulation passed.
 The local app matches callbacks to the current job stored on the quotation.
 Low-level actions have no app outcome; use the CLI or service polling for those.
-No separate result callback, file download, or machining metadata extraction is performed.
+`GET /articles/{article_number}/nc` downloads the latest local `<article>-SETUP.min`.
+The app exposes it through its authenticated, organization-scoped download route
+only after a successful post callback. NC is not uploaded to S3 yet. No separate
+result callback or machining metadata extraction is performed.
 Callback failures are logged without changing the NX outcome. Queue and job
 statuses are in memory and are lost on service restart; family data and parts
 remain on disk. A new caller job ID does not authorize overwriting existing parts.

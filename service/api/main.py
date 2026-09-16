@@ -5,6 +5,10 @@ from contextlib import asynccontextmanager, suppress
 from typing import Annotated
 
 from fastapi import Depends, FastAPI, Form, HTTPException, status
+from fastapi.responses import FileResponse
+from fastapi import Path as PathParameter
+from pipeline import family_directory
+from nc_release import released_nc
 
 from api.config import LoggingConfig
 from api.dependencies import (
@@ -60,6 +64,15 @@ app.add_middleware(RequestSizeLimit)
 @app.get("/")
 async def root():
   return {"service": "Elster Rev.D NX POC"}
+
+
+@app.get("/articles/{article_number}/nc")
+async def get_article_nc(article_number: Annotated[str, PathParameter(pattern=r"^[0-9]{8}$")]):
+  output = released_nc(family_directory() / article_number, article_number)
+  if output is None:
+    raise HTTPException(status_code=409, detail="NC program has not passed external simulation")
+  return FileResponse(output, media_type="application/octet-stream", filename=output.name,
+                      headers={"Cache-Control": "no-store"})
 
 
 @app.post("/start/nx-job", status_code=status.HTTP_201_CREATED)

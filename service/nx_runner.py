@@ -20,14 +20,19 @@ def custom_directory() -> Path:
   )).resolve()
 
 
-def _environment(install: Path, custom: Path, request_file: Path, result_file: Path) -> dict[str, str]:
-  home = Path(os.environ.get("NX_PYTHON_HOME") or sys.prefix).resolve()
+def _environment(install: Path, custom: Path, request_file: Path, result_file: Path,
+                 *, stage: str | None = None) -> dict[str, str]:
   nxbin = install / "NXBIN"
+  # CSE loads NX's bundled Python. Use that same runtime for its NXOpen journal.
+  home = (nxbin / "python" if stage == "simulation" else
+          Path(os.environ.get("NX_PYTHON_HOME") or sys.prefix)).resolve()
   library = custom / "MACH" / "resource" / "library"
   python_paths = [
     home, home / "DLLs", home / "Lib", home / "Lib" / "site-packages",
     nxbin / "python", PROJECT_DIR,
   ]
+  if stage == "simulation":
+    python_paths = [home, home / "Python312.zip", PROJECT_DIR]
   library_paths = {
     "UGII_CAM_LIBRARY_DIR": library,
     "UGII_CAM_LIBRARY_MACHINE_DIR": library / "machine",
@@ -40,6 +45,12 @@ def _environment(install: Path, custom: Path, request_file: Path, result_file: P
     "UGII_CAM_LIBRARY_DEVICE_ASCII_DIR": library / "device" / "ascii",
     "UGII_CAM_LIBRARY_DEVICE_GRAPHICS_PATH": library / "device" / "graphics",
   }
+  if stage == "simulation" and os.environ.get("NX_SIMULATION_CUSTOM_DIR"):
+    # Match the working interactive CSE kit without changing article references,
+    # assembly libraries or the postprocessor used by the other stages.
+    simulation_library = Path(os.environ["NX_SIMULATION_CUSTOM_DIR"]) / "MACH" / "resource" / "library"
+    library_paths["UGII_CAM_LIBRARY_INSTALLED_MACHINES_DIR"] = simulation_library / "machine" / "installed_machines"
+    library_paths["UGII_CAM_LIBRARY_TOOL_GRAPHICS_PATH"] = simulation_library / "tool" / "graphics"
   return {
     **{key: value for key, value in os.environ.items()
        if key not in {"OPENAI_API_KEY", "NX_CALLBACK_API_KEY"}},
@@ -103,7 +114,7 @@ async def run_nx(stage: str, request: dict, work_root: Path) -> dict:
   with log_file.open("wb") as log:
     process = await asyncio.create_subprocess_exec(
       str(executable), str(PROJECT_DIR / "nx" / "entry.py"),
-      cwd=PROJECT_DIR, env=_environment(install, custom, request_file, result_file),
+      cwd=PROJECT_DIR, env=_environment(install, custom, request_file, result_file, stage=stage),
       stdout=log, stderr=asyncio.subprocess.STDOUT,
     )
     try:

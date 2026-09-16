@@ -52,17 +52,17 @@ class QuotationFlowTests(unittest.IsolatedAsyncioTestCase):
             result = await pipeline.run_job("approve_baseline_and_generate", article_number="73023059",
                                             material="LF2", amount=5, progress=progress)
         self.assertTrue(json.loads((self.root / "family.json").read_text())["baseline_ready"])
-        self.assertEqual([call.args[0] for call in nx.await_args_list], ["clone", "update", "refresh", "cam"])
+        self.assertEqual([call.args[0] for call in nx.await_args_list], ["clone", "update", "refresh", "cam", "post", "simulation"])
         self.assertEqual(nx.await_args_list[0].args[1]["material"], "LF2")
         self.assertEqual(nx.await_args_list[0].args[1]["name"], "73023059")
-        self.assertEqual([call.args[0] for call in progress.await_args_list], ["article_clone", "geometry_update", "setup_refresh", "cam_regeneration"])
+        self.assertEqual([call.args[0] for call in progress.await_args_list], ["article_clone", "geometry_update", "setup_refresh", "cam_regeneration", "postprocessing", "simulation"])
         self.assertEqual(result["outcome"], "ARTICLE_CREATED")
 
     async def test_ready_baseline_skips_preparation(self):
         pipeline._save_family({**self.family, "baseline_ready": True})
         with patch.object(pipeline, "run_nx", new_callable=AsyncMock, return_value={"setup": "article.prt"}) as nx:
             result = await pipeline.run_job("prepare_quotation", article_number="73023059")
-        self.assertEqual(nx.await_count, 4)
+        self.assertEqual(nx.await_count, 6)
         self.assertEqual(result["workflow"], "article")
 
     async def test_worker_keeps_failed_stage(self):
@@ -100,17 +100,17 @@ class QuotationFlowTests(unittest.IsolatedAsyncioTestCase):
         with patch.object(pipeline, "run_nx", new_callable=AsyncMock,
                           return_value={"setup": str(article / "73023059_SETUP.prt")}) as nx:
             await JobWorker(queue, store, notifier)._process(job)
-        self.assertEqual([call.args[0] for call in nx.await_args_list], ["refresh", "cam"])
+        self.assertEqual([call.args[0] for call in nx.await_args_list], ["refresh", "cam", "post", "simulation"])
         self.assertEqual(nx.await_args.args[1]["amount"], 5)
         self.assertEqual(store.get_status_by_id("cretry001").outcome, "ARTICLE_CREATED")
-        self.assertEqual(store.get_status_by_id("cretry001").stage, "cam_regeneration")
+        self.assertEqual(store.get_status_by_id("cretry001").stage, "simulation")
         self.assertEqual((article / "73023059_SETUP.prt").read_text(), "operator-repaired article")
 
     async def test_geometry_retry_runs_update_then_refresh(self):
         self.prepare_article_retry()
         with patch.object(pipeline, "run_nx", new_callable=AsyncMock, return_value={}) as nx:
             await pipeline.run_job("retry_article", article_number="73023059", resume_from="geometry_update")
-        self.assertEqual([call.args[0] for call in nx.await_args_list], ["update", "refresh", "cam"])
+        self.assertEqual([call.args[0] for call in nx.await_args_list], ["update", "refresh", "cam", "post", "simulation"])
 
     async def test_cam_retry_runs_only_cam_through_api_and_reports_failure(self):
         self.prepare_article_retry()
@@ -137,6 +137,21 @@ class QuotationFlowTests(unittest.IsolatedAsyncioTestCase):
                 await pipeline.run_job("retry_article", article_number="73023059", resume_from="setup_refresh")
         nx.assert_not_awaited()
 
+    async def test_post_retry_uses_article_and_does_not_regenerate_or_reclone(self):
+        article = self.prepare_article_retry()
+        queue, store = JobQueue(), JobStatusStore()
+        form = JobStartForm(job_id="cpostretry", material="LF2", amount=5,
+                            article_number="73023059", action="retry_article", resume_from="postprocessing")
+        await start_nx_job(form, store, queue, AsyncMock())
+        with patch.object(pipeline, "run_nx", new_callable=AsyncMock,
+                          return_value={"setup": str(article / "73023059_SETUP.prt")}) as nx:
+            await JobWorker(queue, store, AsyncMock())._process(await queue.get())
+        self.assertEqual([call.args[0] for call in nx.await_args_list], ["post", "simulation"])
+        self.assertEqual(nx.await_args.args[1]["name"], "73023059")
+        self.assertEqual(nx.await_args.args[1]["item_dir"], str(article))
+        self.assertEqual(store.get_status_by_id("cpostretry").stage, "simulation")
+        self.assertEqual(store.get_status_by_id("cpostretry").status, JobStatus.COMPLETED)
+
     async def test_failed_retry_keeps_stage_for_another_attempt(self):
         self.prepare_article_retry()
         store = JobStatusStore()
@@ -148,3 +163,18 @@ class QuotationFlowTests(unittest.IsolatedAsyncioTestCase):
                 await JobWorker(JobQueue(), store, AsyncMock())._process(job)
         self.assertEqual(store.get_status_by_id("cretry002").status, JobStatus.FAILED)
         self.assertEqual(store.get_status_by_id("cretry002").stage, "setup_refresh")
+
+    async def test_simulation_retry_never_reposts_and_stopped_simulation_fails(self):
+        article = self.prepare_article_retry()
+        (article / "simulation.json").write_text('{"passed": true}')
+        queue, store = JobQueue(), JobStatusStore()
+        await start_nx_job(JobStartForm(job_id="csimretry", material="LF2", amount=1,
+            article_number="73023059", action="retry_article", resume_from="simulation"), store, queue, AsyncMock())
+        with patch.object(pipeline, "run_nx", new_callable=AsyncMock,
+                          side_effect=RuntimeError("External simulation stopped at collision")) as nx:
+            with self.assertLogs("api.worker", level="ERROR"):
+                await JobWorker(queue, store, AsyncMock())._process(await queue.get())
+        self.assertEqual([call.args[0] for call in nx.await_args_list], ["simulation"])
+        self.assertEqual(store.get_status_by_id("csimretry").status, JobStatus.FAILED)
+        self.assertEqual(store.get_status_by_id("csimretry").stage, "simulation")
+        self.assertFalse((article / "simulation.json").exists())

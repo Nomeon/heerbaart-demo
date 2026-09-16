@@ -123,7 +123,7 @@ def mark_baseline_ready(family: dict) -> dict:
 
 async def generate_article(family: dict, article_number: str, progress=None, material=None, amount=1,
                            resume_from="article_clone") -> dict:
-  if resume_from not in {"article_clone", "geometry_update", "setup_refresh", "cam_regeneration"}:
+  if resume_from not in {"article_clone", "geometry_update", "setup_refresh", "cam_regeneration", "postprocessing", "simulation"}:
     raise ValueError(f"Unsupported article retry stage: {resume_from}")
   if not family["baseline_ready"]:
     raise ValueError("Save the manually programmed BASELINE and mark it ready first")
@@ -131,6 +131,8 @@ async def generate_article(family: dict, article_number: str, progress=None, mat
   if not article_number.isascii() or not article_number.isdigit():
     raise ValueError("Article numbers must be ASCII digits")
   root = family_directory()
+  from nc_release import invalidate_release
+  invalidate_release(root / article_number)
   request = {
     "baseline_dir": str(root / "BASELINE"),
     "item_dir": str(root / article_number), "name": article_number,
@@ -150,12 +152,18 @@ async def generate_article(family: dict, article_number: str, progress=None, mat
   if resume_from in {"article_clone", "geometry_update"}:
     await report(progress, "geometry_update", "article")
     await run_nx("update", request, root / "work")
-  if resume_from != "cam_regeneration":
+  if resume_from in {"article_clone", "geometry_update", "setup_refresh"}:
     await report(progress, "setup_refresh", "article")
     outputs.update(await run_nx("refresh", request, root / "work"))
-  await report(progress, "cam_regeneration", "article")
-  generated = await run_nx("cam", request, root / "work")
-  return {**outputs, **generated}
+  if resume_from not in {"postprocessing", "simulation"}:
+    await report(progress, "cam_regeneration", "article")
+    outputs.update(await run_nx("cam", request, root / "work"))
+  if resume_from != "simulation":
+    await report(progress, "postprocessing", "article")
+    outputs.update(await run_nx("post", request, root / "work"))
+  await report(progress, "simulation", "article")
+  outputs.update(await run_nx("simulation", request, root / "work"))
+  return outputs
 
 
 async def prepare_quotation(drawing_path, article_number, progress=None, material=None, amount=1):
