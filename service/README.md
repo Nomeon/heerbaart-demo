@@ -1,15 +1,22 @@
 # Elster Rev.D NX POC
 
+The central scope, local setup, end-to-end flow, and progress checklist are in
+[DEMO.md](../DEMO.md). This README documents the currently implemented low-level
+service. Missing finishing/result features below are implementation gaps, not
+exclusions from the demo's target scope. Both servers run on this laptop first;
+NetBird is deferred.
+
 One Windows service receives a PDF, extracts the eighteen article rows with
 OpenAI, builds an independent BASELINE, and later generates requested articles
 from its manually programmed setup. Generated files remain on the laptop.
 Only job statuses are sent to the calling service.
 
-The implementation has been reviewed statically. No tests, application runs,
-OpenAI requests, dependency installation, or NX execution were performed during
-implementation. Installed NX behavior still needs confirmation on the laptop.
+The 2026-09-16 review checked the code and local family state and passed the eight
+existing Python unit tests. It did not run new NX jobs or the connected app flow.
+Earlier reported laptop checks and remaining limitations are listed below;
+current acceptance evidence is tracked in DEMO.md.
 
-## Scope
+## Currently Implemented Scope
 
 - Only the supplied single-page Elster Rev.D drawing and its known STAP1-11 model.
 - Separate `BASELINE` item, seeded with the first table row's dimensions.
@@ -19,9 +26,9 @@ implementation. Installed NX behavior still needs confirmation on the laptop.
 - No automatic machining, toolpath regeneration, simulation, or posting.
 - No NATS, database, new UI, or distributed job system.
 
-The service runs directly on Windows with native NetBird connectivity. Legacy
+The service runs directly on Windows, using loopback for the local demo. Legacy
 NATS and Docker files have been removed. The original modeling projects are not
-needed at runtime.
+needed at runtime. Later remote operation can use native NetBird connectivity.
 
 ## Laptop Configuration
 
@@ -51,8 +58,9 @@ Important settings:
 | `NX_CALLBACK_STATUS_PATH` | Callback path; `/jobs/status`. |
 | `NX_CALLBACK_API_KEY` | Optional existing backend key, sent as `X-API-Key`. |
 
-Keep the port restricted to the calling service through NetBird's access rules.
-NX runs natively on Windows, not in Docker. If NX cannot load the Pixi interpreter,
+For now, bind to loopback and use the callback settings in DEMO.md; the defaults
+above do not target the Next.js app. When moving to NetBird, restrict access to
+the calling service. NX runs natively on Windows, not in Docker. If NX cannot load the Pixi interpreter,
 point `NX_PYTHON_HOME` at the laptop's existing working Python 3.12 environment.
 NXOpen is supplied by Siemens, not installed from PyPI.
 
@@ -63,9 +71,9 @@ pixi install
 pixi run serve
 ```
 
-The obsolete Linux/Python 3.14 lockfile was removed. `pixi install` will resolve
-the Windows/Python 3.12 environment and generate a new lockfile; this resolution
-has not been run here. The API starts one process, with one worker and no reload.
+The local copy already contains `pixi.lock` and a Pixi Python 3.12 environment;
+install only if the environment needs preparation. The API starts one process,
+with one worker and no reload.
 
 ## Local Stages
 
@@ -81,7 +89,7 @@ pixi run stage baseline --drawing "C:\drawings\ELSTER_GEHAEUSE_T73023059_REV_D.p
 Alternatively, start from a fresh data directory and run the stages separately:
 
 ```powershell
-pixi run stage extract --drawing "C:\Users\Bob\Desktop\heerbaart-demo\service\ELSTER_GEHAEUSE_T73023059_REV_D.pdf"
+pixi run stage extract --drawing ".\ELSTER_GEHAEUSE_T73023059_REV_D.pdf"
 pixi run stage part
 pixi run stage structure
 pixi run stage setup

@@ -1,5 +1,8 @@
 # NX Structure And Setup Interface
 
+For the active demo scope, progress, and verification evidence, see
+[DEMO.md](../../../DEMO.md). This file describes the low-level setup interface.
+
 These builders run **inside NX 2512**. They do not launch NX, clone assemblies,
 build PART, or regenerate CAM operations. The runner must make this project's
 `nx` package importable; there is no import or `sys.path` dependency on the
@@ -92,9 +95,9 @@ MAIN_INSIDE keeps local Z at 10 mm.
 
 ## Unverified NX Details
 
-Only static extraction and review have been performed. No application, NX,
-tests, installs, linters or formatters were run. In particular, the installed
-NX behavior still needs verification for inherited constraint/expression
+The initial extraction was reviewed statically; subsequent reported laptop checks
+and the current test evidence are distinguished in DEMO.md and the service README.
+Full article coverage still needs NX verification for inherited constraint/expression
 ownership, native clone remapping, WAVE assembly-context transforms, recorded
 face selections across the Elster rows, and preservation of manually programmed
 CAM data through save/reopen. Ownership checks deliberately fail rather than
