@@ -73,9 +73,9 @@ async def start_nx_job(
 
   Every status update comes back tagged with that id; results stay local.
   """
-  if form.action in {"extract", "baseline"} and form.drawing is None:
+  if form.action in {"extract", "baseline", "prepare_quotation"} and form.drawing is None:
     raise HTTPException(status_code=422, detail=f"drawing is required for {form.action}")
-  if form.action == "article" and form.article_number is None:
+  if form.action in {"article", "prepare_quotation", "approve_baseline_and_generate"} and form.article_number is None:
     raise HTTPException(status_code=422, detail="article_number is required for article")
 
   job_id = form.job_id
@@ -87,7 +87,7 @@ async def start_nx_job(
     raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail=str(exc)) from exc
 
   drawing_path = None
-  if form.action in {"extract", "baseline"}:
+  if form.action in {"extract", "baseline", "prepare_quotation"}:
     try:
       drawing_path = await drawing_store.save(job_id, form.drawing)
     except Exception as exc:
@@ -120,4 +120,4 @@ async def get_job_status(
   status = status_store.get_status_by_id(job_id)
   if status is None:
     raise HTTPException(status_code=404, detail="Unknown job id")
-  return JobStatusUpdate(job_id=job_id, status=status)
+  return status

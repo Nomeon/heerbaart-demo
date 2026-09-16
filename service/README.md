@@ -9,10 +9,11 @@ NetBird is deferred.
 One Windows service receives a PDF, extracts the eighteen article rows with
 OpenAI, builds an independent BASELINE, and later generates requested articles
 from its manually programmed setup. Generated files remain on the laptop.
-Only job statuses are sent to the calling service.
+Status callbacks include the current stage, error, and workflow outcome/setup path.
 
-The 2026-09-16 review checked the code and local family state and passed the eight
-existing Python unit tests. It did not run new NX jobs or the connected app flow.
+The 2026-09-16 checks passed thirteen Python unit tests and a real app request
+through PDF storage, the service, and the programming-handoff callback. Native
+generation after release has not been rerun through this new app flow.
 Earlier reported laptop checks and remaining limitations are listed below;
 current acceptance evidence is tracked in DEMO.md.
 
@@ -120,6 +121,8 @@ used to change the family geometry.
 
 | `action` | Additional fields | Work |
 | --- | --- | --- |
+| `prepare_quotation` | `drawing`, `article_number` | Prepare a missing family, hand off an existing unreleased baseline, or generate the requested article if released. |
+| `approve_baseline_and_generate` | `article_number` | Record saved manual programming, reload the family, then generate the originally requested article. |
 | `baseline` (default) | `drawing` PDF upload | Extract table, build PART, structure, and initial SETUP. |
 | `extract` | `drawing` PDF upload | Extract and persist the table only. |
 | `part` | None | Build BASELINE PART using the persisted first row. |
@@ -128,7 +131,7 @@ used to change the family geometry.
 | `ready` | None | Record that manual baseline programming is saved. |
 | `article` | `article_number` | Native clone, CAD update, and existing setup refresh. |
 
-Drawing uploads are consumed only by `extract` and `baseline`. Article numbers
+Drawing uploads are consumed by `extract`, `baseline`, and `prepare_quotation`. Article numbers
 are eight-digit strings looked up in the extracted table, not arbitrary formulas.
 
 Example PowerShell requests after starting the service:
@@ -148,13 +151,18 @@ curl.exe -X POST "http://127.0.0.1:9009/start/nx-job" -F "job_id=demo003" -F "ma
 Submission returns HTTP 201 and `{"job_id":"demo001"}`. Reusing an in-memory job
 ID returns 409. Poll `GET /jobs/{job_id}` for the local status. The worker sends
 `PENDING` when it picks up a job, then `IN_PROGRESS`, followed by `COMPLETED` or
-`FAILED`, using the existing callback shape:
+`FAILED`. Both polling and callbacks include workflow details. For an app request
+reusing an unreleased baseline, the completion looks like this (path abbreviated):
 
 ```json
-{"job_id": "demo001", "status": "COMPLETED"}
+{"job_id":"demo001","status":"COMPLETED","stage":"family_check","stage_started_at":"2026-09-16T10:00:00Z","workflow":"baseline","error":null,"outcome":"AWAITING_PROGRAMMING","setup_path":"C:/.../BASELINE/BASELINE_SETUP.prt"}
 ```
 
-No result callback, file download, or machining metadata extraction is performed.
+App actions return `AWAITING_PROGRAMMING` or `ARTICLE_CREATED`; the latter only
+means native clone/update/refresh completed. It does not mean CAM or NC is ready.
+The local app matches callbacks to the current job stored on the quotation.
+Low-level actions have no app outcome; use the CLI or service polling for those.
+No separate result callback, file download, or machining metadata extraction is performed.
 Callback failures are logged without changing the NX outcome. Queue and job
 statuses are in memory and are lost on service restart; family data and parts
 remain on disk. A new caller job ID does not authorize overwriting existing parts.

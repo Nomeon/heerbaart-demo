@@ -1,8 +1,9 @@
 from enum import StrEnum
+from datetime import datetime
 from typing import Annotated, Literal
 
 from fastapi import UploadFile
-from pydantic import BaseModel, StringConstraints
+from pydantic import BaseModel, StringConstraints, Field
 
 # The calling service owns the job id and sends it as a CUID; we never mint one.
 # Loose enough for both cuid ("c" + 24 chars) and cuid2 (2-32 chars): a
@@ -20,9 +21,10 @@ class JobStatus(StrEnum):
 
 class JobStart(BaseModel):
   job_id: CUID
-  material: str
-  amount: int
-  action: Literal["extract", "baseline", "part", "structure", "setup", "ready", "article"] = "baseline"
+  material: str = Field(min_length=1)
+  amount: int = Field(gt=0)
+  action: Literal["extract", "baseline", "part", "structure", "setup", "ready", "article",
+                  "prepare_quotation", "approve_baseline_and_generate"] = "baseline"
   article_number: Annotated[str, StringConstraints(pattern=r"^[0-9]{8}$")] | None = None
 
 
@@ -45,3 +47,9 @@ class JobStatusUpdate(BaseModel):
 
   job_id: CUID
   status: JobStatus
+  stage: str | None = None
+  stage_started_at: datetime | None = None
+  workflow: Literal["baseline", "article"] | None = None
+  error: str | None = None
+  outcome: Literal["AWAITING_PROGRAMMING", "ARTICLE_CREATED"] | None = None
+  setup_path: str | None = None

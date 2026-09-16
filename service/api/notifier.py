@@ -39,9 +39,9 @@ class NXWorkerNotifier:
       timeout=self.config.timeout_seconds,
     )
 
-  async def send_status(self, job_id: CUID, status: JobStatus) -> None:
+  async def send_status(self, job_id: CUID, status: JobStatus, **details) -> None:
     path = self.config.status_path
-    body = JobStatusUpdate(job_id=job_id, status=status).model_dump(mode="json")
+    body = JobStatusUpdate(job_id=job_id, status=status, **details).model_dump(mode="json")
     url = f"{self.config.base_url.rstrip('/')}/{path.lstrip('/')}"
     # Everything that leaves here gets logged, both what we sent and what
     # came back. Headers stay out of it: they carry the API key.

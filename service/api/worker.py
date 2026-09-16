@@ -1,25 +1,29 @@
 import asyncio
 import logging
 from dataclasses import dataclass, field
+from datetime import datetime, timezone
 
 import pipeline
 from api.config import WorkerConfig
 from api.dependencies import Job, JobQueue
 from api.notifier import NXWorkerNotifier
-from api.schema import CUID, JobStatus
+from api.schema import JobStatus, JobStatusUpdate
 from api.store import JobStatusStore
 
 logger = logging.getLogger(__name__)
 
 
-async def run_nx_job(job: Job) -> None:
-  """Run the pipeline; its returned paths stay on the NX server."""
+async def run_nx_job(job: Job, progress=None) -> dict:
+  """Run the pipeline and return its outcome to the app."""
   logger.info("running NX job %s (%s)", job.job_id, job.start.action)
-  await pipeline.run_job(
+  return await pipeline.run_job(
     job.start.action,
     drawing_path=job.drawing_path,
     article_number=job.start.article_number,
     job_id=job.job_id,
+    material=job.start.material,
+    amount=job.start.amount,
+    progress=progress,
   )
 
 
@@ -64,20 +68,35 @@ class JobWorker:
         self.queue.task_done()
 
   async def _process(self, job: Job) -> None:
+    update = JobStatusUpdate(job_id=job.job_id, status=JobStatus.PENDING)
+
+    async def progress(stage, workflow):
+      update.status = JobStatus.IN_PROGRESS
+      update.stage = stage
+      update.workflow = workflow
+      update.stage_started_at = datetime.now(timezone.utc)
+      await self._report(update)
+
     try:
-      await self._report(job.job_id, JobStatus.PENDING)
-      await self._report(job.job_id, JobStatus.IN_PROGRESS)
-      await run_nx_job(job)
-    except Exception:
+      await self._report(update)
+      await progress("family_check", "article" if job.start.action == "approve_baseline_and_generate" else "baseline")
+      result = await run_nx_job(job, progress)
+      update.outcome = result.get("outcome")
+      update.setup_path = result.get("setup")
+      update.workflow = result.get("workflow", update.workflow)
+    except Exception as exc:
       logger.exception("NX job %s (%s) failed", job.job_id, job.start.action)
-      await self._report(job.job_id, JobStatus.FAILED)
+      update.status = JobStatus.FAILED
+      update.error = str(exc) or type(exc).__name__
+      await self._report(update)
       return
 
-    await self._report(job.job_id, JobStatus.COMPLETED)
+    update.status = JobStatus.COMPLETED
+    await self._report(update)
 
-  async def _report(self, job_id: CUID, status: JobStatus) -> None:
-    self.store.update_status(job_id, status)
+  async def _report(self, update: JobStatusUpdate) -> None:
+    self.store.update(update.model_copy())
     try:
-      await self.notifier.send_status(job_id, status)
+      await self.notifier.send_status(**update.model_dump())
     except Exception:
-      logger.exception("status callback failed for %s: %s", job_id, status)
+      logger.exception("status callback failed for %s: %s", update.job_id, update.status)
