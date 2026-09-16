@@ -40,6 +40,9 @@ def dispatch(request):
     if stage == "simulation":
         from nx.simulation import simulate_article
         return simulate_article(request)
+    if stage == "measurement":
+        from nx.weights import measure_article_weights
+        return measure_article_weights(request)
     raise ValueError(f"Unknown NX stage: {stage}")
 
 

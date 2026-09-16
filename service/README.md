@@ -9,13 +9,14 @@ NetBird is deferred.
 One Windows service receives a PDF, extracts the eighteen article rows with
 OpenAI, builds an independent BASELINE, and later generates requested articles
 from its manually programmed setup. Generated files remain on the laptop.
-Status callbacks include the current stage, error, and workflow outcome/setup path.
+Status callbacks include the current stage, error, workflow outcome/setup path,
+per-piece product/stock weights after measurement, and total CSE time after SimEnd.
 
-The 2026-09-16 checks include 37 Python tests and native API simulation of the
+The 2026-09-16 checks include 41 Python tests and native API simulation of the
 external NC files for 73023059 and 73023060 through SimEnd, with zero reported
 collisions, limits, gouges or singularities. Downloads stay blocked until this
 result is recorded for the exact NC hash. Current acceptance evidence and the
-remaining fresh-family, measurement and result-storage work are in DEMO.md.
+remaining measurement and result-storage work are in DEMO.md.
 
 ## Currently Implemented Scope
 
@@ -23,12 +24,31 @@ remaining fresh-family, measurement and result-storage work are in DEMO.md.
 - Separate `BASELINE` item, seeded with the first table row's dimensions.
 - Native PART, ASSY, CAD4CAM, BLANK, and SETUP files per item.
 - BLANK always uses Revolve Outline, a 360-degree revolve, and a 5 mm offset.
+- During article geometry update, the first word of the ERPNext material name
+  (e.g. `1.4301 - RVS 304` → `1.4301`) selects the material from
+  `C:/Heerbaart/Materials/Heerbaart_Materials.xml`. It is assigned to the PART
+  product body and `BLANK_REVOLVE_OUTLINE_BODY` before save; NX updates mass on save.
+  BLANK's total `NX_Mass` also includes its source WAVE body; measurement therefore
+  selects only `BLANK_REVOLVE_OUTLINE_BODY` for stock weight.
 - One machine/jaw strategy, with article-dependent opening and clearance values.
 - Automatic regeneration of CAM program `O1234` after setup refresh.
 - Automatic Okuma posting of `O1234` to `<article>-SETUP.min`.
 - External NC simulation after posting; download requires complete, clean CSE
   results for the same NC SHA-256. Native acceptance is tracked in DEMO.md.
-- Machining times and weights are deferred and do not block posting.
+- Before simulation, Program Manager's external main program on channel 1 is
+  replaced with the article's `.min` and the SETUP is saved. Manual reopening
+  therefore keeps the article NC reference instead of the cloned baseline one.
+- Immediately after geometry update/save, `measurement` reopens PART/BLANK and measures each
+  target body in kilograms. It writes `weights.json` and returns
+  `weights: {product_kg, stock_kg}` with an `IN_PROGRESS` callback before setup refresh/CAM.
+  The app immediately stores both masses and displays per-piece/order totals while
+  processing continues. Later status callbacks without weights preserve those values.
+  Retry from `measurement` remeasures, then continues refresh/CAM/post/simulation.
+- Successful simulation returns total `MachineTime` as `simulation_time_seconds`.
+  The completion callback stores it in the app; the UI shows minutes per piece
+  and minutes × quantity. No individual operation times are read or imported.
+  Completion is still `ARTICLE_CREATED`,
+  at stage `simulation`; full result delivery is needed before `READY`.
 - No NATS, database, new UI, or distributed job system.
 
 The service runs directly on Windows, using loopback for the local demo. Legacy
@@ -109,7 +129,7 @@ Save and close the baseline and its dependencies before releasing it for cloning
 
 ```powershell
 pixi run stage ready
-pixi run stage article --article 73023060
+pixi run stage article --article 73023060 --material "1.4301 - RVS 304"
 ```
 
 The first numbered article, `73023059`, is also generated this way if requested.
@@ -165,7 +185,7 @@ After the baseline is manually programmed and saved:
 
 ```powershell
 curl.exe -X POST "http://127.0.0.1:9009/start/nx-job" -F "job_id=demo002" -F "material=LF2" -F "amount=1" -F "action=ready"
-curl.exe -X POST "http://127.0.0.1:9009/start/nx-job" -F "job_id=demo003" -F "material=LF2" -F "amount=1" -F "action=article" -F "article_number=73023060"
+curl.exe -X POST "http://127.0.0.1:9009/start/nx-job" -F "job_id=demo003" -F "material=1.4301 - RVS 304" -F "amount=1" -F "action=article" -F "article_number=73023060"
 ```
 
 Submission returns HTTP 201 and `{"job_id":"demo001"}`. Reusing an in-memory job
@@ -179,15 +199,17 @@ reusing an unreleased baseline, the completion looks like this (path abbreviated
 ```
 
 App actions return `AWAITING_PROGRAMMING` or `ARTICLE_CREATED`; the latter only
-means the current native pipeline completed. New jobs finish at `postprocessing`
-with a generated NC file. Older jobs at `cam_regeneration` only regenerated paths,
+means the current native pipeline completed. New jobs return weights during
+`measurement`, before setup refresh/CAM, and finish at `simulation` with released
+NC. Older jobs at `cam_regeneration` only regenerated paths,
 and jobs at `setup_refresh` did neither. Posting does not mean simulation passed.
 The local app matches callbacks to the current job stored on the quotation.
 Low-level actions have no app outcome; use the CLI or service polling for those.
 `GET /articles/{article_number}/nc` downloads the latest local `<article>-SETUP.min`.
 The app exposes it through its authenticated, organization-scoped download route
-only after a successful post callback. NC is not uploaded to S3 yet. No separate
-result callback or machining metadata extraction is performed.
+only after successful external simulation. NC is not uploaded to S3 yet. Weights
+and total simulation time use the existing status callback. Individual operation
+times/import remain outside this POC step.
 Callback failures are logged without changing the NX outcome. Queue and job
 statuses are in memory and are lost on service restart; family data and parts
 remain on disk. A new caller job ID does not authorize overwriting existing parts.

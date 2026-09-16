@@ -18,9 +18,9 @@ ACTIONS = ("extract", "baseline", "part", "structure", "setup", "ready", "articl
 logger = logging.getLogger(__name__)
 
 
-async def report(progress, stage, workflow):
+async def report(progress, stage, workflow, **details):
   if progress:
-    await progress(stage, workflow)
+    await progress(stage, workflow, **details)
 
 
 def article_row(family, article_number):
@@ -123,7 +123,7 @@ def mark_baseline_ready(family: dict) -> dict:
 
 async def generate_article(family: dict, article_number: str, progress=None, material=None, amount=1,
                            resume_from="article_clone") -> dict:
-  if resume_from not in {"article_clone", "geometry_update", "setup_refresh", "cam_regeneration", "postprocessing", "simulation"}:
+  if resume_from not in {"article_clone", "geometry_update", "setup_refresh", "cam_regeneration", "postprocessing", "simulation", "measurement"}:
     raise ValueError(f"Unsupported article retry stage: {resume_from}")
   if not family["baseline_ready"]:
     raise ValueError("Save the manually programmed BASELINE and mark it ready first")
@@ -152,7 +152,11 @@ async def generate_article(family: dict, article_number: str, progress=None, mat
   if resume_from in {"article_clone", "geometry_update"}:
     await report(progress, "geometry_update", "article")
     await run_nx("update", request, root / "work")
-  if resume_from in {"article_clone", "geometry_update", "setup_refresh"}:
+  if resume_from in {"article_clone", "geometry_update", "measurement"}:
+    await report(progress, "measurement", "article")
+    outputs.update(await run_nx("measurement", request, root / "work"))
+    await report(progress, "measurement", "article", weights=outputs["weights"])
+  if resume_from in {"article_clone", "geometry_update", "measurement", "setup_refresh"}:
     await report(progress, "setup_refresh", "article")
     outputs.update(await run_nx("refresh", request, root / "work"))
   if resume_from not in {"postprocessing", "simulation"}:
@@ -213,7 +217,7 @@ async def run_job(action: str, *, drawing_path=None, article_number=None, job_id
   if action == "ready":
     return mark_baseline_ready(family)
   if action == "article":
-    return await generate_article(family, article_number)
+    return await generate_article(family, article_number, progress, material, amount)
   raise ValueError(f"Unknown action: {action}")
 
 
@@ -222,9 +226,11 @@ def main():
   parser.add_argument("action", choices=ACTIONS)
   parser.add_argument("--drawing", type=Path)
   parser.add_argument("--article", dest="article_number")
+  parser.add_argument("--material")
   args = parser.parse_args()
   logging.basicConfig(level=LoggingConfig().level, format=LoggingConfig().format)
-  result = asyncio.run(run_job(args.action, drawing_path=args.drawing, article_number=args.article_number))
+  result = asyncio.run(run_job(args.action, drawing_path=args.drawing,
+                              article_number=args.article_number, material=args.material))
   print(json.dumps(result, indent=2))
 
 

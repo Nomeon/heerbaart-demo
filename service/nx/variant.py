@@ -328,6 +328,26 @@ def _save_part(part):
         status.Dispose()
 
 
+def _assign_article_material(session, parts, material_name):
+    code = material_name.split()[0]
+    bodies = {
+        "part": next(body for body in parts["part"].Bodies if body.IsSolidBody),
+        "blank": next(body for body in parts["blank"].Bodies
+                      if body.Name == "BLANK_REVOLVE_OUTLINE_BODY"),
+    }
+    for key, body in bodies.items():
+        # NX material loading uses the active work part.
+        session.Parts.SetWork(parts[key])
+        materials = parts[key].MaterialManager.PhysicalMaterials
+        material = next((item for item in materials if item.Name == code), None)
+        if material is None:
+            material = materials.LoadFromMatmlLibrary(
+                "C:/Heerbaart/Materials/Heerbaart_Materials.xml", code,
+            )
+        material.AssignObjects([body])
+        print(f"Material {key.upper()}: {code}, density={body.Density:g} kg/m3", flush=True)
+
+
 def update_article(request: dict) -> dict:
     """Update a completed disk clone; return only the four individually saved paths.
 
@@ -368,6 +388,7 @@ def update_article(request: dict) -> dict:
         actual = float(parts["part"].Expressions.FindObject(key).Value)
         if not math.isclose(actual, expected, rel_tol=0, abs_tol=1e-8):
             raise RuntimeError(f"Updated {key} is {actual:g} mm, expected {expected:g} mm")
+    _assign_article_material(session, parts, request["material"])
     session.Parts.SetWork(parts["assy"])
     for key in _SAVE_ORDER:
         _save_part(parts[key])

@@ -3,6 +3,29 @@
 import json
 
 
+def machine_time_seconds(value):
+    hours, minutes, seconds = value.split(":")
+    return int(hours) * 3600 + int(minutes) * 60 + float(seconds)
+
+
+def save_external_nc_reference(part, nc):
+    """Persist channel 1's article NC in Program Manager for manual reopening."""
+    from .variant import _save_part
+
+    manager = part.KinematicConfigurator.CreateNcProgramManagerBuilder()
+    try:
+        source = manager.GetExternalFileSource()
+        previous = source.GetMainProgram("1")
+        if previous is not None:
+            source.DeleteProgram(previous)
+        source.AddMainProgram("1", str(nc))
+        manager.Commit()
+    finally:
+        manager.Destroy()
+    # Save before CSE moves the machine; only save the article setup itself.
+    _save_part(part)
+
+
 def simulate_article(request):
     import NXOpen
     import NXOpen.CAM
@@ -22,6 +45,7 @@ def simulate_article(request):
     session.ApplicationSwitchImmediate("UG_APP_MANUFACTURING")
     if not session.IsCamSessionInitialized():
         session.CreateCamSession()
+    save_external_nc_reference(part, nc)
     session.SetUndoMark(NXOpen.Session.MarkVisibility.Visible, "External NC simulation")
     session.BeginTaskEnvironment()
     panel = None
@@ -99,4 +123,5 @@ def simulate_article(request):
             d["description"] for d in controller_messages if "error" in d["description"].lower()
         ) or "Het einde van het externe NC-programma is niet bereikt."
         raise RuntimeError(f"Externe NC-simulatie niet geslaagd (volledig afgerond={completed}): {reason}")
-    return {"setup": str(paths.part("SETUP")), "simulation_passed": True, "nc_program": str(nc)}
+    return {"setup": str(paths.part("SETUP")), "simulation_passed": True, "nc_program": str(nc),
+            "simulation_time_seconds": machine_time_seconds(result["machine_time"])}

@@ -25,7 +25,7 @@ class JobStart(BaseModel):
   amount: int = Field(gt=0)
   action: Literal["extract", "baseline", "part", "structure", "setup", "ready", "article",
                   "prepare_quotation", "approve_baseline_and_generate", "retry_article"] = "baseline"
-  resume_from: Literal["article_clone", "geometry_update", "setup_refresh", "cam_regeneration", "postprocessing", "simulation"] | None = None
+  resume_from: Literal["article_clone", "geometry_update", "setup_refresh", "cam_regeneration", "postprocessing", "simulation", "measurement"] | None = None
   article_number: Annotated[str, StringConstraints(pattern=r"^[0-9]{8}$")] | None = None
 
 
@@ -43,6 +43,11 @@ class JobCreated(BaseModel):
   job_id: CUID
 
 
+class ArticleWeights(BaseModel):
+  product_kg: float = Field(gt=0, allow_inf_nan=False)
+  stock_kg: float = Field(gt=0, allow_inf_nan=False)
+
+
 class JobStatusUpdate(BaseModel):
   """Posted to the other app on every status transition."""
 
@@ -54,3 +59,5 @@ class JobStatusUpdate(BaseModel):
   error: str | None = None
   outcome: Literal["AWAITING_PROGRAMMING", "ARTICLE_CREATED"] | None = None
   setup_path: str | None = None
+  weights: ArticleWeights | None = None
+  simulation_time_seconds: float | None = Field(default=None, ge=0, allow_inf_nan=False)

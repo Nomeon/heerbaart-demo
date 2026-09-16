@@ -7,7 +7,7 @@ import pipeline
 from api.config import WorkerConfig
 from api.dependencies import Job, JobQueue
 from api.notifier import NXWorkerNotifier
-from api.schema import JobStatus, JobStatusUpdate
+from api.schema import ArticleWeights, JobStatus, JobStatusUpdate
 from api.store import JobStatusStore
 
 logger = logging.getLogger(__name__)
@@ -71,11 +71,14 @@ class JobWorker:
   async def _process(self, job: Job) -> None:
     update = JobStatusUpdate(job_id=job.job_id, status=JobStatus.PENDING)
 
-    async def progress(stage, workflow):
+    async def progress(stage, workflow, weights=None):
       update.status = JobStatus.IN_PROGRESS
+      if update.stage != stage:
+        update.stage_started_at = datetime.now(timezone.utc)
       update.stage = stage
       update.workflow = workflow
-      update.stage_started_at = datetime.now(timezone.utc)
+      if weights is not None:
+        update.weights = ArticleWeights.model_validate(weights)
       await self._report(update)
 
     try:
@@ -86,6 +89,9 @@ class JobWorker:
       update.outcome = result.get("outcome")
       update.setup_path = result.get("setup")
       update.workflow = result.get("workflow", update.workflow)
+      update.simulation_time_seconds = result.get("simulation_time_seconds")
+      if result.get("weights") is not None:
+        update.weights = ArticleWeights.model_validate(result["weights"])
     except Exception as exc:
       logger.exception("NX job %s (%s) failed", job.job_id, job.start.action)
       update.status = JobStatus.FAILED

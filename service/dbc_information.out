@@ -1,0 +1,1820 @@
+***** A TCL Error Has Occurred *****
+Event Handler: C:/Heerbaart/NX2512_Custom/NX2512_Custom\mach\resource\library\tool\ascii\dbc_tool_ascii.tcl
+Event: DBC_init_db
+Error Info: invalid bareword "could"
+in expression "530012 + could not read "C:\Heerbaar...";
+should be "$could" or "{could}" or "could(...)" or ...
+    (parsing expression "530012 + could not rea...")
+    invoked from within
+"expr $size_mm + $size_inch"
+    (procedure "DBC_init_db" line 127)
+    invoked from within
+"DBC_init_db"
+Error Code: TCL PARSE EXPR BAREWORD
+***** A TCL Error Has Occurred *****
+Event Handler: C:/Heerbaart/NX2512_Custom/NX2512_Custom\mach\resource\library\tool\ascii\dbc_tool_ascii.tcl
+Event: DBC_init_db
+Error Info: invalid bareword "could"
+in expression "530012 + could not read "C:\Heerbaar...";
+should be "$could" or "{could}" or "could(...)" or ...
+    (parsing expression "530012 + could not rea...")
+    invoked from within
+"expr $size_mm + $size_inch"
+    (procedure "DBC_init_db" line 127)
+    invoked from within
+"DBC_init_db"
+Error Code: TCL PARSE EXPR BAREWORD
+***** A TCL Error Has Occurred *****
+Event Handler: C:/Heerbaart/NX2512_Custom/NX2512_Custom\mach\resource\library\tool\ascii\dbc_tool_ascii.tcl
+Event: DBC_init_db
+Error Info: invalid bareword "could"
+in expression "530012 + could not read "C:\Heerbaar...";
+should be "$could" or "{could}" or "could(...)" or ...
+    (parsing expression "530012 + could not rea...")
+    invoked from within
+"expr $size_mm + $size_inch"
+    (procedure "DBC_init_db" line 127)
+    invoked from within
+"DBC_init_db"
+Error Code: TCL PARSE EXPR BAREWORD
+***** A TCL Error Has Occurred *****
+Event Handler: C:/Heerbaart/NX2512_Custom/NX2512_Custom\mach\resource\library\tool\ascii\dbc_tool_ascii.tcl
+Event: DBC_init_db
+Error Info: invalid bareword "could"
+in expression "530012 + could not read "C:\Heerbaar...";
+should be "$could" or "{could}" or "could(...)" or ...
+    (parsing expression "530012 + could not rea...")
+    invoked from within
+"expr $size_mm + $size_inch"
+    (procedure "DBC_init_db" line 127)
+    invoked from within
+"DBC_init_db"
+Error Code: TCL PARSE EXPR BAREWORD
+***** A TCL Error Has Occurred *****
+Event Handler: C:/Heerbaart/NX2512_Custom/NX2512_Custom\mach\resource\library\tool\ascii\dbc_tool_ascii.tcl
+Event: DBC_init_db
+Error Info: invalid bareword "could"
+in expression "530012 + could not read "C:\Heerbaar...";
+should be "$could" or "{could}" or "could(...)" or ...
+    (parsing expression "530012 + could not rea...")
+    invoked from within
+"expr $size_mm + $size_inch"
+    (procedure "DBC_init_db" line 127)
+    invoked from within
+"DBC_init_db"
+Error Code: TCL PARSE EXPR BAREWORD
+***** A TCL Error Has Occurred *****
+Event Handler: C:/Heerbaart/NX2512_Custom/NX2512_Custom\mach\resource\library\tool\ascii\dbc_tool_ascii.tcl
+Event: DBC_init_db
+Error Info: invalid bareword "could"
+in expression "530012 + could not read "C:\Heerbaar...";
+should be "$could" or "{could}" or "could(...)" or ...
+    (parsing expression "530012 + could not rea...")
+    invoked from within
+"expr $size_mm + $size_inch"
+    (procedure "DBC_init_db" line 127)
+    invoked from within
+"DBC_init_db"
+Error Code: TCL PARSE EXPR BAREWORD
+***** A TCL Error Has Occurred *****
+Event Handler: C:/Heerbaart/NX2512_Custom/NX2512_Custom\mach\resource\library\tool\ascii\dbc_tool_ascii.tcl
+Event: DBC_init_db
+Error Info: invalid bareword "could"
+in expression "530012 + could not read "C:\Heerbaar...";
+should be "$could" or "{could}" or "could(...)" or ...
+    (parsing expression "530012 + could not rea...")
+    invoked from within
+"expr $size_mm + $size_inch"
+    (procedure "DBC_init_db" line 127)
+    invoked from within
+"DBC_init_db"
+Error Code: TCL PARSE EXPR BAREWORD
+***** A TCL Error Has Occurred *****
+Event Handler: C:/Heerbaart/NX2512_Custom/NX2512_Custom\mach\resource\library\tool\ascii\dbc_tool_ascii.tcl
+Event: DBC_init_db
+Error Info: invalid bareword "could"
+in expression "530012 + could not read "C:\Heerbaar...";
+should be "$could" or "{could}" or "could(...)" or ...
+    (parsing expression "530012 + could not rea...")
+    invoked from within
+"expr $size_mm + $size_inch"
+    (procedure "DBC_init_db" line 127)
+    invoked from within
+"DBC_init_db"
+Error Code: TCL PARSE EXPR BAREWORD
+***** A TCL Error Has Occurred *****
+Event Handler: C:/Heerbaart/NX2512_Custom/NX2512_Custom\mach\resource\library\tool\ascii\dbc_tool_ascii.tcl
+Event: DBC_init_db
+Error Info: invalid bareword "could"
+in expression "530012 + could not read "C:\Heerbaar...";
+should be "$could" or "{could}" or "could(...)" or ...
+    (parsing expression "530012 + could not rea...")
+    invoked from within
+"expr $size_mm + $size_inch"
+    (procedure "DBC_init_db" line 127)
+    invoked from within
+"DBC_init_db"
+Error Code: TCL PARSE EXPR BAREWORD
+***** A TCL Error Has Occurred *****
+Event Handler: C:/Heerbaart/NX2512_Custom/NX2512_Custom\mach\resource\library\tool\ascii\dbc_tool_ascii.tcl
+Event: DBC_init_db
+Error Info: invalid bareword "could"
+in expression "530012 + could not read "C:\Heerbaar...";
+should be "$could" or "{could}" or "could(...)" or ...
+    (parsing expression "530012 + could not rea...")
+    invoked from within
+"expr $size_mm + $size_inch"
+    (procedure "DBC_init_db" line 127)
+    invoked from within
+"DBC_init_db"
+Error Code: TCL PARSE EXPR BAREWORD
+***** A TCL Error Has Occurred *****
+Event Handler: C:/Heerbaart/NX2512_Custom/NX2512_Custom\mach\resource\library\tool\ascii\dbc_tool_ascii.tcl
+Event: DBC_init_db
+Error Info: invalid bareword "could"
+in expression "530012 + could not read "C:\Heerbaar...";
+should be "$could" or "{could}" or "could(...)" or ...
+    (parsing expression "530012 + could not rea...")
+    invoked from within
+"expr $size_mm + $size_inch"
+    (procedure "DBC_init_db" line 127)
+    invoked from within
+"DBC_init_db"
+Error Code: TCL PARSE EXPR BAREWORD
+***** A TCL Error Has Occurred *****
+Event Handler: C:/Heerbaart/NX2512_Custom/NX2512_Custom\mach\resource\library\tool\ascii\dbc_tool_ascii.tcl
+Event: DBC_init_db
+Error Info: invalid bareword "could"
+in expression "530012 + could not read "C:\Heerbaar...";
+should be "$could" or "{could}" or "could(...)" or ...
+    (parsing expression "530012 + could not rea...")
+    invoked from within
+"expr $size_mm + $size_inch"
+    (procedure "DBC_init_db" line 127)
+    invoked from within
+"DBC_init_db"
+Error Code: TCL PARSE EXPR BAREWORD
+***** A TCL Error Has Occurred *****
+Event Handler: C:/Heerbaart/NX2512_Custom/NX2512_Custom\mach\resource\library\tool\ascii\dbc_tool_ascii.tcl
+Event: DBC_init_db
+Error Info: invalid bareword "could"
+in expression "530012 + could not read "C:\Heerbaar...";
+should be "$could" or "{could}" or "could(...)" or ...
+    (parsing expression "530012 + could not rea...")
+    invoked from within
+"expr $size_mm + $size_inch"
+    (procedure "DBC_init_db" line 127)
+    invoked from within
+"DBC_init_db"
+Error Code: TCL PARSE EXPR BAREWORD
+***** A TCL Error Has Occurred *****
+Event Handler: C:/Heerbaart/NX2512_Custom/NX2512_Custom\mach\resource\library\tool\ascii\dbc_tool_ascii.tcl
+Event: DBC_init_db
+Error Info: invalid bareword "could"
+in expression "530012 + could not read "C:\Heerbaar...";
+should be "$could" or "{could}" or "could(...)" or ...
+    (parsing expression "530012 + could not rea...")
+    invoked from within
+"expr $size_mm + $size_inch"
+    (procedure "DBC_init_db" line 127)
+    invoked from within
+"DBC_init_db"
+Error Code: TCL PARSE EXPR BAREWORD
+***** A TCL Error Has Occurred *****
+Event Handler: C:/Heerbaart/NX2512_Custom/NX2512_Custom\mach\resource\library\tool\ascii\dbc_tool_ascii.tcl
+Event: DBC_init_db
+Error Info: invalid bareword "could"
+in expression "530012 + could not read "C:\Heerbaar...";
+should be "$could" or "{could}" or "could(...)" or ...
+    (parsing expression "530012 + could not rea...")
+    invoked from within
+"expr $size_mm + $size_inch"
+    (procedure "DBC_init_db" line 127)
+    invoked from within
+"DBC_init_db"
+Error Code: TCL PARSE EXPR BAREWORD
+***** A TCL Error Has Occurred *****
+Event Handler: C:/Heerbaart/NX2512_Custom/NX2512_Custom\mach\resource\library\tool\ascii\dbc_tool_ascii.tcl
+Event: DBC_init_db
+Error Info: invalid bareword "could"
+in expression "530012 + could not read "C:\Heerbaar...";
+should be "$could" or "{could}" or "could(...)" or ...
+    (parsing expression "530012 + could not rea...")
+    invoked from within
+"expr $size_mm + $size_inch"
+    (procedure "DBC_init_db" line 127)
+    invoked from within
+"DBC_init_db"
+Error Code: TCL PARSE EXPR BAREWORD
+***** A TCL Error Has Occurred *****
+Event Handler: C:/Heerbaart/NX2512_Custom/NX2512_Custom\mach\resource\library\tool\ascii\dbc_tool_ascii.tcl
+Event: DBC_init_db
+Error Info: invalid bareword "could"
+in expression "530012 + could not read "C:\Heerbaar...";
+should be "$could" or "{could}" or "could(...)" or ...
+    (parsing expression "530012 + could not rea...")
+    invoked from within
+"expr $size_mm + $size_inch"
+    (procedure "DBC_init_db" line 127)
+    invoked from within
+"DBC_init_db"
+Error Code: TCL PARSE EXPR BAREWORD
+***** A TCL Error Has Occurred *****
+Event Handler: C:/Heerbaart/NX2512_Custom/NX2512_Custom\mach\resource\library\tool\ascii\dbc_tool_ascii.tcl
+Event: DBC_init_db
+Error Info: invalid bareword "could"
+in expression "530012 + could not read "C:\Heerbaar...";
+should be "$could" or "{could}" or "could(...)" or ...
+    (parsing expression "530012 + could not rea...")
+    invoked from within
+"expr $size_mm + $size_inch"
+    (procedure "DBC_init_db" line 127)
+    invoked from within
+"DBC_init_db"
+Error Code: TCL PARSE EXPR BAREWORD
+***** A TCL Error Has Occurred *****
+Event Handler: C:/Heerbaart/NX2512_Custom/NX2512_Custom\mach\resource\library\tool\ascii\dbc_tool_ascii.tcl
+Event: DBC_init_db
+Error Info: invalid bareword "could"
+in expression "530012 + could not read "C:\Heerbaar...";
+should be "$could" or "{could}" or "could(...)" or ...
+    (parsing expression "530012 + could not rea...")
+    invoked from within
+"expr $size_mm + $size_inch"
+    (procedure "DBC_init_db" line 127)
+    invoked from within
+"DBC_init_db"
+Error Code: TCL PARSE EXPR BAREWORD
+***** A TCL Error Has Occurred *****
+Event Handler: C:/Heerbaart/NX2512_Custom/NX2512_Custom\mach\resource\library\tool\ascii\dbc_tool_ascii.tcl
+Event: DBC_init_db
+Error Info: invalid bareword "could"
+in expression "530012 + could not read "C:\Heerbaar...";
+should be "$could" or "{could}" or "could(...)" or ...
+    (parsing expression "530012 + could not rea...")
+    invoked from within
+"expr $size_mm + $size_inch"
+    (procedure "DBC_init_db" line 127)
+    invoked from within
+"DBC_init_db"
+Error Code: TCL PARSE EXPR BAREWORD
+***** A TCL Error Has Occurred *****
+Event Handler: C:/Heerbaart/NX2512_Custom/NX2512_Custom\mach\resource\library\tool\ascii\dbc_tool_ascii.tcl
+Event: DBC_init_db
+Error Info: invalid bareword "could"
+in expression "530012 + could not read "C:\Heerbaar...";
+should be "$could" or "{could}" or "could(...)" or ...
+    (parsing expression "530012 + could not rea...")
+    invoked from within
+"expr $size_mm + $size_inch"
+    (procedure "DBC_init_db" line 127)
+    invoked from within
+"DBC_init_db"
+Error Code: TCL PARSE EXPR BAREWORD
+***** A TCL Error Has Occurred *****
+Event Handler: C:/Heerbaart/NX2512_Custom/NX2512_Custom\mach\resource\library\tool\ascii\dbc_tool_ascii.tcl
+Event: DBC_init_db
+Error Info: invalid bareword "could"
+in expression "530012 + could not read "C:\Heerbaar...";
+should be "$could" or "{could}" or "could(...)" or ...
+    (parsing expression "530012 + could not rea...")
+    invoked from within
+"expr $size_mm + $size_inch"
+    (procedure "DBC_init_db" line 127)
+    invoked from within
+"DBC_init_db"
+Error Code: TCL PARSE EXPR BAREWORD
+***** A TCL Error Has Occurred *****
+Event Handler: C:/Heerbaart/NX2512_Custom/NX2512_Custom\mach\resource\library\tool\ascii\dbc_tool_ascii.tcl
+Event: DBC_init_db
+Error Info: invalid bareword "could"
+in expression "530012 + could not read "C:\Heerbaar...";
+should be "$could" or "{could}" or "could(...)" or ...
+    (parsing expression "530012 + could not rea...")
+    invoked from within
+"expr $size_mm + $size_inch"
+    (procedure "DBC_init_db" line 127)
+    invoked from within
+"DBC_init_db"
+Error Code: TCL PARSE EXPR BAREWORD
+***** A TCL Error Has Occurred *****
+Event Handler: C:/Heerbaart/NX2512_Custom/NX2512_Custom\mach\resource\library\tool\ascii\dbc_tool_ascii.tcl
+Event: DBC_init_db
+Error Info: invalid bareword "could"
+in expression "530012 + could not read "C:\Heerbaar...";
+should be "$could" or "{could}" or "could(...)" or ...
+    (parsing expression "530012 + could not rea...")
+    invoked from within
+"expr $size_mm + $size_inch"
+    (procedure "DBC_init_db" line 127)
+    invoked from within
+"DBC_init_db"
+Error Code: TCL PARSE EXPR BAREWORD
+***** A TCL Error Has Occurred *****
+Event Handler: C:/Heerbaart/NX2512_Custom/NX2512_Custom\mach\resource\library\tool\ascii\dbc_tool_ascii.tcl
+Event: DBC_init_db
+Error Info: invalid bareword "could"
+in expression "530012 + could not read "C:\Heerbaar...";
+should be "$could" or "{could}" or "could(...)" or ...
+    (parsing expression "530012 + could not rea...")
+    invoked from within
+"expr $size_mm + $size_inch"
+    (procedure "DBC_init_db" line 127)
+    invoked from within
+"DBC_init_db"
+Error Code: TCL PARSE EXPR BAREWORD
+***** A TCL Error Has Occurred *****
+Event Handler: C:/Heerbaart/NX2512_Custom/NX2512_Custom\mach\resource\library\tool\ascii\dbc_tool_ascii.tcl
+Event: DBC_init_db
+Error Info: invalid bareword "could"
+in expression "530012 + could not read "C:\Heerbaar...";
+should be "$could" or "{could}" or "could(...)" or ...
+    (parsing expression "530012 + could not rea...")
+    invoked from within
+"expr $size_mm + $size_inch"
+    (procedure "DBC_init_db" line 127)
+    invoked from within
+"DBC_init_db"
+Error Code: TCL PARSE EXPR BAREWORD
+***** A TCL Error Has Occurred *****
+Event Handler: C:/Heerbaart/NX2512_Custom/NX2512_Custom\mach\resource\library\tool\ascii\dbc_tool_ascii.tcl
+Event: DBC_init_db
+Error Info: invalid bareword "could"
+in expression "530012 + could not read "C:\Heerbaar...";
+should be "$could" or "{could}" or "could(...)" or ...
+    (parsing expression "530012 + could not rea...")
+    invoked from within
+"expr $size_mm + $size_inch"
+    (procedure "DBC_init_db" line 127)
+    invoked from within
+"DBC_init_db"
+Error Code: TCL PARSE EXPR BAREWORD
+***** A TCL Error Has Occurred *****
+Event Handler: C:/Heerbaart/NX2512_Custom/NX2512_Custom\mach\resource\library\tool\ascii\dbc_tool_ascii.tcl
+Event: DBC_init_db
+Error Info: invalid bareword "could"
+in expression "530012 + could not read "C:\Heerbaar...";
+should be "$could" or "{could}" or "could(...)" or ...
+    (parsing expression "530012 + could not rea...")
+    invoked from within
+"expr $size_mm + $size_inch"
+    (procedure "DBC_init_db" line 127)
+    invoked from within
+"DBC_init_db"
+Error Code: TCL PARSE EXPR BAREWORD
+***** A TCL Error Has Occurred *****
+Event Handler: C:/Heerbaart/NX2512_Custom/NX2512_Custom\mach\resource\library\tool\ascii\dbc_tool_ascii.tcl
+Event: DBC_init_db
+Error Info: invalid bareword "could"
+in expression "530012 + could not read "C:\Heerbaar...";
+should be "$could" or "{could}" or "could(...)" or ...
+    (parsing expression "530012 + could not rea...")
+    invoked from within
+"expr $size_mm + $size_inch"
+    (procedure "DBC_init_db" line 127)
+    invoked from within
+"DBC_init_db"
+Error Code: TCL PARSE EXPR BAREWORD
+***** A TCL Error Has Occurred *****
+Event Handler: C:/Heerbaart/NX2512_Custom/NX2512_Custom\mach\resource\library\tool\ascii\dbc_tool_ascii.tcl
+Event: DBC_init_db
+Error Info: invalid bareword "could"
+in expression "530012 + could not read "C:\Heerbaar...";
+should be "$could" or "{could}" or "could(...)" or ...
+    (parsing expression "530012 + could not rea...")
+    invoked from within
+"expr $size_mm + $size_inch"
+    (procedure "DBC_init_db" line 127)
+    invoked from within
+"DBC_init_db"
+Error Code: TCL PARSE EXPR BAREWORD
+***** A TCL Error Has Occurred *****
+Event Handler: C:/Heerbaart/NX2512_Custom/NX2512_Custom\mach\resource\library\tool\ascii\dbc_tool_ascii.tcl
+Event: DBC_init_db
+Error Info: invalid bareword "could"
+in expression "530012 + could not read "C:\Heerbaar...";
+should be "$could" or "{could}" or "could(...)" or ...
+    (parsing expression "530012 + could not rea...")
+    invoked from within
+"expr $size_mm + $size_inch"
+    (procedure "DBC_init_db" line 127)
+    invoked from within
+"DBC_init_db"
+Error Code: TCL PARSE EXPR BAREWORD
+***** A TCL Error Has Occurred *****
+Event Handler: C:/Heerbaart/NX2512_Custom/NX2512_Custom\mach\resource\library\tool\ascii\dbc_tool_ascii.tcl
+Event: DBC_init_db
+Error Info: invalid bareword "could"
+in expression "530012 + could not read "C:\Heerbaar...";
+should be "$could" or "{could}" or "could(...)" or ...
+    (parsing expression "530012 + could not rea...")
+    invoked from within
+"expr $size_mm + $size_inch"
+    (procedure "DBC_init_db" line 127)
+    invoked from within
+"DBC_init_db"
+Error Code: TCL PARSE EXPR BAREWORD
+***** A TCL Error Has Occurred *****
+Event Handler: C:/Heerbaart/NX2512_Custom/NX2512_Custom\mach\resource\library\tool\ascii\dbc_tool_ascii.tcl
+Event: DBC_init_db
+Error Info: invalid bareword "could"
+in expression "530012 + could not read "C:\Heerbaar...";
+should be "$could" or "{could}" or "could(...)" or ...
+    (parsing expression "530012 + could not rea...")
+    invoked from within
+"expr $size_mm + $size_inch"
+    (procedure "DBC_init_db" line 127)
+    invoked from within
+"DBC_init_db"
+Error Code: TCL PARSE EXPR BAREWORD
+***** A TCL Error Has Occurred *****
+Event Handler: C:/Heerbaart/NX2512_Custom/NX2512_Custom\mach\resource\library\tool\ascii\dbc_tool_ascii.tcl
+Event: DBC_init_db
+Error Info: invalid bareword "could"
+in expression "530012 + could not read "C:\Heerbaar...";
+should be "$could" or "{could}" or "could(...)" or ...
+    (parsing expression "530012 + could not rea...")
+    invoked from within
+"expr $size_mm + $size_inch"
+    (procedure "DBC_init_db" line 127)
+    invoked from within
+"DBC_init_db"
+Error Code: TCL PARSE EXPR BAREWORD
+***** A TCL Error Has Occurred *****
+Event Handler: C:/Heerbaart/NX2512_Custom/NX2512_Custom\mach\resource\library\tool\ascii\dbc_tool_ascii.tcl
+Event: DBC_init_db
+Error Info: invalid bareword "could"
+in expression "530012 + could not read "C:\Heerbaar...";
+should be "$could" or "{could}" or "could(...)" or ...
+    (parsing expression "530012 + could not rea...")
+    invoked from within
+"expr $size_mm + $size_inch"
+    (procedure "DBC_init_db" line 127)
+    invoked from within
+"DBC_init_db"
+Error Code: TCL PARSE EXPR BAREWORD
+***** A TCL Error Has Occurred *****
+Event Handler: C:/Heerbaart/NX2512_Custom/NX2512_Custom\mach\resource\library\tool\ascii\dbc_tool_ascii.tcl
+Event: DBC_init_db
+Error Info: invalid bareword "could"
+in expression "530012 + could not read "C:\Heerbaar...";
+should be "$could" or "{could}" or "could(...)" or ...
+    (parsing expression "530012 + could not rea...")
+    invoked from within
+"expr $size_mm + $size_inch"
+    (procedure "DBC_init_db" line 127)
+    invoked from within
+"DBC_init_db"
+Error Code: TCL PARSE EXPR BAREWORD
+***** A TCL Error Has Occurred *****
+Event Handler: C:/Heerbaart/NX2512_Custom/NX2512_Custom\mach\resource\library\tool\ascii\dbc_tool_ascii.tcl
+Event: DBC_init_db
+Error Info: invalid bareword "could"
+in expression "530012 + could not read "C:\Heerbaar...";
+should be "$could" or "{could}" or "could(...)" or ...
+    (parsing expression "530012 + could not rea...")
+    invoked from within
+"expr $size_mm + $size_inch"
+    (procedure "DBC_init_db" line 127)
+    invoked from within
+"DBC_init_db"
+Error Code: TCL PARSE EXPR BAREWORD
+***** A TCL Error Has Occurred *****
+Event Handler: C:/Heerbaart/NX2512_Custom/NX2512_Custom\mach\resource\library\tool\ascii\dbc_tool_ascii.tcl
+Event: DBC_init_db
+Error Info: invalid bareword "could"
+in expression "530012 + could not read "C:\Heerbaar...";
+should be "$could" or "{could}" or "could(...)" or ...
+    (parsing expression "530012 + could not rea...")
+    invoked from within
+"expr $size_mm + $size_inch"
+    (procedure "DBC_init_db" line 127)
+    invoked from within
+"DBC_init_db"
+Error Code: TCL PARSE EXPR BAREWORD
+***** A TCL Error Has Occurred *****
+Event Handler: C:/Heerbaart/NX2512_Custom/NX2512_Custom\mach\resource\library\tool\ascii\dbc_tool_ascii.tcl
+Event: DBC_init_db
+Error Info: invalid bareword "could"
+in expression "530012 + could not read "C:\Heerbaar...";
+should be "$could" or "{could}" or "could(...)" or ...
+    (parsing expression "530012 + could not rea...")
+    invoked from within
+"expr $size_mm + $size_inch"
+    (procedure "DBC_init_db" line 127)
+    invoked from within
+"DBC_init_db"
+Error Code: TCL PARSE EXPR BAREWORD
+***** A TCL Error Has Occurred *****
+Event Handler: C:/Heerbaart/NX2512_Custom/NX2512_Custom\mach\resource\library\tool\ascii\dbc_tool_ascii.tcl
+Event: DBC_init_db
+Error Info: invalid bareword "could"
+in expression "530012 + could not read "C:\Heerbaar...";
+should be "$could" or "{could}" or "could(...)" or ...
+    (parsing expression "530012 + could not rea...")
+    invoked from within
+"expr $size_mm + $size_inch"
+    (procedure "DBC_init_db" line 127)
+    invoked from within
+"DBC_init_db"
+Error Code: TCL PARSE EXPR BAREWORD
+***** A TCL Error Has Occurred *****
+Event Handler: C:/Heerbaart/NX2512_Custom/NX2512_Custom\mach\resource\library\tool\ascii\dbc_tool_ascii.tcl
+Event: DBC_init_db
+Error Info: invalid bareword "could"
+in expression "530012 + could not read "C:\Heerbaar...";
+should be "$could" or "{could}" or "could(...)" or ...
+    (parsing expression "530012 + could not rea...")
+    invoked from within
+"expr $size_mm + $size_inch"
+    (procedure "DBC_init_db" line 127)
+    invoked from within
+"DBC_init_db"
+Error Code: TCL PARSE EXPR BAREWORD
+***** A TCL Error Has Occurred *****
+Event Handler: C:/Heerbaart/NX2512_Custom/NX2512_Custom\mach\resource\library\tool\ascii\dbc_tool_ascii.tcl
+Event: DBC_init_db
+Error Info: invalid bareword "could"
+in expression "530012 + could not read "C:\Heerbaar...";
+should be "$could" or "{could}" or "could(...)" or ...
+    (parsing expression "530012 + could not rea...")
+    invoked from within
+"expr $size_mm + $size_inch"
+    (procedure "DBC_init_db" line 127)
+    invoked from within
+"DBC_init_db"
+Error Code: TCL PARSE EXPR BAREWORD
+***** A TCL Error Has Occurred *****
+Event Handler: C:/Heerbaart/NX2512_Custom/NX2512_Custom\mach\resource\library\tool\ascii\dbc_tool_ascii.tcl
+Event: DBC_init_db
+Error Info: invalid bareword "could"
+in expression "530012 + could not read "C:\Heerbaar...";
+should be "$could" or "{could}" or "could(...)" or ...
+    (parsing expression "530012 + could not rea...")
+    invoked from within
+"expr $size_mm + $size_inch"
+    (procedure "DBC_init_db" line 127)
+    invoked from within
+"DBC_init_db"
+Error Code: TCL PARSE EXPR BAREWORD
+***** A TCL Error Has Occurred *****
+Event Handler: C:/Heerbaart/NX2512_Custom/NX2512_Custom\mach\resource\library\tool\ascii\dbc_tool_ascii.tcl
+Event: DBC_init_db
+Error Info: invalid bareword "could"
+in expression "530012 + could not read "C:\Heerbaar...";
+should be "$could" or "{could}" or "could(...)" or ...
+    (parsing expression "530012 + could not rea...")
+    invoked from within
+"expr $size_mm + $size_inch"
+    (procedure "DBC_init_db" line 127)
+    invoked from within
+"DBC_init_db"
+Error Code: TCL PARSE EXPR BAREWORD
+***** A TCL Error Has Occurred *****
+Event Handler: C:/Heerbaart/NX2512_Custom/NX2512_Custom\mach\resource\library\tool\ascii\dbc_tool_ascii.tcl
+Event: DBC_init_db
+Error Info: invalid bareword "could"
+in expression "530012 + could not read "C:\Heerbaar...";
+should be "$could" or "{could}" or "could(...)" or ...
+    (parsing expression "530012 + could not rea...")
+    invoked from within
+"expr $size_mm + $size_inch"
+    (procedure "DBC_init_db" line 127)
+    invoked from within
+"DBC_init_db"
+Error Code: TCL PARSE EXPR BAREWORD
+***** A TCL Error Has Occurred *****
+Event Handler: C:/Heerbaart/NX2512_Custom/NX2512_Custom\mach\resource\library\tool\ascii\dbc_tool_ascii.tcl
+Event: DBC_init_db
+Error Info: invalid bareword "could"
+in expression "530012 + could not read "C:\Heerbaar...";
+should be "$could" or "{could}" or "could(...)" or ...
+    (parsing expression "530012 + could not rea...")
+    invoked from within
+"expr $size_mm + $size_inch"
+    (procedure "DBC_init_db" line 127)
+    invoked from within
+"DBC_init_db"
+Error Code: TCL PARSE EXPR BAREWORD
+***** A TCL Error Has Occurred *****
+Event Handler: C:/Heerbaart/NX2512_Custom/NX2512_Custom\mach\resource\library\tool\ascii\dbc_tool_ascii.tcl
+Event: DBC_init_db
+Error Info: invalid bareword "could"
+in expression "530012 + could not read "C:\Heerbaar...";
+should be "$could" or "{could}" or "could(...)" or ...
+    (parsing expression "530012 + could not rea...")
+    invoked from within
+"expr $size_mm + $size_inch"
+    (procedure "DBC_init_db" line 127)
+    invoked from within
+"DBC_init_db"
+Error Code: TCL PARSE EXPR BAREWORD
+***** A TCL Error Has Occurred *****
+Event Handler: C:/Heerbaart/NX2512_Custom/NX2512_Custom\mach\resource\library\tool\ascii\dbc_tool_ascii.tcl
+Event: DBC_init_db
+Error Info: invalid bareword "could"
+in expression "530012 + could not read "C:\Heerbaar...";
+should be "$could" or "{could}" or "could(...)" or ...
+    (parsing expression "530012 + could not rea...")
+    invoked from within
+"expr $size_mm + $size_inch"
+    (procedure "DBC_init_db" line 127)
+    invoked from within
+"DBC_init_db"
+Error Code: TCL PARSE EXPR BAREWORD
+***** A TCL Error Has Occurred *****
+Event Handler: C:/Heerbaart/NX2512_Custom/NX2512_Custom\mach\resource\library\tool\ascii\dbc_tool_ascii.tcl
+Event: DBC_init_db
+Error Info: invalid bareword "could"
+in expression "530012 + could not read "C:\Heerbaar...";
+should be "$could" or "{could}" or "could(...)" or ...
+    (parsing expression "530012 + could not rea...")
+    invoked from within
+"expr $size_mm + $size_inch"
+    (procedure "DBC_init_db" line 127)
+    invoked from within
+"DBC_init_db"
+Error Code: TCL PARSE EXPR BAREWORD
+***** A TCL Error Has Occurred *****
+Event Handler: C:/Heerbaart/NX2512_Custom/NX2512_Custom\mach\resource\library\tool\ascii\dbc_tool_ascii.tcl
+Event: DBC_init_db
+Error Info: invalid bareword "could"
+in expression "530012 + could not read "C:\Heerbaar...";
+should be "$could" or "{could}" or "could(...)" or ...
+    (parsing expression "530012 + could not rea...")
+    invoked from within
+"expr $size_mm + $size_inch"
+    (procedure "DBC_init_db" line 127)
+    invoked from within
+"DBC_init_db"
+Error Code: TCL PARSE EXPR BAREWORD
+***** A TCL Error Has Occurred *****
+Event Handler: C:/Heerbaart/NX2512_Custom/NX2512_Custom\mach\resource\library\tool\ascii\dbc_tool_ascii.tcl
+Event: DBC_init_db
+Error Info: invalid bareword "could"
+in expression "530012 + could not read "C:\Heerbaar...";
+should be "$could" or "{could}" or "could(...)" or ...
+    (parsing expression "530012 + could not rea...")
+    invoked from within
+"expr $size_mm + $size_inch"
+    (procedure "DBC_init_db" line 127)
+    invoked from within
+"DBC_init_db"
+Error Code: TCL PARSE EXPR BAREWORD
+***** A TCL Error Has Occurred *****
+Event Handler: C:/Heerbaart/NX2512_Custom/NX2512_Custom\mach\resource\library\tool\ascii\dbc_tool_ascii.tcl
+Event: DBC_init_db
+Error Info: invalid bareword "could"
+in expression "530012 + could not read "C:\Heerbaar...";
+should be "$could" or "{could}" or "could(...)" or ...
+    (parsing expression "530012 + could not rea...")
+    invoked from within
+"expr $size_mm + $size_inch"
+    (procedure "DBC_init_db" line 127)
+    invoked from within
+"DBC_init_db"
+Error Code: TCL PARSE EXPR BAREWORD
+***** A TCL Error Has Occurred *****
+Event Handler: C:/Heerbaart/NX2512_Custom/NX2512_Custom\mach\resource\library\tool\ascii\dbc_tool_ascii.tcl
+Event: DBC_init_db
+Error Info: invalid bareword "could"
+in expression "530012 + could not read "C:\Heerbaar...";
+should be "$could" or "{could}" or "could(...)" or ...
+    (parsing expression "530012 + could not rea...")
+    invoked from within
+"expr $size_mm + $size_inch"
+    (procedure "DBC_init_db" line 127)
+    invoked from within
+"DBC_init_db"
+Error Code: TCL PARSE EXPR BAREWORD
+***** A TCL Error Has Occurred *****
+Event Handler: C:/Heerbaart/NX2512_Custom/NX2512_Custom\mach\resource\library\tool\ascii\dbc_tool_ascii.tcl
+Event: DBC_init_db
+Error Info: invalid bareword "could"
+in expression "530012 + could not read "C:\Heerbaar...";
+should be "$could" or "{could}" or "could(...)" or ...
+    (parsing expression "530012 + could not rea...")
+    invoked from within
+"expr $size_mm + $size_inch"
+    (procedure "DBC_init_db" line 127)
+    invoked from within
+"DBC_init_db"
+Error Code: TCL PARSE EXPR BAREWORD
+***** A TCL Error Has Occurred *****
+Event Handler: C:/Heerbaart/NX2512_Custom/NX2512_Custom\mach\resource\library\tool\ascii\dbc_tool_ascii.tcl
+Event: DBC_init_db
+Error Info: invalid bareword "could"
+in expression "530012 + could not read "C:\Heerbaar...";
+should be "$could" or "{could}" or "could(...)" or ...
+    (parsing expression "530012 + could not rea...")
+    invoked from within
+"expr $size_mm + $size_inch"
+    (procedure "DBC_init_db" line 127)
+    invoked from within
+"DBC_init_db"
+Error Code: TCL PARSE EXPR BAREWORD
+***** A TCL Error Has Occurred *****
+Event Handler: C:/Heerbaart/NX2512_Custom/NX2512_Custom\mach\resource\library\tool\ascii\dbc_tool_ascii.tcl
+Event: DBC_init_db
+Error Info: invalid bareword "could"
+in expression "530012 + could not read "C:\Heerbaar...";
+should be "$could" or "{could}" or "could(...)" or ...
+    (parsing expression "530012 + could not rea...")
+    invoked from within
+"expr $size_mm + $size_inch"
+    (procedure "DBC_init_db" line 127)
+    invoked from within
+"DBC_init_db"
+Error Code: TCL PARSE EXPR BAREWORD
+***** A TCL Error Has Occurred *****
+Event Handler: C:/Heerbaart/NX2512_Custom/NX2512_Custom\mach\resource\library\tool\ascii\dbc_tool_ascii.tcl
+Event: DBC_init_db
+Error Info: invalid bareword "could"
+in expression "530012 + could not read "C:\Heerbaar...";
+should be "$could" or "{could}" or "could(...)" or ...
+    (parsing expression "530012 + could not rea...")
+    invoked from within
+"expr $size_mm + $size_inch"
+    (procedure "DBC_init_db" line 127)
+    invoked from within
+"DBC_init_db"
+Error Code: TCL PARSE EXPR BAREWORD
+***** A TCL Error Has Occurred *****
+Event Handler: C:/Heerbaart/NX2512_Custom/NX2512_Custom\mach\resource\library\tool\ascii\dbc_tool_ascii.tcl
+Event: DBC_init_db
+Error Info: invalid bareword "could"
+in expression "530012 + could not read "C:\Heerbaar...";
+should be "$could" or "{could}" or "could(...)" or ...
+    (parsing expression "530012 + could not rea...")
+    invoked from within
+"expr $size_mm + $size_inch"
+    (procedure "DBC_init_db" line 127)
+    invoked from within
+"DBC_init_db"
+Error Code: TCL PARSE EXPR BAREWORD
+***** A TCL Error Has Occurred *****
+Event Handler: C:/Heerbaart/NX2512_Custom/NX2512_Custom\mach\resource\library\tool\ascii\dbc_tool_ascii.tcl
+Event: DBC_init_db
+Error Info: invalid bareword "could"
+in expression "530012 + could not read "C:\Heerbaar...";
+should be "$could" or "{could}" or "could(...)" or ...
+    (parsing expression "530012 + could not rea...")
+    invoked from within
+"expr $size_mm + $size_inch"
+    (procedure "DBC_init_db" line 127)
+    invoked from within
+"DBC_init_db"
+Error Code: TCL PARSE EXPR BAREWORD
+***** A TCL Error Has Occurred *****
+Event Handler: C:/Heerbaart/NX2512_Custom/NX2512_Custom\mach\resource\library\tool\ascii\dbc_tool_ascii.tcl
+Event: DBC_init_db
+Error Info: invalid bareword "could"
+in expression "530012 + could not read "C:\Heerbaar...";
+should be "$could" or "{could}" or "could(...)" or ...
+    (parsing expression "530012 + could not rea...")
+    invoked from within
+"expr $size_mm + $size_inch"
+    (procedure "DBC_init_db" line 127)
+    invoked from within
+"DBC_init_db"
+Error Code: TCL PARSE EXPR BAREWORD
+***** A TCL Error Has Occurred *****
+Event Handler: C:/Heerbaart/NX2512_Custom/NX2512_Custom\mach\resource\library\tool\ascii\dbc_tool_ascii.tcl
+Event: DBC_init_db
+Error Info: invalid bareword "could"
+in expression "530012 + could not read "C:\Heerbaar...";
+should be "$could" or "{could}" or "could(...)" or ...
+    (parsing expression "530012 + could not rea...")
+    invoked from within
+"expr $size_mm + $size_inch"
+    (procedure "DBC_init_db" line 127)
+    invoked from within
+"DBC_init_db"
+Error Code: TCL PARSE EXPR BAREWORD
+***** A TCL Error Has Occurred *****
+Event Handler: C:/Heerbaart/NX2512_Custom/NX2512_Custom\mach\resource\library\tool\ascii\dbc_tool_ascii.tcl
+Event: DBC_init_db
+Error Info: invalid bareword "could"
+in expression "530012 + could not read "C:\Heerbaar...";
+should be "$could" or "{could}" or "could(...)" or ...
+    (parsing expression "530012 + could not rea...")
+    invoked from within
+"expr $size_mm + $size_inch"
+    (procedure "DBC_init_db" line 127)
+    invoked from within
+"DBC_init_db"
+Error Code: TCL PARSE EXPR BAREWORD
+***** A TCL Error Has Occurred *****
+Event Handler: C:/Heerbaart/NX2512_Custom/NX2512_Custom\mach\resource\library\tool\ascii\dbc_tool_ascii.tcl
+Event: DBC_init_db
+Error Info: invalid bareword "could"
+in expression "530012 + could not read "C:\Heerbaar...";
+should be "$could" or "{could}" or "could(...)" or ...
+    (parsing expression "530012 + could not rea...")
+    invoked from within
+"expr $size_mm + $size_inch"
+    (procedure "DBC_init_db" line 127)
+    invoked from within
+"DBC_init_db"
+Error Code: TCL PARSE EXPR BAREWORD
+***** A TCL Error Has Occurred *****
+Event Handler: C:/Heerbaart/NX2512_Custom/NX2512_Custom\mach\resource\library\tool\ascii\dbc_tool_ascii.tcl
+Event: DBC_init_db
+Error Info: invalid bareword "could"
+in expression "530012 + could not read "C:\Heerbaar...";
+should be "$could" or "{could}" or "could(...)" or ...
+    (parsing expression "530012 + could not rea...")
+    invoked from within
+"expr $size_mm + $size_inch"
+    (procedure "DBC_init_db" line 127)
+    invoked from within
+"DBC_init_db"
+Error Code: TCL PARSE EXPR BAREWORD
+***** A TCL Error Has Occurred *****
+Event Handler: C:/Heerbaart/NX2512_Custom/NX2512_Custom\mach\resource\library\tool\ascii\dbc_tool_ascii.tcl
+Event: DBC_init_db
+Error Info: invalid bareword "could"
+in expression "530012 + could not read "C:\Heerbaar...";
+should be "$could" or "{could}" or "could(...)" or ...
+    (parsing expression "530012 + could not rea...")
+    invoked from within
+"expr $size_mm + $size_inch"
+    (procedure "DBC_init_db" line 127)
+    invoked from within
+"DBC_init_db"
+Error Code: TCL PARSE EXPR BAREWORD
+***** A TCL Error Has Occurred *****
+Event Handler: C:/Heerbaart/NX2512_Custom/NX2512_Custom\mach\resource\library\tool\ascii\dbc_tool_ascii.tcl
+Event: DBC_init_db
+Error Info: invalid bareword "could"
+in expression "530012 + could not read "C:\Heerbaar...";
+should be "$could" or "{could}" or "could(...)" or ...
+    (parsing expression "530012 + could not rea...")
+    invoked from within
+"expr $size_mm + $size_inch"
+    (procedure "DBC_init_db" line 127)
+    invoked from within
+"DBC_init_db"
+Error Code: TCL PARSE EXPR BAREWORD
+***** A TCL Error Has Occurred *****
+Event Handler: C:/Heerbaart/NX2512_Custom/NX2512_Custom\mach\resource\library\tool\ascii\dbc_tool_ascii.tcl
+Event: DBC_init_db
+Error Info: invalid bareword "could"
+in expression "530012 + could not read "C:\Heerbaar...";
+should be "$could" or "{could}" or "could(...)" or ...
+    (parsing expression "530012 + could not rea...")
+    invoked from within
+"expr $size_mm + $size_inch"
+    (procedure "DBC_init_db" line 127)
+    invoked from within
+"DBC_init_db"
+Error Code: TCL PARSE EXPR BAREWORD
+***** A TCL Error Has Occurred *****
+Event Handler: C:/Heerbaart/NX2512_Custom/NX2512_Custom\mach\resource\library\tool\ascii\dbc_tool_ascii.tcl
+Event: DBC_init_db
+Error Info: invalid bareword "could"
+in expression "530012 + could not read "C:\Heerbaar...";
+should be "$could" or "{could}" or "could(...)" or ...
+    (parsing expression "530012 + could not rea...")
+    invoked from within
+"expr $size_mm + $size_inch"
+    (procedure "DBC_init_db" line 127)
+    invoked from within
+"DBC_init_db"
+Error Code: TCL PARSE EXPR BAREWORD
+***** A TCL Error Has Occurred *****
+Event Handler: C:/Heerbaart/NX2512_Custom/NX2512_Custom\mach\resource\library\tool\ascii\dbc_tool_ascii.tcl
+Event: DBC_init_db
+Error Info: invalid bareword "could"
+in expression "530012 + could not read "C:\Heerbaar...";
+should be "$could" or "{could}" or "could(...)" or ...
+    (parsing expression "530012 + could not rea...")
+    invoked from within
+"expr $size_mm + $size_inch"
+    (procedure "DBC_init_db" line 127)
+    invoked from within
+"DBC_init_db"
+Error Code: TCL PARSE EXPR BAREWORD
+***** A TCL Error Has Occurred *****
+Event Handler: C:/Heerbaart/NX2512_Custom/NX2512_Custom\mach\resource\library\tool\ascii\dbc_tool_ascii.tcl
+Event: DBC_init_db
+Error Info: invalid bareword "could"
+in expression "530012 + could not read "C:\Heerbaar...";
+should be "$could" or "{could}" or "could(...)" or ...
+    (parsing expression "530012 + could not rea...")
+    invoked from within
+"expr $size_mm + $size_inch"
+    (procedure "DBC_init_db" line 127)
+    invoked from within
+"DBC_init_db"
+Error Code: TCL PARSE EXPR BAREWORD
+***** A TCL Error Has Occurred *****
+Event Handler: C:/Heerbaart/NX2512_Custom/NX2512_Custom\mach\resource\library\tool\ascii\dbc_tool_ascii.tcl
+Event: DBC_init_db
+Error Info: invalid bareword "could"
+in expression "530012 + could not read "C:\Heerbaar...";
+should be "$could" or "{could}" or "could(...)" or ...
+    (parsing expression "530012 + could not rea...")
+    invoked from within
+"expr $size_mm + $size_inch"
+    (procedure "DBC_init_db" line 127)
+    invoked from within
+"DBC_init_db"
+Error Code: TCL PARSE EXPR BAREWORD
+***** A TCL Error Has Occurred *****
+Event Handler: C:/Heerbaart/NX2512_Custom/NX2512_Custom\mach\resource\library\tool\ascii\dbc_tool_ascii.tcl
+Event: DBC_init_db
+Error Info: invalid bareword "could"
+in expression "530012 + could not read "C:\Heerbaar...";
+should be "$could" or "{could}" or "could(...)" or ...
+    (parsing expression "530012 + could not rea...")
+    invoked from within
+"expr $size_mm + $size_inch"
+    (procedure "DBC_init_db" line 127)
+    invoked from within
+"DBC_init_db"
+Error Code: TCL PARSE EXPR BAREWORD
+***** A TCL Error Has Occurred *****
+Event Handler: C:/Heerbaart/NX2512_Custom/NX2512_Custom\mach\resource\library\tool\ascii\dbc_tool_ascii.tcl
+Event: DBC_init_db
+Error Info: invalid bareword "could"
+in expression "530012 + could not read "C:\Heerbaar...";
+should be "$could" or "{could}" or "could(...)" or ...
+    (parsing expression "530012 + could not rea...")
+    invoked from within
+"expr $size_mm + $size_inch"
+    (procedure "DBC_init_db" line 127)
+    invoked from within
+"DBC_init_db"
+Error Code: TCL PARSE EXPR BAREWORD
+***** A TCL Error Has Occurred *****
+Event Handler: C:/Heerbaart/NX2512_Custom/NX2512_Custom\mach\resource\library\tool\ascii\dbc_tool_ascii.tcl
+Event: DBC_init_db
+Error Info: invalid bareword "could"
+in expression "530012 + could not read "C:\Heerbaar...";
+should be "$could" or "{could}" or "could(...)" or ...
+    (parsing expression "530012 + could not rea...")
+    invoked from within
+"expr $size_mm + $size_inch"
+    (procedure "DBC_init_db" line 127)
+    invoked from within
+"DBC_init_db"
+Error Code: TCL PARSE EXPR BAREWORD
+***** A TCL Error Has Occurred *****
+Event Handler: C:/Heerbaart/NX2512_Custom/NX2512_Custom\mach\resource\library\tool\ascii\dbc_tool_ascii.tcl
+Event: DBC_init_db
+Error Info: invalid bareword "could"
+in expression "530012 + could not read "C:\Heerbaar...";
+should be "$could" or "{could}" or "could(...)" or ...
+    (parsing expression "530012 + could not rea...")
+    invoked from within
+"expr $size_mm + $size_inch"
+    (procedure "DBC_init_db" line 127)
+    invoked from within
+"DBC_init_db"
+Error Code: TCL PARSE EXPR BAREWORD
+***** A TCL Error Has Occurred *****
+Event Handler: C:/Heerbaart/NX2512_Custom/NX2512_Custom\mach\resource\library\tool\ascii\dbc_tool_ascii.tcl
+Event: DBC_init_db
+Error Info: invalid bareword "could"
+in expression "530012 + could not read "C:\Heerbaar...";
+should be "$could" or "{could}" or "could(...)" or ...
+    (parsing expression "530012 + could not rea...")
+    invoked from within
+"expr $size_mm + $size_inch"
+    (procedure "DBC_init_db" line 127)
+    invoked from within
+"DBC_init_db"
+Error Code: TCL PARSE EXPR BAREWORD
+***** A TCL Error Has Occurred *****
+Event Handler: C:/Heerbaart/NX2512_Custom/NX2512_Custom\mach\resource\library\tool\ascii\dbc_tool_ascii.tcl
+Event: DBC_init_db
+Error Info: invalid bareword "could"
+in expression "530012 + could not read "C:\Heerbaar...";
+should be "$could" or "{could}" or "could(...)" or ...
+    (parsing expression "530012 + could not rea...")
+    invoked from within
+"expr $size_mm + $size_inch"
+    (procedure "DBC_init_db" line 127)
+    invoked from within
+"DBC_init_db"
+Error Code: TCL PARSE EXPR BAREWORD
+***** A TCL Error Has Occurred *****
+Event Handler: C:/Heerbaart/NX2512_Custom/NX2512_Custom\mach\resource\library\tool\ascii\dbc_tool_ascii.tcl
+Event: DBC_init_db
+Error Info: invalid bareword "could"
+in expression "530012 + could not read "C:\Heerbaar...";
+should be "$could" or "{could}" or "could(...)" or ...
+    (parsing expression "530012 + could not rea...")
+    invoked from within
+"expr $size_mm + $size_inch"
+    (procedure "DBC_init_db" line 127)
+    invoked from within
+"DBC_init_db"
+Error Code: TCL PARSE EXPR BAREWORD
+***** A TCL Error Has Occurred *****
+Event Handler: C:/Heerbaart/NX2512_Custom/NX2512_Custom\mach\resource\library\tool\ascii\dbc_tool_ascii.tcl
+Event: DBC_init_db
+Error Info: invalid bareword "could"
+in expression "530012 + could not read "C:\Heerbaar...";
+should be "$could" or "{could}" or "could(...)" or ...
+    (parsing expression "530012 + could not rea...")
+    invoked from within
+"expr $size_mm + $size_inch"
+    (procedure "DBC_init_db" line 127)
+    invoked from within
+"DBC_init_db"
+Error Code: TCL PARSE EXPR BAREWORD
+***** A TCL Error Has Occurred *****
+Event Handler: C:/Heerbaart/NX2512_Custom/NX2512_Custom\mach\resource\library\tool\ascii\dbc_tool_ascii.tcl
+Event: DBC_init_db
+Error Info: invalid bareword "could"
+in expression "530012 + could not read "C:\Heerbaar...";
+should be "$could" or "{could}" or "could(...)" or ...
+    (parsing expression "530012 + could not rea...")
+    invoked from within
+"expr $size_mm + $size_inch"
+    (procedure "DBC_init_db" line 127)
+    invoked from within
+"DBC_init_db"
+Error Code: TCL PARSE EXPR BAREWORD
+***** A TCL Error Has Occurred *****
+Event Handler: C:/Heerbaart/NX2512_Custom/NX2512_Custom\mach\resource\library\tool\ascii\dbc_tool_ascii.tcl
+Event: DBC_init_db
+Error Info: invalid bareword "could"
+in expression "530012 + could not read "C:\Heerbaar...";
+should be "$could" or "{could}" or "could(...)" or ...
+    (parsing expression "530012 + could not rea...")
+    invoked from within
+"expr $size_mm + $size_inch"
+    (procedure "DBC_init_db" line 127)
+    invoked from within
+"DBC_init_db"
+Error Code: TCL PARSE EXPR BAREWORD
+***** A TCL Error Has Occurred *****
+Event Handler: C:/Heerbaart/NX2512_Custom/NX2512_Custom\mach\resource\library\tool\ascii\dbc_tool_ascii.tcl
+Event: DBC_init_db
+Error Info: invalid bareword "could"
+in expression "530012 + could not read "C:\Heerbaar...";
+should be "$could" or "{could}" or "could(...)" or ...
+    (parsing expression "530012 + could not rea...")
+    invoked from within
+"expr $size_mm + $size_inch"
+    (procedure "DBC_init_db" line 127)
+    invoked from within
+"DBC_init_db"
+Error Code: TCL PARSE EXPR BAREWORD
+***** A TCL Error Has Occurred *****
+Event Handler: C:/Heerbaart/NX2512_Custom/NX2512_Custom\mach\resource\library\tool\ascii\dbc_tool_ascii.tcl
+Event: DBC_init_db
+Error Info: invalid bareword "could"
+in expression "530012 + could not read "C:\Heerbaar...";
+should be "$could" or "{could}" or "could(...)" or ...
+    (parsing expression "530012 + could not rea...")
+    invoked from within
+"expr $size_mm + $size_inch"
+    (procedure "DBC_init_db" line 127)
+    invoked from within
+"DBC_init_db"
+Error Code: TCL PARSE EXPR BAREWORD
+***** A TCL Error Has Occurred *****
+Event Handler: C:/Heerbaart/NX2512_Custom/NX2512_Custom\mach\resource\library\tool\ascii\dbc_tool_ascii.tcl
+Event: DBC_init_db
+Error Info: invalid bareword "could"
+in expression "530012 + could not read "C:\Heerbaar...";
+should be "$could" or "{could}" or "could(...)" or ...
+    (parsing expression "530012 + could not rea...")
+    invoked from within
+"expr $size_mm + $size_inch"
+    (procedure "DBC_init_db" line 127)
+    invoked from within
+"DBC_init_db"
+Error Code: TCL PARSE EXPR BAREWORD
+***** A TCL Error Has Occurred *****
+Event Handler: C:/Heerbaart/NX2512_Custom/NX2512_Custom\mach\resource\library\tool\ascii\dbc_tool_ascii.tcl
+Event: DBC_init_db
+Error Info: invalid bareword "could"
+in expression "530012 + could not read "C:\Heerbaar...";
+should be "$could" or "{could}" or "could(...)" or ...
+    (parsing expression "530012 + could not rea...")
+    invoked from within
+"expr $size_mm + $size_inch"
+    (procedure "DBC_init_db" line 127)
+    invoked from within
+"DBC_init_db"
+Error Code: TCL PARSE EXPR BAREWORD
+***** A TCL Error Has Occurred *****
+Event Handler: C:/Heerbaart/NX2512_Custom/NX2512_Custom\mach\resource\library\tool\ascii\dbc_tool_ascii.tcl
+Event: DBC_init_db
+Error Info: invalid bareword "could"
+in expression "530012 + could not read "C:\Heerbaar...";
+should be "$could" or "{could}" or "could(...)" or ...
+    (parsing expression "530012 + could not rea...")
+    invoked from within
+"expr $size_mm + $size_inch"
+    (procedure "DBC_init_db" line 127)
+    invoked from within
+"DBC_init_db"
+Error Code: TCL PARSE EXPR BAREWORD
+***** A TCL Error Has Occurred *****
+Event Handler: C:/Heerbaart/NX2512_Custom/NX2512_Custom\mach\resource\library\tool\ascii\dbc_tool_ascii.tcl
+Event: DBC_init_db
+Error Info: invalid bareword "could"
+in expression "530012 + could not read "C:\Heerbaar...";
+should be "$could" or "{could}" or "could(...)" or ...
+    (parsing expression "530012 + could not rea...")
+    invoked from within
+"expr $size_mm + $size_inch"
+    (procedure "DBC_init_db" line 127)
+    invoked from within
+"DBC_init_db"
+Error Code: TCL PARSE EXPR BAREWORD
+***** A TCL Error Has Occurred *****
+Event Handler: C:/Heerbaart/NX2512_Custom/NX2512_Custom\mach\resource\library\tool\ascii\dbc_tool_ascii.tcl
+Event: DBC_init_db
+Error Info: invalid bareword "could"
+in expression "530012 + could not read "C:\Heerbaar...";
+should be "$could" or "{could}" or "could(...)" or ...
+    (parsing expression "530012 + could not rea...")
+    invoked from within
+"expr $size_mm + $size_inch"
+    (procedure "DBC_init_db" line 127)
+    invoked from within
+"DBC_init_db"
+Error Code: TCL PARSE EXPR BAREWORD
+***** A TCL Error Has Occurred *****
+Event Handler: C:/Heerbaart/NX2512_Custom/NX2512_Custom\mach\resource\library\tool\ascii\dbc_tool_ascii.tcl
+Event: DBC_init_db
+Error Info: invalid bareword "could"
+in expression "530012 + could not read "C:\Heerbaar...";
+should be "$could" or "{could}" or "could(...)" or ...
+    (parsing expression "530012 + could not rea...")
+    invoked from within
+"expr $size_mm + $size_inch"
+    (procedure "DBC_init_db" line 127)
+    invoked from within
+"DBC_init_db"
+Error Code: TCL PARSE EXPR BAREWORD
+***** A TCL Error Has Occurred *****
+Event Handler: C:/Heerbaart/NX2512_Custom/NX2512_Custom\mach\resource\library\tool\ascii\dbc_tool_ascii.tcl
+Event: DBC_init_db
+Error Info: invalid bareword "could"
+in expression "530012 + could not read "C:\Heerbaar...";
+should be "$could" or "{could}" or "could(...)" or ...
+    (parsing expression "530012 + could not rea...")
+    invoked from within
+"expr $size_mm + $size_inch"
+    (procedure "DBC_init_db" line 127)
+    invoked from within
+"DBC_init_db"
+Error Code: TCL PARSE EXPR BAREWORD
+***** A TCL Error Has Occurred *****
+Event Handler: C:/Heerbaart/NX2512_Custom/NX2512_Custom\mach\resource\library\tool\ascii\dbc_tool_ascii.tcl
+Event: DBC_init_db
+Error Info: invalid bareword "could"
+in expression "530012 + could not read "C:\Heerbaar...";
+should be "$could" or "{could}" or "could(...)" or ...
+    (parsing expression "530012 + could not rea...")
+    invoked from within
+"expr $size_mm + $size_inch"
+    (procedure "DBC_init_db" line 127)
+    invoked from within
+"DBC_init_db"
+Error Code: TCL PARSE EXPR BAREWORD
+***** A TCL Error Has Occurred *****
+Event Handler: C:/Heerbaart/NX2512_Custom/NX2512_Custom\mach\resource\library\tool\ascii\dbc_tool_ascii.tcl
+Event: DBC_init_db
+Error Info: invalid bareword "could"
+in expression "530012 + could not read "C:\Heerbaar...";
+should be "$could" or "{could}" or "could(...)" or ...
+    (parsing expression "530012 + could not rea...")
+    invoked from within
+"expr $size_mm + $size_inch"
+    (procedure "DBC_init_db" line 127)
+    invoked from within
+"DBC_init_db"
+Error Code: TCL PARSE EXPR BAREWORD
+***** A TCL Error Has Occurred *****
+Event Handler: C:/Heerbaart/NX2512_Custom/NX2512_Custom\mach\resource\library\tool\ascii\dbc_tool_ascii.tcl
+Event: DBC_init_db
+Error Info: invalid bareword "could"
+in expression "530012 + could not read "C:\Heerbaar...";
+should be "$could" or "{could}" or "could(...)" or ...
+    (parsing expression "530012 + could not rea...")
+    invoked from within
+"expr $size_mm + $size_inch"
+    (procedure "DBC_init_db" line 127)
+    invoked from within
+"DBC_init_db"
+Error Code: TCL PARSE EXPR BAREWORD
+***** A TCL Error Has Occurred *****
+Event Handler: C:/Heerbaart/NX2512_Custom/NX2512_Custom\mach\resource\library\tool\ascii\dbc_tool_ascii.tcl
+Event: DBC_init_db
+Error Info: invalid bareword "could"
+in expression "530012 + could not read "C:\Heerbaar...";
+should be "$could" or "{could}" or "could(...)" or ...
+    (parsing expression "530012 + could not rea...")
+    invoked from within
+"expr $size_mm + $size_inch"
+    (procedure "DBC_init_db" line 127)
+    invoked from within
+"DBC_init_db"
+Error Code: TCL PARSE EXPR BAREWORD
+***** A TCL Error Has Occurred *****
+Event Handler: C:/Heerbaart/NX2512_Custom/NX2512_Custom\mach\resource\library\tool\ascii\dbc_tool_ascii.tcl
+Event: DBC_init_db
+Error Info: invalid bareword "could"
+in expression "530012 + could not read "C:\Heerbaar...";
+should be "$could" or "{could}" or "could(...)" or ...
+    (parsing expression "530012 + could not rea...")
+    invoked from within
+"expr $size_mm + $size_inch"
+    (procedure "DBC_init_db" line 127)
+    invoked from within
+"DBC_init_db"
+Error Code: TCL PARSE EXPR BAREWORD
+***** A TCL Error Has Occurred *****
+Event Handler: C:/Heerbaart/NX2512_Custom/NX2512_Custom\mach\resource\library\tool\ascii\dbc_tool_ascii.tcl
+Event: DBC_init_db
+Error Info: invalid bareword "could"
+in expression "530012 + could not read "C:\Heerbaar...";
+should be "$could" or "{could}" or "could(...)" or ...
+    (parsing expression "530012 + could not rea...")
+    invoked from within
+"expr $size_mm + $size_inch"
+    (procedure "DBC_init_db" line 127)
+    invoked from within
+"DBC_init_db"
+Error Code: TCL PARSE EXPR BAREWORD
+***** A TCL Error Has Occurred *****
+Event Handler: C:/Heerbaart/NX2512_Custom/NX2512_Custom\mach\resource\library\tool\ascii\dbc_tool_ascii.tcl
+Event: DBC_init_db
+Error Info: invalid bareword "could"
+in expression "530012 + could not read "C:\Heerbaar...";
+should be "$could" or "{could}" or "could(...)" or ...
+    (parsing expression "530012 + could not rea...")
+    invoked from within
+"expr $size_mm + $size_inch"
+    (procedure "DBC_init_db" line 127)
+    invoked from within
+"DBC_init_db"
+Error Code: TCL PARSE EXPR BAREWORD
+***** A TCL Error Has Occurred *****
+Event Handler: C:/Heerbaart/NX2512_Custom/NX2512_Custom\mach\resource\library\tool\ascii\dbc_tool_ascii.tcl
+Event: DBC_init_db
+Error Info: invalid bareword "could"
+in expression "530012 + could not read "C:\Heerbaar...";
+should be "$could" or "{could}" or "could(...)" or ...
+    (parsing expression "530012 + could not rea...")
+    invoked from within
+"expr $size_mm + $size_inch"
+    (procedure "DBC_init_db" line 127)
+    invoked from within
+"DBC_init_db"
+Error Code: TCL PARSE EXPR BAREWORD
+***** A TCL Error Has Occurred *****
+Event Handler: C:/Heerbaart/NX2512_Custom/NX2512_Custom\mach\resource\library\tool\ascii\dbc_tool_ascii.tcl
+Event: DBC_init_db
+Error Info: invalid bareword "could"
+in expression "530012 + could not read "C:\Heerbaar...";
+should be "$could" or "{could}" or "could(...)" or ...
+    (parsing expression "530012 + could not rea...")
+    invoked from within
+"expr $size_mm + $size_inch"
+    (procedure "DBC_init_db" line 127)
+    invoked from within
+"DBC_init_db"
+Error Code: TCL PARSE EXPR BAREWORD
+***** A TCL Error Has Occurred *****
+Event Handler: C:/Heerbaart/NX2512_Custom/NX2512_Custom\mach\resource\library\tool\ascii\dbc_tool_ascii.tcl
+Event: DBC_init_db
+Error Info: invalid bareword "could"
+in expression "530012 + could not read "C:\Heerbaar...";
+should be "$could" or "{could}" or "could(...)" or ...
+    (parsing expression "530012 + could not rea...")
+    invoked from within
+"expr $size_mm + $size_inch"
+    (procedure "DBC_init_db" line 127)
+    invoked from within
+"DBC_init_db"
+Error Code: TCL PARSE EXPR BAREWORD
+***** A TCL Error Has Occurred *****
+Event Handler: C:/Heerbaart/NX2512_Custom/NX2512_Custom\mach\resource\library\tool\ascii\dbc_tool_ascii.tcl
+Event: DBC_init_db
+Error Info: invalid bareword "could"
+in expression "530012 + could not read "C:\Heerbaar...";
+should be "$could" or "{could}" or "could(...)" or ...
+    (parsing expression "530012 + could not rea...")
+    invoked from within
+"expr $size_mm + $size_inch"
+    (procedure "DBC_init_db" line 127)
+    invoked from within
+"DBC_init_db"
+Error Code: TCL PARSE EXPR BAREWORD
+***** A TCL Error Has Occurred *****
+Event Handler: C:/Heerbaart/NX2512_Custom/NX2512_Custom\mach\resource\library\tool\ascii\dbc_tool_ascii.tcl
+Event: DBC_init_db
+Error Info: invalid bareword "could"
+in expression "530012 + could not read "C:\Heerbaar...";
+should be "$could" or "{could}" or "could(...)" or ...
+    (parsing expression "530012 + could not rea...")
+    invoked from within
+"expr $size_mm + $size_inch"
+    (procedure "DBC_init_db" line 127)
+    invoked from within
+"DBC_init_db"
+Error Code: TCL PARSE EXPR BAREWORD
+***** A TCL Error Has Occurred *****
+Event Handler: C:/Heerbaart/NX2512_Custom/NX2512_Custom\mach\resource\library\tool\ascii\dbc_tool_ascii.tcl
+Event: DBC_init_db
+Error Info: invalid bareword "could"
+in expression "530012 + could not read "C:\Heerbaar...";
+should be "$could" or "{could}" or "could(...)" or ...
+    (parsing expression "530012 + could not rea...")
+    invoked from within
+"expr $size_mm + $size_inch"
+    (procedure "DBC_init_db" line 127)
+    invoked from within
+"DBC_init_db"
+Error Code: TCL PARSE EXPR BAREWORD
+***** A TCL Error Has Occurred *****
+Event Handler: C:/Heerbaart/NX2512_Custom/NX2512_Custom\mach\resource\library\tool\ascii\dbc_tool_ascii.tcl
+Event: DBC_init_db
+Error Info: invalid bareword "could"
+in expression "530012 + could not read "C:\Heerbaar...";
+should be "$could" or "{could}" or "could(...)" or ...
+    (parsing expression "530012 + could not rea...")
+    invoked from within
+"expr $size_mm + $size_inch"
+    (procedure "DBC_init_db" line 127)
+    invoked from within
+"DBC_init_db"
+Error Code: TCL PARSE EXPR BAREWORD
+***** A TCL Error Has Occurred *****
+Event Handler: C:/Heerbaart/NX2512_Custom/NX2512_Custom\mach\resource\library\tool\ascii\dbc_tool_ascii.tcl
+Event: DBC_init_db
+Error Info: invalid bareword "could"
+in expression "530012 + could not read "C:\Heerbaar...";
+should be "$could" or "{could}" or "could(...)" or ...
+    (parsing expression "530012 + could not rea...")
+    invoked from within
+"expr $size_mm + $size_inch"
+    (procedure "DBC_init_db" line 127)
+    invoked from within
+"DBC_init_db"
+Error Code: TCL PARSE EXPR BAREWORD
+***** A TCL Error Has Occurred *****
+Event Handler: C:/Heerbaart/NX2512_Custom/NX2512_Custom\mach\resource\library\tool\ascii\dbc_tool_ascii.tcl
+Event: DBC_init_db
+Error Info: invalid bareword "could"
+in expression "530012 + could not read "C:\Heerbaar...";
+should be "$could" or "{could}" or "could(...)" or ...
+    (parsing expression "530012 + could not rea...")
+    invoked from within
+"expr $size_mm + $size_inch"
+    (procedure "DBC_init_db" line 127)
+    invoked from within
+"DBC_init_db"
+Error Code: TCL PARSE EXPR BAREWORD
+***** A TCL Error Has Occurred *****
+Event Handler: C:/Heerbaart/NX2512_Custom/NX2512_Custom\mach\resource\library\tool\ascii\dbc_tool_ascii.tcl
+Event: DBC_init_db
+Error Info: invalid bareword "could"
+in expression "530012 + could not read "C:\Heerbaar...";
+should be "$could" or "{could}" or "could(...)" or ...
+    (parsing expression "530012 + could not rea...")
+    invoked from within
+"expr $size_mm + $size_inch"
+    (procedure "DBC_init_db" line 127)
+    invoked from within
+"DBC_init_db"
+Error Code: TCL PARSE EXPR BAREWORD
+***** A TCL Error Has Occurred *****
+Event Handler: C:/Heerbaart/NX2512_Custom/NX2512_Custom\mach\resource\library\tool\ascii\dbc_tool_ascii.tcl
+Event: DBC_init_db
+Error Info: invalid bareword "could"
+in expression "530012 + could not read "C:\Heerbaar...";
+should be "$could" or "{could}" or "could(...)" or ...
+    (parsing expression "530012 + could not rea...")
+    invoked from within
+"expr $size_mm + $size_inch"
+    (procedure "DBC_init_db" line 127)
+    invoked from within
+"DBC_init_db"
+Error Code: TCL PARSE EXPR BAREWORD
+***** A TCL Error Has Occurred *****
+Event Handler: C:/Heerbaart/NX2512_Custom/NX2512_Custom\mach\resource\library\tool\ascii\dbc_tool_ascii.tcl
+Event: DBC_init_db
+Error Info: invalid bareword "could"
+in expression "530012 + could not read "C:\Heerbaar...";
+should be "$could" or "{could}" or "could(...)" or ...
+    (parsing expression "530012 + could not rea...")
+    invoked from within
+"expr $size_mm + $size_inch"
+    (procedure "DBC_init_db" line 127)
+    invoked from within
+"DBC_init_db"
+Error Code: TCL PARSE EXPR BAREWORD
+***** A TCL Error Has Occurred *****
+Event Handler: C:/Heerbaart/NX2512_Custom/NX2512_Custom\mach\resource\library\tool\ascii\dbc_tool_ascii.tcl
+Event: DBC_init_db
+Error Info: invalid bareword "could"
+in expression "530012 + could not read "C:\Heerbaar...";
+should be "$could" or "{could}" or "could(...)" or ...
+    (parsing expression "530012 + could not rea...")
+    invoked from within
+"expr $size_mm + $size_inch"
+    (procedure "DBC_init_db" line 127)
+    invoked from within
+"DBC_init_db"
+Error Code: TCL PARSE EXPR BAREWORD
+***** A TCL Error Has Occurred *****
+Event Handler: C:/Heerbaart/NX2512_Custom/NX2512_Custom\mach\resource\library\tool\ascii\dbc_tool_ascii.tcl
+Event: DBC_init_db
+Error Info: invalid bareword "could"
+in expression "530012 + could not read "C:\Heerbaar...";
+should be "$could" or "{could}" or "could(...)" or ...
+    (parsing expression "530012 + could not rea...")
+    invoked from within
+"expr $size_mm + $size_inch"
+    (procedure "DBC_init_db" line 127)
+    invoked from within
+"DBC_init_db"
+Error Code: TCL PARSE EXPR BAREWORD
+***** A TCL Error Has Occurred *****
+Event Handler: C:/Heerbaart/NX2512_Custom/NX2512_Custom\mach\resource\library\tool\ascii\dbc_tool_ascii.tcl
+Event: DBC_init_db
+Error Info: invalid bareword "could"
+in expression "530012 + could not read "C:\Heerbaar...";
+should be "$could" or "{could}" or "could(...)" or ...
+    (parsing expression "530012 + could not rea...")
+    invoked from within
+"expr $size_mm + $size_inch"
+    (procedure "DBC_init_db" line 127)
+    invoked from within
+"DBC_init_db"
+Error Code: TCL PARSE EXPR BAREWORD
+***** A TCL Error Has Occurred *****
+Event Handler: C:/Heerbaart/NX2512_Custom/NX2512_Custom\mach\resource\library\tool\ascii\dbc_tool_ascii.tcl
+Event: DBC_init_db
+Error Info: invalid bareword "could"
+in expression "530012 + could not read "C:\Heerbaar...";
+should be "$could" or "{could}" or "could(...)" or ...
+    (parsing expression "530012 + could not rea...")
+    invoked from within
+"expr $size_mm + $size_inch"
+    (procedure "DBC_init_db" line 127)
+    invoked from within
+"DBC_init_db"
+Error Code: TCL PARSE EXPR BAREWORD
+***** A TCL Error Has Occurred *****
+Event Handler: C:/Heerbaart/NX2512_Custom/NX2512_Custom\mach\resource\library\tool\ascii\dbc_tool_ascii.tcl
+Event: DBC_init_db
+Error Info: invalid bareword "could"
+in expression "530012 + could not read "C:\Heerbaar...";
+should be "$could" or "{could}" or "could(...)" or ...
+    (parsing expression "530012 + could not rea...")
+    invoked from within
+"expr $size_mm + $size_inch"
+    (procedure "DBC_init_db" line 127)
+    invoked from within
+"DBC_init_db"
+Error Code: TCL PARSE EXPR BAREWORD
+***** A TCL Error Has Occurred *****
+Event Handler: C:/Heerbaart/NX2512_Custom/NX2512_Custom\mach\resource\library\tool\ascii\dbc_tool_ascii.tcl
+Event: DBC_init_db
+Error Info: invalid bareword "could"
+in expression "530012 + could not read "C:\Heerbaar...";
+should be "$could" or "{could}" or "could(...)" or ...
+    (parsing expression "530012 + could not rea...")
+    invoked from within
+"expr $size_mm + $size_inch"
+    (procedure "DBC_init_db" line 127)
+    invoked from within
+"DBC_init_db"
+Error Code: TCL PARSE EXPR BAREWORD
+***** A TCL Error Has Occurred *****
+Event Handler: C:/Heerbaart/NX2512_Custom/NX2512_Custom\mach\resource\library\tool\ascii\dbc_tool_ascii.tcl
+Event: DBC_init_db
+Error Info: invalid bareword "could"
+in expression "530012 + could not read "C:\Heerbaar...";
+should be "$could" or "{could}" or "could(...)" or ...
+    (parsing expression "530012 + could not rea...")
+    invoked from within
+"expr $size_mm + $size_inch"
+    (procedure "DBC_init_db" line 127)
+    invoked from within
+"DBC_init_db"
+Error Code: TCL PARSE EXPR BAREWORD
+***** A TCL Error Has Occurred *****
+Event Handler: C:/Heerbaart/NX2512_Custom/NX2512_Custom\mach\resource\library\tool\ascii\dbc_tool_ascii.tcl
+Event: DBC_init_db
+Error Info: invalid bareword "could"
+in expression "530012 + could not read "C:\Heerbaar...";
+should be "$could" or "{could}" or "could(...)" or ...
+    (parsing expression "530012 + could not rea...")
+    invoked from within
+"expr $size_mm + $size_inch"
+    (procedure "DBC_init_db" line 127)
+    invoked from within
+"DBC_init_db"
+Error Code: TCL PARSE EXPR BAREWORD
+***** A TCL Error Has Occurred *****
+Event Handler: C:/Heerbaart/NX2512_Custom/NX2512_Custom\mach\resource\library\tool\ascii\dbc_tool_ascii.tcl
+Event: DBC_init_db
+Error Info: invalid bareword "could"
+in expression "530012 + could not read "C:\Heerbaar...";
+should be "$could" or "{could}" or "could(...)" or ...
+    (parsing expression "530012 + could not rea...")
+    invoked from within
+"expr $size_mm + $size_inch"
+    (procedure "DBC_init_db" line 127)
+    invoked from within
+"DBC_init_db"
+Error Code: TCL PARSE EXPR BAREWORD
+***** A TCL Error Has Occurred *****
+Event Handler: C:/Heerbaart/NX2512_Custom/NX2512_Custom\mach\resource\library\tool\ascii\dbc_tool_ascii.tcl
+Event: DBC_init_db
+Error Info: invalid bareword "could"
+in expression "530012 + could not read "C:\Heerbaar...";
+should be "$could" or "{could}" or "could(...)" or ...
+    (parsing expression "530012 + could not rea...")
+    invoked from within
+"expr $size_mm + $size_inch"
+    (procedure "DBC_init_db" line 127)
+    invoked from within
+"DBC_init_db"
+Error Code: TCL PARSE EXPR BAREWORD
+***** A TCL Error Has Occurred *****
+Event Handler: C:/Heerbaart/NX2512_Custom/NX2512_Custom\mach\resource\library\tool\ascii\dbc_tool_ascii.tcl
+Event: DBC_init_db
+Error Info: invalid bareword "could"
+in expression "530012 + could not read "C:\Heerbaar...";
+should be "$could" or "{could}" or "could(...)" or ...
+    (parsing expression "530012 + could not rea...")
+    invoked from within
+"expr $size_mm + $size_inch"
+    (procedure "DBC_init_db" line 127)
+    invoked from within
+"DBC_init_db"
+Error Code: TCL PARSE EXPR BAREWORD
+***** A TCL Error Has Occurred *****
+Event Handler: C:/Heerbaart/NX2512_Custom/NX2512_Custom\mach\resource\library\tool\ascii\dbc_tool_ascii.tcl
+Event: DBC_init_db
+Error Info: invalid bareword "could"
+in expression "530012 + could not read "C:\Heerbaar...";
+should be "$could" or "{could}" or "could(...)" or ...
+    (parsing expression "530012 + could not rea...")
+    invoked from within
+"expr $size_mm + $size_inch"
+    (procedure "DBC_init_db" line 127)
+    invoked from within
+"DBC_init_db"
+Error Code: TCL PARSE EXPR BAREWORD
+***** A TCL Error Has Occurred *****
+Event Handler: C:/Heerbaart/NX2512_Custom/NX2512_Custom\mach\resource\library\tool\ascii\dbc_tool_ascii.tcl
+Event: DBC_init_db
+Error Info: invalid bareword "could"
+in expression "530012 + could not read "C:\Heerbaar...";
+should be "$could" or "{could}" or "could(...)" or ...
+    (parsing expression "530012 + could not rea...")
+    invoked from within
+"expr $size_mm + $size_inch"
+    (procedure "DBC_init_db" line 127)
+    invoked from within
+"DBC_init_db"
+Error Code: TCL PARSE EXPR BAREWORD
+***** A TCL Error Has Occurred *****
+Event Handler: C:/Heerbaart/NX2512_Custom/NX2512_Custom\mach\resource\library\tool\ascii\dbc_tool_ascii.tcl
+Event: DBC_init_db
+Error Info: invalid bareword "could"
+in expression "530012 + could not read "C:\Heerbaar...";
+should be "$could" or "{could}" or "could(...)" or ...
+    (parsing expression "530012 + could not rea...")
+    invoked from within
+"expr $size_mm + $size_inch"
+    (procedure "DBC_init_db" line 127)
+    invoked from within
+"DBC_init_db"
+Error Code: TCL PARSE EXPR BAREWORD
+***** A TCL Error Has Occurred *****
+Event Handler: C:/Heerbaart/NX2512_Custom/NX2512_Custom\mach\resource\library\tool\ascii\dbc_tool_ascii.tcl
+Event: DBC_init_db
+Error Info: invalid bareword "could"
+in expression "530012 + could not read "C:\Heerbaar...";
+should be "$could" or "{could}" or "could(...)" or ...
+    (parsing expression "530012 + could not rea...")
+    invoked from within
+"expr $size_mm + $size_inch"
+    (procedure "DBC_init_db" line 127)
+    invoked from within
+"DBC_init_db"
+Error Code: TCL PARSE EXPR BAREWORD
+***** A TCL Error Has Occurred *****
+Event Handler: C:/Heerbaart/NX2512_Custom/NX2512_Custom\mach\resource\library\tool\ascii\dbc_tool_ascii.tcl
+Event: DBC_init_db
+Error Info: invalid bareword "could"
+in expression "530012 + could not read "C:\Heerbaar...";
+should be "$could" or "{could}" or "could(...)" or ...
+    (parsing expression "530012 + could not rea...")
+    invoked from within
+"expr $size_mm + $size_inch"
+    (procedure "DBC_init_db" line 127)
+    invoked from within
+"DBC_init_db"
+Error Code: TCL PARSE EXPR BAREWORD
+***** A TCL Error Has Occurred *****
+Event Handler: C:/Heerbaart/NX2512_Custom/NX2512_Custom\mach\resource\library\tool\ascii\dbc_tool_ascii.tcl
+Event: DBC_init_db
+Error Info: invalid bareword "could"
+in expression "530012 + could not read "C:\Heerbaar...";
+should be "$could" or "{could}" or "could(...)" or ...
+    (parsing expression "530012 + could not rea...")
+    invoked from within
+"expr $size_mm + $size_inch"
+    (procedure "DBC_init_db" line 127)
+    invoked from within
+"DBC_init_db"
+Error Code: TCL PARSE EXPR BAREWORD
+***** A TCL Error Has Occurred *****
+Event Handler: C:/Heerbaart/NX2512_Custom/NX2512_Custom\mach\resource\library\tool\ascii\dbc_tool_ascii.tcl
+Event: DBC_init_db
+Error Info: invalid bareword "could"
+in expression "530012 + could not read "C:\Heerbaar...";
+should be "$could" or "{could}" or "could(...)" or ...
+    (parsing expression "530012 + could not rea...")
+    invoked from within
+"expr $size_mm + $size_inch"
+    (procedure "DBC_init_db" line 127)
+    invoked from within
+"DBC_init_db"
+Error Code: TCL PARSE EXPR BAREWORD
+***** A TCL Error Has Occurred *****
+Event Handler: C:/Heerbaart/NX2512_Custom/NX2512_Custom\mach\resource\library\tool\ascii\dbc_tool_ascii.tcl
+Event: DBC_init_db
+Error Info: invalid bareword "could"
+in expression "530012 + could not read "C:\Heerbaar...";
+should be "$could" or "{could}" or "could(...)" or ...
+    (parsing expression "530012 + could not rea...")
+    invoked from within
+"expr $size_mm + $size_inch"
+    (procedure "DBC_init_db" line 127)
+    invoked from within
+"DBC_init_db"
+Error Code: TCL PARSE EXPR BAREWORD
+***** A TCL Error Has Occurred *****
+Event Handler: C:/Heerbaart/NX2512_Custom/NX2512_Custom\mach\resource\library\tool\ascii\dbc_tool_ascii.tcl
+Event: DBC_init_db
+Error Info: invalid bareword "could"
+in expression "530012 + could not read "C:\Heerbaar...";
+should be "$could" or "{could}" or "could(...)" or ...
+    (parsing expression "530012 + could not rea...")
+    invoked from within
+"expr $size_mm + $size_inch"
+    (procedure "DBC_init_db" line 127)
+    invoked from within
+"DBC_init_db"
+Error Code: TCL PARSE EXPR BAREWORD
+***** A TCL Error Has Occurred *****
+Event Handler: C:/Heerbaart/NX2512_Custom/NX2512_Custom\mach\resource\library\tool\ascii\dbc_tool_ascii.tcl
+Event: DBC_init_db
+Error Info: invalid bareword "could"
+in expression "530012 + could not read "C:\Heerbaar...";
+should be "$could" or "{could}" or "could(...)" or ...
+    (parsing expression "530012 + could not rea...")
+    invoked from within
+"expr $size_mm + $size_inch"
+    (procedure "DBC_init_db" line 127)
+    invoked from within
+"DBC_init_db"
+Error Code: TCL PARSE EXPR BAREWORD
+***** A TCL Error Has Occurred *****
+Event Handler: C:/Heerbaart/NX2512_Custom/NX2512_Custom\mach\resource\library\tool\ascii\dbc_tool_ascii.tcl
+Event: DBC_init_db
+Error Info: invalid bareword "could"
+in expression "530012 + could not read "C:\Heerbaar...";
+should be "$could" or "{could}" or "could(...)" or ...
+    (parsing expression "530012 + could not rea...")
+    invoked from within
+"expr $size_mm + $size_inch"
+    (procedure "DBC_init_db" line 127)
+    invoked from within
+"DBC_init_db"
+Error Code: TCL PARSE EXPR BAREWORD
+***** A TCL Error Has Occurred *****
+Event Handler: C:/Heerbaart/NX2512_Custom/NX2512_Custom\mach\resource\library\tool\ascii\dbc_tool_ascii.tcl
+Event: DBC_init_db
+Error Info: invalid bareword "could"
+in expression "530012 + could not read "C:\Heerbaar...";
+should be "$could" or "{could}" or "could(...)" or ...
+    (parsing expression "530012 + could not rea...")
+    invoked from within
+"expr $size_mm + $size_inch"
+    (procedure "DBC_init_db" line 127)
+    invoked from within
+"DBC_init_db"
+Error Code: TCL PARSE EXPR BAREWORD
+***** A TCL Error Has Occurred *****
+Event Handler: C:/Heerbaart/NX2512_Custom/NX2512_Custom\mach\resource\library\tool\ascii\dbc_tool_ascii.tcl
+Event: DBC_init_db
+Error Info: invalid bareword "could"
+in expression "530012 + could not read "C:\Heerbaar...";
+should be "$could" or "{could}" or "could(...)" or ...
+    (parsing expression "530012 + could not rea...")
+    invoked from within
+"expr $size_mm + $size_inch"
+    (procedure "DBC_init_db" line 127)
+    invoked from within
+"DBC_init_db"
+Error Code: TCL PARSE EXPR BAREWORD
+***** A TCL Error Has Occurred *****
+Event Handler: C:/Heerbaart/NX2512_Custom/NX2512_Custom\mach\resource\library\tool\ascii\dbc_tool_ascii.tcl
+Event: DBC_init_db
+Error Info: invalid bareword "could"
+in expression "530012 + could not read "C:\Heerbaar...";
+should be "$could" or "{could}" or "could(...)" or ...
+    (parsing expression "530012 + could not rea...")
+    invoked from within
+"expr $size_mm + $size_inch"
+    (procedure "DBC_init_db" line 127)
+    invoked from within
+"DBC_init_db"
+Error Code: TCL PARSE EXPR BAREWORD
+***** A TCL Error Has Occurred *****
+Event Handler: C:/Heerbaart/NX2512_Custom/NX2512_Custom\mach\resource\library\tool\ascii\dbc_tool_ascii.tcl
+Event: DBC_init_db
+Error Info: invalid bareword "could"
+in expression "530012 + could not read "C:\Heerbaar...";
+should be "$could" or "{could}" or "could(...)" or ...
+    (parsing expression "530012 + could not rea...")
+    invoked from within
+"expr $size_mm + $size_inch"
+    (procedure "DBC_init_db" line 127)
+    invoked from within
+"DBC_init_db"
+Error Code: TCL PARSE EXPR BAREWORD
+***** A TCL Error Has Occurred *****
+Event Handler: C:/Heerbaart/NX2512_Custom/NX2512_Custom\mach\resource\library\tool\ascii\dbc_tool_ascii.tcl
+Event: DBC_init_db
+Error Info: invalid bareword "could"
+in expression "530012 + could not read "C:\Heerbaar...";
+should be "$could" or "{could}" or "could(...)" or ...
+    (parsing expression "530012 + could not rea...")
+    invoked from within
+"expr $size_mm + $size_inch"
+    (procedure "DBC_init_db" line 127)
+    invoked from within
+"DBC_init_db"
+Error Code: TCL PARSE EXPR BAREWORD
+***** A TCL Error Has Occurred *****
+Event Handler: C:/Heerbaart/NX2512_Custom/NX2512_Custom\mach\resource\library\tool\ascii\dbc_tool_ascii.tcl
+Event: DBC_init_db
+Error Info: invalid bareword "could"
+in expression "530012 + could not read "C:\Heerbaar...";
+should be "$could" or "{could}" or "could(...)" or ...
+    (parsing expression "530012 + could not rea...")
+    invoked from within
+"expr $size_mm + $size_inch"
+    (procedure "DBC_init_db" line 127)
+    invoked from within
+"DBC_init_db"
+Error Code: TCL PARSE EXPR BAREWORD
+***** A TCL Error Has Occurred *****
+Event Handler: C:/Heerbaart/NX2512_Custom/NX2512_Custom\mach\resource\library\tool\ascii\dbc_tool_ascii.tcl
+Event: DBC_init_db
+Error Info: invalid bareword "could"
+in expression "530012 + could not read "C:\Heerbaar...";
+should be "$could" or "{could}" or "could(...)" or ...
+    (parsing expression "530012 + could not rea...")
+    invoked from within
+"expr $size_mm + $size_inch"
+    (procedure "DBC_init_db" line 127)
+    invoked from within
+"DBC_init_db"
+Error Code: TCL PARSE EXPR BAREWORD
+***** A TCL Error Has Occurred *****
+Event Handler: C:/Heerbaart/NX2512_Custom/NX2512_Custom\mach\resource\library\tool\ascii\dbc_tool_ascii.tcl
+Event: DBC_init_db
+Error Info: invalid bareword "could"
+in expression "530012 + could not read "C:\Heerbaar...";
+should be "$could" or "{could}" or "could(...)" or ...
+    (parsing expression "530012 + could not rea...")
+    invoked from within
+"expr $size_mm + $size_inch"
+    (procedure "DBC_init_db" line 127)
+    invoked from within
+"DBC_init_db"
+Error Code: TCL PARSE EXPR BAREWORD
+***** A TCL Error Has Occurred *****
+Event Handler: C:/Heerbaart/NX2512_Custom/NX2512_Custom\mach\resource\library\tool\ascii\dbc_tool_ascii.tcl
+Event: DBC_init_db
+Error Info: invalid bareword "could"
+in expression "530012 + could not read "C:\Heerbaar...";
+should be "$could" or "{could}" or "could(...)" or ...
+    (parsing expression "530012 + could not rea...")
+    invoked from within
+"expr $size_mm + $size_inch"
+    (procedure "DBC_init_db" line 127)
+    invoked from within
+"DBC_init_db"
+Error Code: TCL PARSE EXPR BAREWORD
