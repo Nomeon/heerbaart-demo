@@ -123,7 +123,7 @@ def mark_baseline_ready(family: dict) -> dict:
 
 async def generate_article(family: dict, article_number: str, progress=None, material=None, amount=1,
                            resume_from="article_clone") -> dict:
-  if resume_from not in {"article_clone", "geometry_update", "setup_refresh"}:
+  if resume_from not in {"article_clone", "geometry_update", "setup_refresh", "cam_regeneration"}:
     raise ValueError(f"Unsupported article retry stage: {resume_from}")
   if not family["baseline_ready"]:
     raise ValueError("Save the manually programmed BASELINE and mark it ready first")
@@ -147,12 +147,15 @@ async def generate_article(family: dict, article_number: str, progress=None, mat
     for filename in outputs.values():
       if not Path(filename).is_file():
         raise FileNotFoundError(f"Cannot resume article; required part is missing: {filename}")
-  if resume_from != "setup_refresh":
+  if resume_from in {"article_clone", "geometry_update"}:
     await report(progress, "geometry_update", "article")
     await run_nx("update", request, root / "work")
-  await report(progress, "setup_refresh", "article")
-  refreshed = await run_nx("refresh", request, root / "work")
-  return {**outputs, **refreshed}
+  if resume_from != "cam_regeneration":
+    await report(progress, "setup_refresh", "article")
+    outputs.update(await run_nx("refresh", request, root / "work"))
+  await report(progress, "cam_regeneration", "article")
+  generated = await run_nx("cam", request, root / "work")
+  return {**outputs, **generated}
 
 
 async def prepare_quotation(drawing_path, article_number, progress=None, material=None, amount=1):

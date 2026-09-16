@@ -31,6 +31,9 @@ def dispatch(request):
     if stage == "refresh":
         from nx.build_setup import refresh_setup
         return refresh_setup(request)
+    if stage == "cam":
+        from nx.cam import regenerate_toolpaths
+        return regenerate_toolpaths(request)
     raise ValueError(f"Unknown NX stage: {stage}")
 
 

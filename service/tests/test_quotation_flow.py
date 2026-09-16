@@ -52,17 +52,17 @@ class QuotationFlowTests(unittest.IsolatedAsyncioTestCase):
             result = await pipeline.run_job("approve_baseline_and_generate", article_number="73023059",
                                             material="LF2", amount=5, progress=progress)
         self.assertTrue(json.loads((self.root / "family.json").read_text())["baseline_ready"])
-        self.assertEqual([call.args[0] for call in nx.await_args_list], ["clone", "update", "refresh"])
+        self.assertEqual([call.args[0] for call in nx.await_args_list], ["clone", "update", "refresh", "cam"])
         self.assertEqual(nx.await_args_list[0].args[1]["material"], "LF2")
         self.assertEqual(nx.await_args_list[0].args[1]["name"], "73023059")
-        self.assertEqual([call.args[0] for call in progress.await_args_list], ["article_clone", "geometry_update", "setup_refresh"])
+        self.assertEqual([call.args[0] for call in progress.await_args_list], ["article_clone", "geometry_update", "setup_refresh", "cam_regeneration"])
         self.assertEqual(result["outcome"], "ARTICLE_CREATED")
 
     async def test_ready_baseline_skips_preparation(self):
         pipeline._save_family({**self.family, "baseline_ready": True})
         with patch.object(pipeline, "run_nx", new_callable=AsyncMock, return_value={"setup": "article.prt"}) as nx:
             result = await pipeline.run_job("prepare_quotation", article_number="73023059")
-        self.assertEqual(nx.await_count, 3)
+        self.assertEqual(nx.await_count, 4)
         self.assertEqual(result["workflow"], "article")
 
     async def test_worker_keeps_failed_stage(self):
@@ -100,17 +100,34 @@ class QuotationFlowTests(unittest.IsolatedAsyncioTestCase):
         with patch.object(pipeline, "run_nx", new_callable=AsyncMock,
                           return_value={"setup": str(article / "73023059_SETUP.prt")}) as nx:
             await JobWorker(queue, store, notifier)._process(job)
-        self.assertEqual([call.args[0] for call in nx.await_args_list], ["refresh"])
+        self.assertEqual([call.args[0] for call in nx.await_args_list], ["refresh", "cam"])
         self.assertEqual(nx.await_args.args[1]["amount"], 5)
         self.assertEqual(store.get_status_by_id("cretry001").outcome, "ARTICLE_CREATED")
-        self.assertEqual(store.get_status_by_id("cretry001").stage, "setup_refresh")
+        self.assertEqual(store.get_status_by_id("cretry001").stage, "cam_regeneration")
         self.assertEqual((article / "73023059_SETUP.prt").read_text(), "operator-repaired article")
 
     async def test_geometry_retry_runs_update_then_refresh(self):
         self.prepare_article_retry()
         with patch.object(pipeline, "run_nx", new_callable=AsyncMock, return_value={}) as nx:
             await pipeline.run_job("retry_article", article_number="73023059", resume_from="geometry_update")
-        self.assertEqual([call.args[0] for call in nx.await_args_list], ["update", "refresh"])
+        self.assertEqual([call.args[0] for call in nx.await_args_list], ["update", "refresh", "cam"])
+
+    async def test_cam_retry_runs_only_cam_through_api_and_reports_failure(self):
+        self.prepare_article_retry()
+        queue, store = JobQueue(), JobStatusStore()
+        form = JobStartForm(job_id="ccamretry", material="LF2", amount=5,
+                            article_number="73023059", action="retry_article", resume_from="cam_regeneration")
+        await start_nx_job(form, store, queue, AsyncMock())
+        notifier = AsyncMock()
+        with patch.object(pipeline, "run_nx", new_callable=AsyncMock,
+                          side_effect=RuntimeError("VD_VOORVLAK_1 requires regeneration")) as nx:
+            with self.assertLogs("api.worker", level="ERROR"):
+                await JobWorker(queue, store, notifier)._process(await queue.get())
+        self.assertEqual([call.args[0] for call in nx.await_args_list], ["cam"])
+        result = store.get_status_by_id("ccamretry")
+        self.assertEqual(result.status, JobStatus.FAILED)
+        self.assertEqual(result.stage, "cam_regeneration")
+        self.assertIsNone(result.outcome)
 
     async def test_missing_retry_part_does_not_reclone(self):
         article = self.prepare_article_retry()

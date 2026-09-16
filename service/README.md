@@ -24,7 +24,8 @@ current acceptance evidence is tracked in DEMO.md.
 - Native PART, ASSY, CAD4CAM, BLANK, and SETUP files per item.
 - BLANK always uses Revolve Outline, a 360-degree revolve, and a 5 mm offset.
 - One machine/jaw strategy, with article-dependent opening and clearance values.
-- No automatic machining, toolpath regeneration, simulation, or posting.
+- Automatic regeneration of CAM program `O1234` after setup refresh.
+- No simulation, posting, or machining measurements yet.
 - No NATS, database, new UI, or distributed job system.
 
 The service runs directly on Windows, using loopback for the local demo. Legacy
@@ -111,7 +112,12 @@ The first numbered article, `73023059`, is also generated this way if requested.
 It is never the family's mutable baseline.
 
 `ready` records the operator's decision; it does not inspect or generate CAM.
-An article's copied toolpaths are not regenerated and may be out of date.
+The article pipeline finds program group `O1234` by name in Program Order and
+regenerates only that group after refresh. It saves the article SETUP, reopens it
+and checks statuses/path presence only for operations within `O1234`. Other groups
+(including `ONLYNOTES`) are outside this step; a missing `O1234` is an error. This is automatic
+within the API flow, without a separate UI button. The first native regeneration
+run remains to be verified; the current automated tests mock NX generation.
 
 ## HTTP Contract
 
@@ -123,14 +129,14 @@ used to change the family geometry.
 | --- | --- | --- |
 | `prepare_quotation` | `drawing`, `article_number` | Prepare a missing family, hand off an existing unreleased baseline, or generate the requested article if released. |
 | `approve_baseline_and_generate` | `article_number` | Record saved manual programming, reload the family, then generate the originally requested article. |
-| `retry_article` | `article_number`, `resume_from` | Resume `article_clone`, `geometry_update`, or `setup_refresh` after repair; update/refresh reuse existing article files. |
+| `retry_article` | `article_number`, `resume_from` | Resume `article_clone`, `geometry_update`, `setup_refresh`, or `cam_regeneration` after repair; reuse existing article files for all steps after clone. |
 | `baseline` (default) | `drawing` PDF upload | Extract table, build PART, structure, and initial SETUP. |
 | `extract` | `drawing` PDF upload | Extract and persist the table only. |
 | `part` | None | Build BASELINE PART using the persisted first row. |
 | `structure` | None | Build BASELINE ASSY, CAD4CAM, and BLANK from existing PART. |
 | `setup` | None | Run or resume the five initial setup stages. |
 | `ready` | None | Record that manual baseline programming is saved. |
-| `article` | `article_number` | Native clone, CAD update, and existing setup refresh. |
+| `article` | `article_number` | Native clone, CAD update, setup refresh, and CAM toolpath regeneration. |
 
 Drawing uploads are consumed by `extract`, `baseline`, and `prepare_quotation`. Article numbers
 are eight-digit strings looked up in the extracted table, not arbitrary formulas.
@@ -160,7 +166,9 @@ reusing an unreleased baseline, the completion looks like this (path abbreviated
 ```
 
 App actions return `AWAITING_PROGRAMMING` or `ARTICLE_CREATED`; the latter only
-means native clone/update/refresh completed. It does not mean CAM or NC is ready.
+means the current native pipeline completed. New jobs also complete toolpath
+regeneration, identified by final stage `cam_regeneration`. Older jobs ending at
+`setup_refresh` do not have regenerated paths. Neither outcome means NC is ready.
 The local app matches callbacks to the current job stored on the quotation.
 Low-level actions have no app outcome; use the CLI or service polling for those.
 No separate result callback, file download, or machining metadata extraction is performed.
