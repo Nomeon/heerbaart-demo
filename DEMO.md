@@ -1,463 +1,613 @@
-# Heerbaart-demo: klantvraag → NX → resultaten
+# Heerbaart-demo — klantvraag → NX → resultaten
 
-Dit is de centrale bron voor scope, flow, afspraken, werkvolgorde en voortgang van
-`heerbaart-demo` en de naastgelegen `heerbaart-app`. Het vervangt de eerdere
-PLAN.md, TODO.md en FLOW.md in deze repository. Het app-plan is alleen nog
-achtergrond bij de gebouwde UI-preview; technische READMEs beschrijven de
-bestaande implementatie. Bij een verschil geldt dit document voor het doel;
-de code en uitgevoerde controles bepalen wat werkelijk gereed is.
+Dit is de centrale bron voor scope, flow, werkvolgorde en voortgang van
+`heerbaart-demo` en `heerbaart-app`. Het vervangt PLAN.md, TODO.md en FLOW.md in
+deze repo. Het app-plan is historische achtergrond bij de UI-preview; technische
+READMEs beschrijven de implementatie. Code of een mocktest alleen bewijst geen NX-run.
 
-**Laatste codecontrole: 16 september 2026. Huidige fase: 1 — lokaal verbinden.**
-Beide servers gaan nu op deze Windows-laptop draaien. NetBird volgt later en
-is geen voorwaarde voor de lokale demo. De volledige keten werkt nog niet.
+**Belangrijk: dit is een lokale proof of concept op deze laptop. We bouwen de
+happy flow.** Gebruik de bestaande seriële worker en directe HTTP-koppeling.
+Geen extra queue-dienst, jobhistorieplatform, generieke familielaag, automatische
+herstelketens of extra API-sleutelbeheer voor deze lokale stap. NetBird volgt
+later. Bestaande app-login, organisatiecontrole en invoervalidatie blijven.
 
-## 1. Doel en vaste afspraken
+**Uitvoering zonder GUI is een harde eis**, ook voor externe NC-simulatie, met het
+oog op latere serveruitvoering. Geen interactieve NX-sessie als uitwijkroute.
+De simulatiestap gebruikt de meegeleverde NX-Python, zodat het journal en de
+CSE-driver dezelfde runtime gebruiken; API/Pixi en de overige batchstappen blijven
+hun bestaande omgeving gebruiken. Volledige externe simulatie op 59 en 60 is
+via de API bevestigd; zie het bewijslogboek.
 
-- Eén familie: **Elster Rev.D**, sleutel `elster-rev-d`, de bestaande enkelbladige PDF.
-- Een achtcijferig artikelnummer kiest één van de 18 uitgelezen tabelregels.
-  `DT`, `FA`, `DR`, `FR`, `FB`, `DS`, `DL` komen uit die regel, in millimeters.
-  Extractie bewaart de afgedrukte volgorde, klasse, schedule en nominale waarden;
-  geen hardcoded vervanging of afgeleide tabelwaarden.
-- BASELINE is een zelfstandig familiesjabloon met de afmetingen van de eerste
-  tabelregel. Het is geen verkoopartikel. Artikelen krijgen eigen bestanden.
-- Eén materiaal: de ERPNext-displaynaam wordt rechtstreeks als NX-materiaalnaam
-  gebruikt. De exacte naam en dichtheid moeten nog worden vastgelegd.
-- De programmeur programmeert BASELINE in NX, slaat op, sluit de relevante
-  bestanden en klikt in de app op **Programmering gereed — genereer artikel**.
-  Vertrouw deze bevestiging met de bestaande eenvoudige bestands/setupcontroles;
-  voeg geen apart CAM-goedkeuringssysteem toe.
-- Toon echte voortgang en retourneer verse NX-bewerkingstijden, product- en
-  ruwgewicht, werkelijke simulatie-uitkomst en geposte NC-bestanden.
-- ERPNext levert klanten/materialen en ondersteunt de bestaande klantaanmaak.
-  ERP-eindartikelen, ERP-verkoopoffertes en verkoopprijscalculatie vallen buiten
-  deze POC. Bestaande ERPNext-, S3- en databasevoorzieningen blijven bruikbaar;
-  twee lokale servers betekent niet dat alle externe diensten lokaal worden.
-- Behoud de seriële Python-worker, lokale familiebestanden, HTTP-koppeling en
-  NX-processen per stap. Geen nieuwe queue-dienst, generiek familieplatform,
-  baselineversiesysteem of NX-container nodig.
-- Hergebruik STAP1–11, de associatieve structuur en bestaande machine/kaakstrategie.
-  Behoud NX-save/heropen-grenzen. Oorspronkelijke bronprojecten blijven ongemoeid.
+**Alleen simulatie gebruikt de bibliotheken van `Heerbaart_NX2512.bat`:**
+`NX_SIMULATION_CUSTOM_DIR=C:/Heerbaart_Custom/__Custom`. Dit stuurt uitsluitend
+de CSE-machinebibliotheek en toolgraphics tijdens `simulation`. Clone, update,
+refresh, CAM, post, artikelreferenties en het laden van de setup behouden hun
+bestaande paden onder `NX_CUSTOM_DIR`. De twee Okuma-kits zijn niet byte-identiek;
+de gebruiker bevestigt dat de kit onder `Heerbaart_Custom` interactief werkt.
 
-## 2. Voortgang bijhouden
+**Stand 16 september 2026:** lokale verbindingen gereed. Echte aanvraag →
+PDF-opslag → NX → programmeeroverdracht getest. Formulier, overzicht en detail
+gebruiken de preview-componenten met echte data. De programmeerknop is aangesloten.
+De eerste artikelrun stopte bij setup-refresh; daarna blokkeerde een nieuwe clone
+op twee identieke kaakbibliotheekkopieën met verschillende paden. Die clonefout
+is opgelost en native getest in een aparte map. Daarna zijn ook de kaakpadcontrole
+en het opnieuw opbouwen van positioneringsconstraints in refresh hersteld:
+clone, update en volledige refresh van 73023059 zijn native geslaagd op een testkopie.
+Gebruiker bevestigt nu dat 73023059 én 73023060 werken en CAM-operaties in NX bevatten.
+Toolpath-regeneratie is aangesloten als automatische stap 5 van de artikelflow.
+Na de serverherstart zijn de bestaande offertes voor 73023059 en 73023060 eenmalig
+via de bestaande API hervat vanaf `cam_regeneration`, met behoud van offerte en
+artikelbestanden. De eerste runs stopten op `ONLYNOTES` buiten het artikelprogramma.
+De selectie is daarom beperkt tot programmagroep `O1234` (47 bewerkingen).
+Regeneratie/save/heropen is voor 59 geslaagd en door gebruiker bevestigd.
+Posten is aangesloten op basis van `journal.py`: dezelfde Okuma-instellingen,
+automatisch na CAM, uitvoer per artikel. Beide API-runs (59/60) zijn geslaagd;
+Externe NC-simulatie is nu ook voor beide artikelen via de API geslaagd, zonder
+GUI. Beide bestaande offertes zijn hervat en melden `ARTICLE_CREATED`, stage
+`simulation`, zonder fout. NC-download via de service is bytegelijk aan de
+gesimuleerde lokale bestanden.
 
-Gebruik de checklist-ID's hieronder in werknotities. Vink een taak alleen af als
-het genoemde resultaat is aangetoond; code aanwezig is geen bewijs van een
-geslaagde NX-run. Zet bij een blokkade het taak-ID, de oorzaak en de volgende
-actie in het logboek. Werk dit document bij bij wijzigingen aan scope, contract
-of status; maak geen nieuwe parallelle PLAN/TODO/FLOW aan.
+**Nieuwe vrijgaveregel:** geposte NC is nog niet downloadbaar. Eerst **External
+Program Simulation** van het daadwerkelijke `<artikel>-SETUP.min` via de Okuma
+CSE-driver; interne toolpath-simulatie telt niet. Volledig einde + nul collisions,
+limits, gouges en singularities vereist. Afgebroken/mislukte/nog niet uitgevoerde
+simulatie blokkeert download in zowel app als NX-service. `simulation.json` bewaart
+de uitkomst en SHA-256 van de gecontroleerde NC; gewijzigde NC of opnieuw posten
+maakt vrijgave ongeldig. Voor 59 en 60 is HTTP 409 tijdens simulatie en HTTP 200
+na succesvolle afronding gecontroleerd.
 
-| Fase | Status | Gereed wanneer |
-| --- | --- | --- |
-| 0. Inventarisatie en consolidatie | Gereed | Code, lokale data en gaps gecontroleerd; één voortgangsdocument |
-| 1. Lokaal verbinden | Open | App, NX-service en callbacks bereikbaar; starttoestand vastgelegd |
-| 2. Echte workflow | Open | Aanvraag → programmeeroverdracht → eigen artikel, met echte stappen |
-| 3. NX-afwerking | Open | Verse CAM, gecontroleerde tijden/gewichten, NC en simulatie |
-| 4. Resultaten en live UI | Open | Resultaten opgeslagen, weergegeven en downloadbaar; herbezorging werkt |
-| 5. Einddemo | Open | Beide scenario's en foutcontroles aantoonbaar geslaagd |
+**Simulatie gereed voor deze twee artikelen:** `SuppressAll` voorkomt de blokkade
+bij 4,620 s; `SuppressGraphics` alleen niet. De werkende interactieve CSE-kit
+wordt uitsluitend voor simulatie geladen. Kanaal `1`, één `PlayForward()`, echt
+SimEnd en nul gerapporteerde fouttellers zijn op beide artikelen bevestigd.
+Geen handmatige stappen of interactieve NX-sessie nodig.
 
-### Gecontroleerde uitgangssituatie
+**Bevestigd door gebruiker op 16 september 2026:** A1–A3 zijn al getest en werken;
+de browserdownload levert de NC-code op. N3c vervalt: het verschil in de
+referentie kwam door een handmatige wijziging en is niet relevant voor deze flow.
+**Gewichten aangesloten:** materiaaltoekenning gebeurt vroeg in de geometrie-update
+(N1c). Direct na de geometrie-update leest `measurement` de product- en ruwdeelbody
+afzonderlijk in kg. Een voortgangscallback bewaart beide gewichten op de offerte;
+de UI toont stuk/ordertotalen terwijl setup-refresh, CAM, post en simulatie doorgaan.
+**Simulatietijd aangesloten:** één totale tijd uit CSE `MachineTime`, pas na
+SimEnd en geslaagde simulatie. Geen afzonderlijke operatietijden/import voor deze
+POC-stap. **Nog open:** overige simulatiedetails en afronding (R1).
+De opgeslagen machinebewerking met totale simulatietijd per stuk (R3) is gereed,
+evenals artikel-/concept-BOM-aanmaak via de knop in [ERPNext.md](ERPNext.md).
+Lokale NC-opslag en de bestaande download
+volstaan voor deze POC; NC naar S3 is niet vereist. Pas na volledige
+resultaatlevering, inclusief de machinebewerking, volgt `READY`.
+De artikelflow voert nu clone → geometrie-update → gewichten uitlezen/teruggeven → setup-refresh →
+gereedschapsbanen genereren → NC-programma maken → externe NC-simulatie →
+NC-download vrijgeven uit. Geen aparte actieknop.
+Materiaal wordt vóór setup-refresh/CAM/post toegekend; de totale simulatietijd volgt na SimEnd.
 
-| Onderdeel | Aanwezig / bewijs | Wat nog ontbreekt |
-| --- | --- | --- |
-| ERP/S3/offerte | [ERP](../heerbaart-app/src/server/erp.ts), [storage](../heerbaart-app/src/server/storage.ts), [aanmaakactie](../heerbaart-app/src/app/(app)/app/quotation-form/actions.ts) | Lokale bereikbaarheid controleren; artikelnummer en nieuwe workflow aansluiten |
-| Live verzending | Stuurt offerte-ID als job-ID, PDF, materiaalnaam en aantal | Geen actie/artikelnummer; start standaard opnieuw `baseline`; verwijdert offerte/PDF bij verzendfout |
-| UI-preview | [quotation-preview.tsx](../heerbaart-app/src/components/offertes/quotation-preview.tsx), route `/app/quotation-preview` | Voorbeeldwaarden, timers, lokale vrijgave en voorbeeld-NC; niet verbonden met NX |
-| Herbruikbare UI | [quotation-views.tsx](../heerbaart-app/src/components/offertes/quotation-views.tsx), request-form, drawing-field en operation-fields | Live detailpagina gebruikt nog eenvoudige weergave; slepen heeft nog geen live opslagactie |
-| NX-basis | [pipeline.py](service/pipeline.py), [nx/entry.py](service/nx/entry.py), [variant.py](service/nx/variant.py), [setup](service/nx/setup/README.md) | Artikelpad eindigt bij clone → update → refresh; geen automatische afwerking |
-| Worker/API | [api](service/api/main.py), [worker](service/api/worker.py), [notifier](service/api/notifier.py) | Worker laat materiaal/aantal en pipeline-output vallen; alleen vier statussen, geen stappen/resultaten |
-| App-callbacks | [status](../heerbaart-app/src/app/api/nx/status/route.ts), [result](../heerbaart-app/src/app/api/nx/result/route.ts) | `COMPLETED` wordt ten onrechte `READY`; resultaat logt alleen `jobId/output`; geen sleutel-/payloadcontrole |
-| Database | [schema.prisma](../heerbaart-app/prisma/schema.prisma): offerte, productgewicht, NX/MANUAL-bewerkingen | Artikelnummer, wachtstatus, ruwgewicht, jobs/actieve job en resultaatmetadata |
-| Lokale bestanden | `service/data/elster-rev-d`: 18 regels, vijf BASELINE-parts, `setup_stage=references`, `baseline_ready=false` | Handmatige programmering/vrijgave nog bevestigen; geen artikelmappen gezien bij inventarisatie |
-| Verificatie | 8 bestaande Python-unittests geslaagd op 16-09-2026 | Testobjecten bewijzen geen NX/CAM; app-build, live verbindingen en end-to-end-run nog niet uitgevoerd in deze review |
+## 1. Vaste afspraken
 
-De service-README meldt eerdere NX 2512-controles voor 73023059, 73023060,
-73024126 en 73024154; die zijn hier niet opnieuw uitgevoerd. `DT=180` heeft
-inmiddels codeondersteuning bij klonen; `DT<180` blijft uitgesloten en initiële
-BASELINE-opbouw vereist `DT>180`. Volledige validatie van alle 18 varianten,
-kaakselecties en behoud van handmatige CAM blijft open.
+- Eén familie: **Elster Rev.D**, sleutel `elster-rev-d`, de bestaande enkelbladige
+  PDF met 18 tabelregels. Achtcijferig artikelnummer kiest de regel;
+  `DT`, `FA`, `DR`, `FR`, `FB`, `DS`, `DL` komen daaruit, in millimeters.
+  Bewaar afgedrukte volgorde, klasse, schedule en nominale waarden.
+- BASELINE is een zelfstandig familiesjabloon met de eerste tabelregel als
+  maatvoering, geen verkoopartikel. Ieder artikel krijgt eigen bestanden.
+- **Ruwdeel is geen formulierkeuze meer, ook niet in de preview.** Altijd native
+  **Revolve Outline, 360°, offset 5 mm**, één ruwdeel per stuk. Het bestaande
+  databaseveld `materialShape` krijgt vast `Revolve Outline`; geen Cylinder/Blok/
+  Casting-route. Ruwgewicht blijft wel een gewenst resultaat.
+- Materiaalcode is het eerste woord van de gekozen ERPNext-naam, bijvoorbeeld
+  `1.4301 - RVS 304` → `1.4301`. Deze code matcht de NX-materiaalnaam in
+  `C:/Heerbaart/Materials/Heerbaart_Materials.xml`; dichtheid komt uit die bibliotheek.
+  Materialen bestaan volgens afspraak altijd; geen extra validatie of fallback.
+  Tijdens de geometrie-update wordt het materiaal per artikel toegekend aan de
+  product-solid in PART en `BLANK_REVOLVE_OUTLINE_BODY` in BLANK, vóór opslaan.
+  De bestaande NX-instelling werkt massa bij op save. BASELINE blijft ongewijzigd.
+- De programmeur programmeert BASELINE, bewaart/sluit de bestanden en bevestigt
+  in de app. Vertrouw deze bevestiging; geen apart CAM-goedkeuringssysteem.
+- Volg de preview-UI met echte data: geen gesimuleerde stappen of voorbeeld-NC.
+  Ontbrekende metingen blijven “Nog niet berekend”. Setup-paden zijn lokale locaties.
+- ERPNext levert klanten/materialen en bestaande klantaanmaak. Artikel- en
+  BOM-aanmaak via een knop zijn aangesloten volgens [ERPNext.md](ERPNext.md).
+  Eén machinebewerking met de totale CSE-tijd per stuk wordt onder R3 vastgelegd;
+  de vier overige tijden vult de gebruiker in. Verkoopoffertes en
+  verkoopprijscalculatie blijven buiten deze POC.
+- Hergebruik STAP1–11, associatieve structuur, machine/kaakstrategie en NX-save/
+  heropen-grenzen. Oorspronkelijke bronprojecten blijven ongemoeid.
 
-## 3. Lokale opstelling en starten
+## 2. Lokaal starten
 
 ```text
-Browser → Next.js op localhost:3000 → NX-service op 127.0.0.1:9009
-                ↑                              │
-                └── /api/nx/status, /result ────┘
-                ├── PostgreSQL: klantvragen, jobs, resultaten
-                ├── ERPNext: klanten/materialen
-                └── S3: tekeningen en ontvangen NC-bestanden
+Browser → Next.js localhost:3000 → NX-service 127.0.0.1:9009
+              ↑                         │
+              └── /api/nx/status ────────┘
+              ├── PostgreSQL: klantvragen + huidige job/voortgang
+              ├── ERPNext: klanten/materialen
+              └── S3: PDF-tekeningen (NC blijft lokaal voor deze POC)
 ```
 
-Beoogde startwijze: Next.js rechtstreeks op de Windows-host met Bun; NX-service
-natief met Pixi. PostgreSQL kan als enige lokale Compose-service worden gestart.
-De huidige Compose-app gebruikt een NetBird-sidecar: start niet de hele stack
-voor deze lokale route. Bij later gebruik van containers moeten hostadressen
-opnieuw worden bepaald; container-localhost verwijst niet naar Windows.
+Beide servers draaien op Windows. ERPNext en S3 blijven de ingestelde externe
+diensten. Alleen PostgreSQL hoeft in Compose te draaien; de volledige Compose-app
+met NetBird-sidecar is voor deze lokale route niet nodig.
 
-**Nog in te stellen/controleren; dit document wijzigt geen `.env`-bestanden:**
-
-| Bestand | Lokale instelling |
+| Configuratie | Waarde |
 | --- | --- |
-| `heerbaart-app/.env` | `NX_WORKER_URL=http://127.0.0.1:9009` |
-| `heerbaart-app/.env` | `BETTER_AUTH_URL=http://localhost:3000`, `NEXT_PUBLIC_APP_URL=http://localhost:3000` |
-| `heerbaart-app/.env` | Werkende `DATABASE_URL`; bij bestaande lokale Compose-Postgres hostpoort `5632` |
-| `service/.env` | `NX_HOST=127.0.0.1`, `NX_PORT=9009` |
-| `service/.env` | `NX_CALLBACK_URL=http://localhost:3000`, `NX_CALLBACK_STATUS_PATH=/api/nx/status` |
-| `service/.env` | `NX_CALLBACK_RESULT_PATH=/api/nx/result` — configuratie/code nog toevoegen |
-| `service/.env` | `NX_DATA_DIR=C:/Users/Bob/Desktop/DEMO/heerbaart-demo/service/data` voor de bestaande familie |
-| `service/.env` | `NX_INSTALL_DIR=C:/Program Files/Siemens/DesigncenterNX2512`, `NX_CUSTOM_DIR=C:/Heerbaart/NX2512_Custom/NX2512_Custom` |
-| Beide | HTTP-sleutels en verificatie nog aansluiten; bestaande `NX_CALLBACK_API_KEY` is alleen uitgaand `X-API-Key` |
+| App `NX_WORKER_URL` | `http://localhost:9009` |
+| App `BETTER_AUTH_URL`, `NEXT_PUBLIC_APP_URL` | `http://localhost:3000` |
+| Lokale PostgreSQL | `localhost:5632` |
+| Service `NX_HOST`, `NX_PORT` | `127.0.0.1`, `9009` |
+| Service `NX_CALLBACK_URL`, `NX_CALLBACK_STATUS_PATH` | `http://localhost:3000`, `/api/nx/status` |
+| `NX_DATA_DIR` | Standaard `data`, relatief aan `service` |
+| `NX_INSTALL_DIR` | `C:/Program Files/Siemens/DesigncenterNX2512` |
+| `NX_CUSTOM_DIR` | `C:/Heerbaart/NX2512_Custom/NX2512_Custom` |
 
-Bij controle wees de app nog naar `fedora.netbird.selfhosted:9009`; service-host
-en callbacks ontbraken in zijn `.env`. Zonder overrides zijn de callbacks
-`http://localhost:8001/jobs/status`. De service laadt `.env` via dotenv;
-`ENV_FILE` kan expliciet een bestand kiezen, procesvariabelen gaan voor.
-Bewaar sleutels uitsluitend in genegeerde configuratie, nooit in dit document.
-
-Startcommando's, na fase 1-configuratie, in aparte terminals:
+Vanuit `heerbaart-app`:
 
 ```powershell
-# Vanuit heerbaart-app; dependencies/client ontbreken in de gecontroleerde kopie.
-bun install
-bun run db:generate
-# Alleen als de bestaande lokale PostgreSQL nodig is:
+# Alleen wanneer PostgreSQL nog niet draait:
 docker compose up -d postgres
-# Pas bestaande migraties toe op de bedoelde lokale ontwikkel-database.
-bun run db:migrate
 bun run dev
 ```
 
+Vanuit `heerbaart-demo/service`, in een tweede terminal:
+
 ```powershell
-# Vanuit heerbaart-demo/service; .pixi en pixi.lock zijn al aanwezig.
-# pixi install alleen wanneer de omgeving nog niet bruikbaar is.
 pixi run serve
-# In een andere terminal: alleen HTTP-bereikbaarheid, geen NX-bewijs.
-curl.exe http://127.0.0.1:9009/
 ```
 
-NX gebruikt Python 3.12 en Siemens' NXOpen; installeer NXOpen niet via PyPI.
-`NX_PYTHON_HOME` is optioneel; standaard de actieve Pixi-omgeving.
-`NX_JOURNAL_TIMEOUT` is per proces, standaard 900 seconden.
-Gebruik één API-proces/worker, zonder reload. Stop de API voordat CLI-stages
-dezelfde familie bewerken; de seriële queue beschermt niet tegen een tweede proces.
+Dependencies, seed en migraties zijn hier uitgevoerd. Nieuwe installatie:
+`bun install`, `bun run db:generate`, `bun run prisma migrate deploy`,
+`bun run db:seed`; service: `pixi install`. Na Prisma-wijzigingen de app herstarten.
+De seed draait rechtstreeks met Bun en leest `SEED_OWNER_NAME`, `SEED_OWNER_EMAIL`,
+`SEED_OWNER_PASSWORD` uit `.env`. Opnieuw seeden zet het eigenaarswachtwoord terug;
+niet bij iedere start doen. Bewaar sleutels alleen in genegeerde configuratie.
 
-## 4. Gewenste flow
+Serviceconfiguratie komt uit `.env`; `ENV_FILE` kan een ander bestand kiezen,
+procesvariabelen gaan voor. NX gebruikt Python 3.12 en Siemens NXOpen, niet PyPI.
+`NX_PYTHON_HOME` is optioneel, standaard Pixi; `NX_JOURNAL_TIMEOUT` is 900 seconden
+per proces. Eén API-worker, zonder reload; geen gelijktijdige CLI op dezelfde familie.
 
-### A. Eerste klantvraag, BASELINE ontbreekt
+## 3. Happy flow
 
-1. Vraag artikel **73023059**, aantal **5**, afgesproken materiaal en PDF aan.
-   De app bewaart offerte/PDF en een eigen jobrecord vóór verzending.
-2. NX leest de 18 tabelregels en controleert het gevraagde artikel vóór dure
-   modelbouw. BASELINE gebruikt de eerste tabelregel.
-3. Bouw PART, ASSY/CAD4CAM/BLANK en SETUP; stuur de echte stappen door.
-4. Lever `AWAITING_PROGRAMMING` en het pad naar `BASELINE_SETUP.prt`.
-   De job eindigt en de worker komt vrij. De offerte wacht op programmeren.
-5. De programmeur programmeert, bewaart/sluit en bevestigt in de app.
-6. Een nieuwe job voor dezelfde offerte markeert BASELINE gereed en genereert
-   het oorspronkelijk gevraagde artikel. Herlaad `family.json` na
-   `mark_baseline_ready()`: die functie muteert het meegegeven dict niet.
-7. Kloon de vijf parts, wijzig geometrie/afhankelijkheden, ververs de opspanning,
-   regenereer CAM, meet, post en simuleer met de werkende laptopconfiguratie.
-8. Lever resultaten en NC. Pas na geaccepteerde opslag wordt de offerte `READY`.
+1. **Aanvragen:** klant, referentie, artikel, leverdatum, materiaal, aantal en PDF.
+   App controleert ERP-opties, bewaart offerte/PDF en huidige job-ID vóór dispatch.
+   Bij dispatchfout blijven aanvraag en PDF bewaard.
+2. **Familie bepalen:** `prepare_quotation` controleert artikel. Ontbreekt de
+   familie, dan extractie → PART → structuur → vijf setup-stappen. Artikelvalidatie
+   gebeurt na extractie vóór modelbouw; BASELINE gebruikt altijd de eerste regel.
+3. **Programmeeroverdracht:** complete, niet-vrijgegeven BASELINE hergebruiken →
+   `AWAITING_PROGRAMMING` met setup-pad. Worker komt vrij. Een map alleen is geen
+   vrijgave; een onvolledige opbouw geeft een fout en vraagt gericht lokaal vervolg.
+4. **Programmeren/vrijgeven:** open `BASELINE_SETUP.prt`, programmeer, bewaar/sluit.
+   App-knop start nieuwe job voor dezelfde offerte: `approve_baseline_and_generate`.
+   Service markeert gereed, herlaadt `family.json` en start het oorspronkelijke artikel.
+5. **Artikel maken:** vijf parts native klonen → geometrie aanpassen en gekozen
+   materiaal aan PART/BLANK toekennen, opslaan → gewichten meten en direct
+   terugmelden (zie hieronder) → opspanning
+   bijwerken → automatisch **Gereedschapsbanen genereren** (`cam_regeneration`,
+   stap 5 in de artikel-UI). NX zoekt programmagroep `O1234` op naam in de
+   programmaboom en genereert uitsluitend die groep en onderliggende bewerkingen via
+   `CAMSetup.GenerateToolPath`, controleert toolpaths/statussen en bewaart/heropent
+   de artikelsetup. Ook de controle na heropenen geldt alleen voor `O1234`.
+   `ONLYNOTES` en andere programmagroepen blijven buiten deze stap; ontbreekt
+   `O1234`, dan volgt een fout. Daarna automatisch **NC-programma maken**:
+   `DeleteMachineCode`, `OutputBallCenter=False`, `PostprocessWithPostModeSetting`
+   met `Okuma_MultusU4000_1SW`, `PostDefined` voor units/warnings/review, `Normal`.
+   Eerst naar een verse runmap, daarna de niet-lege `<artikel>-SETUP.min` naar de
+   artikelmap kopiëren en setup opslaan. Callback eindigt op `postprocessing` /
+   `ARTICLE_CREATED` is historisch de post-eindstatus. De nieuwe flow gaat direct
+   verder naar `simulation`; pas na succesvolle externe simulatie is NC downloadbaar.
+   Oude aanvragen die bij setup-refresh eindigden krijgen dat label niet alsnog.
+6. **Simulatie:** expliciet extern bestand op kanaal `1`, echte CSE-driver,
+   machine-/tool-/IPW-controles, wachten op SimEnd en daarna foutentellers uitlezen.
+7. **Gewichten (vroeg in stap 5):** direct na geometrie-update heropent `measurement` de opgeslagen
+   PART/BLANK en meet uitsluitend de product-solid en `BLANK_REVOLVE_OUTLINE_BODY`
+   via NX `NewMassProperties`, expliciet in kg. `weights.json` bewaart de massa's
+   per stuk. Callback: `IN_PROGRESS` op `measurement`, met `weights.product_kg`
+   en `weights.stock_kg`; de app bewaart deze als `weight`/`stockWeight` met zes
+   decimalen. UI: direct kg/stuk en kg/stuk × aantal tijdens “In verwerking”, via de
+   bestaande polling (circa twee seconden). Latere callbacks zonder gewichten
+   wissen deze niet. Na simulatie eindigt de aanvraag op `ARTICLE_CREATED` / `simulation`.
+   Tijd blijft “Nog niet berekend” totdat de externe simulatie succesvol is afgerond.
+   De eindcallback levert `simulation_time_seconds` uit CSE `MachineTime`,
+   opgeslagen als `Quotation.simulationTimeSeconds` met millisecondeprecisie.
+   De UI toont minuten per stuk en minuten × aantal. Geen CAM-operatie-import.
+   De eindcallback bewaart ook één machinebewerking met dezelfde tijd, naast vier
+   handmatig in te vullen regels. Artikel/concept-BOM exporteert de gebruiker via
+   de knop; zie ERPNext.md. **Nog bouwen:** overige simulatiedetails opslaan/tonen.
+   NC blijft lokaal met de bestaande download. Pas na volledige resultaatlevering `READY`.
 
-### B. Volgende klantvraag, BASELINE gereed
-
-Vraag **73023060** aan. Dezelfde aanvraagactie ziet `baseline_ready=true`,
-gebruikt de opgeslagen tabel en voert direct stap 7–8 uit. Geen nieuwe
-BASELINE en geen tweede programmeeroverdracht. De nieuwe PDF blijft bij de
-offerte; vervangt niet stilzwijgend de familietabel. Gebruik dezelfde revisie.
-
-| Familietoestand | Beslissing |
-| --- | --- |
-| Afwezig | Extractie/opbouw → programmeeroverdracht |
-| Setup compleet, niet vrijgegeven | Bestaande setup hergebruiken → programmeeroverdracht |
-| Vrijgegeven | Gevraagd artikel genereren |
-| Onvolledige eerdere opbouw | Fout/onvolledige stap melden; gericht hervatten na diagnose |
-
-Een bestaande map is geen vrijgave. De huidige lokale familie hoort bij de tweede
-rij, voor zover de opgeslagen toestand en aanwezige bestanden aangeven.
-
-### Status en zichtbare stappen
-
-Jobstatus blijft `PENDING → IN_PROGRESS → COMPLETED | FAILED`. Offertestatus:
+Volgende aanvraag, bijvoorbeeld **73023060**: `baseline_ready=true` start direct
+het artikelpad. Opgeslagen familietabel blijft leidend; nieuwe PDF vervangt die
+niet. Gebruik dezelfde revisie. De huidige laptopfamilie is vrijgegeven.
 
 ```text
-QUEUED → PROCESSING → AWAITING_PROGRAMMING → QUEUED → PROCESSING → READY
-QUEUED → PROCESSING → READY                         (BASELINE al gereed)
-Actieve uitvoering → FAILED + echte stap/foutmelding
+QUEUED → PROCESSING → AWAITING_PROGRAMMING
+                           ↓ bevestiging in app
+                     QUEUED → PROCESSING → ARTICLE_CREATED
+Al vrijgegeven: QUEUED → PROCESSING → ARTICLE_CREATED
+Fout: actieve uitvoering → FAILED + werkelijke stap/fout
+Later: artikelafwerking + resultaatopslag → READY
 ```
 
-`COMPLETED` alleen maakt een offerte nooit gereed; het geaccepteerde resultaat
-bepaalt wachten of gereed. Een artikelfout hoeft BASELINE-vrijgave niet terug te draaien.
+Browser ververst circa iedere twee seconden zolang actief, stopt bij wachten/
+einde/fout. Bij bestaande BASELINE toont de live flow alleen de familiecontrole,
+geen opnieuw uitgevoerde bouwreeks. Handmatige bewerkingen en sleepvolgorde worden
+in de app opgeslagen; deze veranderen geen NX-gereedschapsbanen.
 
-Onderstaande wire-ID's zijn het doelcontract, nog te implementeren. Meld de stap
-vóór de werkelijke aanroep. Behoud de mislukte stap bij een fout.
+## 4. Huidige implementatie en contract
 
-| BASELINE | Artikel |
+| Onderdeel | Code |
 | --- | --- |
-| `pdf_extract` — Tekening uitlezen | `article_clone` — BASELINE kopiëren |
-| `baseline_part` — Basismodel maken | `geometry_update` — Afmetingen aanpassen |
-| `baseline_structure` — Assemblage en ruwdeel maken | `setup_refresh` — Opspanning bijwerken |
-| `setup_load` — Machine laden | `cam_regeneration` — Gereedschapsbanen genereren |
-| `setup_constraints` — Opspanrelaties aanbrengen | `measurement` — Tijden en gewichten uitlezen |
-| `setup_holders` — Klemmen plaatsen | `postprocessing` — NC-programma maken |
-| `setup_position` — Product positioneren | `simulation` — Simuleren |
-| `setup_references` — Referenties koppelen | `result_delivery` — Resultaten versturen |
-| `result_delivery` — Resultaten versturen | |
+| Aanvraag/dispatch | App `quotation-form/actions.ts`, `src/server/nx.ts` |
+| Gedeelde UI | `quotation-request-form.tsx`, `quotation-views.tsx`, `quotation-live.tsx`; mapping `src/lib/nx-workflow.ts` |
+| App-opslag | `Quotation`: artikel, unieke huidige `nxJobId`, stap/tijd, workflow, fout en setup-pad; migratie `20260916000000_connect_local_nx_flow` toegepast |
+| NX-workflow | `service/pipeline.py`, `service/api/{main,schema,worker,store,notifier}.py` |
+| Callback | App `src/app/api/nx/status/route.ts` |
 
-De browser ververst appgegevens ongeveer elke twee seconden zolang een job actief
-is; stopt bij wachten/einde/fout. Geen gesimuleerde percentages. Setup-pad is
-kopieerbare laptopinformatie, geen downloadlink. Ontbrekende metingen blijven
-“Nog niet berekend”. Houd NX-schattingen en handmatige offertebewerkingen apart.
+**App → NX:** `POST /start/nx-job`, multipart met `job_id` (nieuw per actie,
+`[a-z][a-z0-9]{1,31}`), `action` (`prepare_quotation` of
+`approve_baseline_and_generate`), `article_number` (acht cijfers), `material`
+(ERP-displaynaam), `amount` (positief geheel), `drawing` (PDF alleen bij voorbereiding).
+Acceptatie `201 {"job_id":"..."}`, invoerfout `422`, bekend in-memory ID `409`.
+App-uploadlimiet 25 MiB; service 32 MiB. Lage acties `extract`, `baseline`, `part`,
+`structure`, `setup`, `ready`, `article` blijven beschikbaar voor lokaal werk.
 
-## 5. HTTP- en gegevensafspraken
-
-**Dit is het te implementeren contract, geen beschrijving van reeds werkende APIs.**
-Huidig: `POST /start/nx-job` kent `extract`, `baseline` (default), `part`,
-`structure`, `setup`, `ready`, `article`; status/polling bevat alleen `job_id/status`.
-Behoud die lage CLI/API-acties. Bevestig de nieuwe afspraken in fase 2 en leg na
-fase 5 een geanonimiseerd werkelijk request/resultaat vast in dit document.
-
-### App → NX
-
-`POST /start/nx-job`, multipart, met `X-API-Key` (controle nog toevoegen):
-
-| Veld | Regel |
-| --- | --- |
-| `job_id` | Nieuw per actie, app-eigendom, `^[a-z][a-z0-9]{1,31}$`; geen UUID met streepjes |
-| `quotation_id` | Verwijst naar vooraf opgeslagen job/offerteverband |
-| `action` | `prepare_quotation` of `approve_baseline_and_generate` |
-| `article_number` | Acht ASCII-cijfers; moet voorkomen in familietabel |
-| `material` | Exacte afgesproken ERPNext/NX-displaynaam |
-| `amount` | Positief geheel aantal; één artikel/programmageneratie, aantal alleen voor totalen |
-| `drawing` | PDF bij voorbereiding, weggelaten bij goedkeuring |
-
-Acceptatie: `201 {"job_id":"cnxjob001"}`. Ongeldige invoer: `422`;
-reeds geclaimd job-ID: `409`. Uitvoeringsfouten komen asynchroon als `FAILED`.
-Huidige grenzen: app-PDF maximaal 25 MiB, service-upload 32 MiB; stem nieuwe
-NC-resultaatlimieten af op echte uitvoer. Valideer ook niet-lege materiaalnaam/aantal.
-
-### NX → app: voortgang
-
-`POST /api/nx/status`, JSON, `X-API-Key`; geaccepteerd: `204`.
-`GET /jobs/{job_id}` krijgt dezelfde velden; onbekend ID blijft `404`.
+**NX → app:** `POST /api/nx/status`, JSON. `GET /jobs/{job_id}` op de service levert
+dezelfde momentopname. Voorbeeld van de geteste overdracht (ID/pad/tijd vereenvoudigd):
 
 ```json
-{"job_id":"cnxjob001","quotation_id":"cquote001","status":"IN_PROGRESS","stage":"setup_holders","stage_started_at":"2026-09-16T09:15:00Z","error":null}
+{"job_id":"cdemojob001","status":"COMPLETED","stage":"family_check","stage_started_at":"2026-09-16T10:00:00Z","workflow":"baseline","error":null,"outcome":"AWAITING_PROGRAMMING","setup_path":"C:/.../BASELINE/BASELINE_SETUP.prt"}
 ```
 
-Stap/tijd mogen in de wachtrij null zijn. Een fout bevat de mislukte stap en
-bruikbare tekst. Valideer sleutel, schema en opgeslagen jobverband vóór updates;
-een ontbrekend ID mag nooit in een ongefilterde `updateMany` belanden.
+Jobstatus: `PENDING`, `IN_PROGRESS`, `COMPLETED`, `FAILED`. Bij `COMPLETED` vereist
+de app expliciet `outcome` (`AWAITING_PROGRAMMING` of `ARTICLE_CREATED`) en setup-pad.
+Geen automatische `COMPLETED → READY`. Schema en huidige jobverband worden
+gecontroleerd: geldig `204`, onbekend/oud job-ID `404`, ongeldige payload `400`.
+Vertraagde updates draaien een eindstatus niet terug. Geen aparte jobtabel/historie;
+actuele jobgegevens staan direct op de offerte.
 
-### NX → app: uitkomst en bestanden
+Stap-ID's: `family_check`, `pdf_extract`, `baseline_part`, `baseline_structure`,
+`setup_load`, `setup_constraints`, `setup_holders`, `setup_position`,
+`setup_references`, `article_clone`, `geometry_update`, `measurement`, `setup_refresh`, `cam_regeneration`, `postprocessing`, `simulation`.
+Overige resultaatopslag staat als toekomstige stap in de UI.
+Een CAM-fout meldt de operatie en houdt de aanvraag op `FAILED` bij stap 5;
+de bestaande retry hervat CAM en gaat daarna verder met posten. Bij een postfout
+herhaalt retry posten en daarna simulatie; bij een simulatiefout alleen de bestaande
+NC extern simuleren. Retry vanaf `measurement` meet de gewichten opnieuw en gaat
+daarna door met setup-refresh, CAM, post en simulatie. Retry vanaf een latere stap
+behoudt de al opgeslagen gewichten. Een oude toolpath is geen succes als NX nog `Regen`
+meldt. `Repost` is toegestaan bij de controle vóór het posten.
 
-`POST /api/nx/result`, multipart met `result` als JSON-string en bestandsvelden
-volgens `nc_files[].field`; `X-API-Key`, geaccepteerd: `204`.
+De statuscallback draagt ook de overdrachtsuitkomst, de gewichten en de totale
+simulatietijd. Beide massa's worden direct tijdens verwerking opgeslagen; de tijd
+alleen bij `COMPLETED` / `ARTICLE_CREATED` op `simulation`, voor de huidige job.
+`/api/nx/result` is nog een
+loggingstub zonder echte resultaatopslag; `NX_CALLBACK_RESULT_PATH` wordt nog niet
+gebruikt. Bouw één eenvoudige resultaatlevering met overige simulatiedetails voor
+de huidige job. De machinebewerking wordt al door de eindcallback opgeslagen.
+Bewaar de koppeling naar de lokale NC;
+NC naar S3 is geen vereiste vóór `READY`. Downloaden blijft via
+app-login/organisatiecontrole. Definitieve payload
+baseren op echte NX-uitvoer. Geen uitgebreid retry/herbezorgingssysteem voor de POC.
+Voor nu downloadt de app de lokale `.min` via `GET /articles/{artikel}/nc`, met
+app-login/organisatiecontrole op `/api/quotations/{id}/nc`. Geen S3-kopie van NC;
+de lokale POC bewaart de laatste uitvoer per artikel. De service geeft HTTP 409
+zolang geen geslaagde externe simulatie voor exact de huidige NC bestaat.
 
-| Resultaatgroep | Velden |
-| --- | --- |
-| Gemeenschappelijk | `job_id`, `quotation_id`, `outcome`, `family`, `article_number`, `material` |
-| BASELINE | `outcome=AWAITING_PROGRAMMING`, `baseline_setup_path`; geen NC |
-| Artikel | `outcome=ARTICLE_READY`, `amount`, `timing`, `weight`, `simulation`, `nc_files` |
-| `timing` | `source=nx_toolpath_estimate`, `basis=per_piece`, `operations[]` met `operation_id`, `sequence`, `name`, `seconds`; `operation_sum_seconds` |
-| `weight` | `product_kg_per_piece`, `stock_kg_per_piece` |
-| `simulation` | Werkelijke `status`, met fout/toelichting waar nodig; UI kent pending/running/passed/failed |
-| `nc_files[]` | `field`, `filename`; corresponderende multipart-bytes, inclusief nodige subprogramma's |
+Afspraken voor die resultaten:
 
-Bestandsnamen/extensies volgen de werkende postprocessor, niet het previewvoorbeeld.
-Een mislukte simulatie mag niet als geslaagd/gereed worden afgeleverd; bevestig de
-concrete foutpayload bij implementatie. Bewaar native parts en uitvoerlogs op de laptop.
+- Gebruik uitsluitend de totale CSE `MachineTime` na SimEnd en geslaagde externe
+  NC-simulatie. De ruwe `HH:MM:SS.mmm` blijft in `simulation.json`; de callback
+  levert seconden. Minuten/stuk = seconden / 60; ordertijd = tijd/stuk × aantal.
+  Dit is de tijd volgens de machine-/controllerconfiguratie in de simulatie,
+  exclusief handmatig instel- en programmeerwerk. Aantal verandert geen geometrie.
+- Geen uitlezing/import van individuele CAM-operatietijden voor deze POC-stap.
+- Wel één automatische machinebewerking op de aanvraag: de gebruikte machine
+  plus de totale CSE-simulatietijd per stuk (minuten = seconden / 60). Gebruik
+  dezelfde tijd als de tijdkaart, niet de met aantal vermenigvuldigde ordertijd.
+  Werk bij een nieuwe succesvolle berekening dezelfde automatische bewerking bij;
+  maak geen dubbele regel en tel tijdkaart en bewerkingsregel niet bij elkaar op.
+  De regel gebruikt `Draaifrezen` / `Draaifreesmachine` / `Okuma MULTUS U4000`;
+  de knop voor artikel/concept-BOM is aangesloten volgens ERPNext.md.
+- Productmassa: afgewerkte solid in `<artikel>_PART.prt`. Ruwmassa:
+  `BLANK_REVOLVE_OUTLINE_BODY` in `<artikel>_BLANK.prt`, juiste materiaal/dichtheid.
+  Geen klemmen/machine/dubbele WAVE-bodies. `mm³ × kg/m³ × 10^-9 = kg`;
+  ordergewicht = kg/stuk × aantal.
+  De totale `NX_Mass` van BLANK telt ook `BLANK_SOURCE_BODY` mee; gebruik die
+  totale partmassa dus niet als ruwgewicht. Dit is native bevestigd bij N1c.
+- De POC gebruikt de vaste volgorde ingangscontrole → draaifrezen → meten →
+  stempelen → verpakken. De vier handmatige tijden blijven behouden bij een
+  NX-herberekening en staan los van de totale simulatietijdkaart.
+  Uurtarief komt niet uit NX; 0 kan “Niet ingesteld” vertegenwoordigen.
+- Verzamel hoofd- en subprogramma's volgens echte postprocessor/extensies. Parts
+  en uitvoerlogs lokaal bewaren. Simulatie werkelijk uitlezen: post/procesexit
+  alleen is geen bewijs. Bij NC-simulatie eerst posten; mislukking is geen `READY`.
 
-Verwerkingsregels:
+## 5. Stappenplan en voortgang
 
-- Geef elke actie een eigen job en sla het verband vóór dispatch op. Zoek offerte
-  en organisatie via die job; vertrouw een meegestuurd offerte-ID niet op zichzelf.
-- Negeer verouderde callbacks zodra een nieuwere job actief is. Ontvangen
-  resultaten worden niet teruggedraaid door vertraagde statusmeldingen.
-- Verstuur resultaat vóór `COMPLETED`. Bewaar NC in S3 met app-gegenereerde sleutels;
-  pas daarna metadata, bewerkingen, verwijzingen en offertestatus samen in de DB toe.
-- Registreer geaccepteerde resultaten. Herhaling krijgt `204` zonder duplicaten
-  of overschrijven van latere gebruikersaanpassingen.
-- Bewaar resultaat/NC lokaal. Beperkt opnieuw bezorgen met hetzelfde job-ID;
-  blijvende bezorgfout is `FAILED` op `result_delivery`. Herbezorgen start geen NX-run.
-- Download via een geauthenticeerde app-route, bijvoorbeeld
-  `/api/quotations/{quotation_id}/nc/{file_id}`, met organisatiecontrole en
-  opslagkey uit de DB. Behoud offerte/PDF bij dispatchfouten.
+### Lokale basis — gereed
 
-### Opslag, eenheden en bewerkingen
+- [x] **L1** App/DB/ERPNext/S3 ingericht; seed geslaagd; DB-query, ERP Customer/Raw
+  Material en S3-buckettoegang gecontroleerd.
+- [x] **L2** Beide servers en HTTP-richtingen gecontroleerd; echte PDF-opslag en
+  gekoppelde callback vervolgens ook getest (W7).
 
-Breid `Quotation` uit met artikelnummer, wachtstatus, `stockWeight`, resultaat-JSON
-en actieve job. Behoud `weight` als product-kg/stuk. Een gerelateerd jobrecord
-bevat ID, offerte-ID, actie, status, stap/starttijd, fout en resultaat-geaccepteerd.
-Geen aparte familie/baseline-tabellen: `family.json` blijft bron voor vrijgave.
+### Workflow — gebouwd, eerste overdracht getest
 
-Lees tijden na CAM-regeneratie. Gebruik unieke geprogrammeerde operatienamen als
-identiteit; bewaar de NX-volgorde en ruwe resultaatsnapshot. Controleer in NX de
-eenheid en of luchtgangen/gereedschapswissels meetellen. Som van operatietijden
-is een **NX-schatting**, geen bewezen gesynchroniseerde multichannel-cyclustijd.
+- [x] **W1** Twee app-acties, artikelnummer en PDF in service-API.
+- [x] **W2** Familie ontbreekt/bestaand/vrijgegeven → juiste route; vrijgave herlaadt
+  familie en start oorspronkelijk artikel. Gerichte unittests.
+- [x] **W3** Materiaal/aantal, output, echte stap/tijd/fout doorgeven; volledige polling.
+- [x] **W4** Prisma-velden/statussen en migratie toegepast; client gegenereerd.
+- [x] **W5** Live formulier, ERP, PDF, dispatch en programmeerknop aangesloten.
+  Ruwdeel-keuze verwijderd; vaste Revolve Outline.
+- [x] **W6** Callback via huidige job; overdracht/fout bewaren; geen vals `READY`.
+- [x] **W7** Preview-UI live. Echte aanvraag 73023059/aantal 5 bereikt
+  `AWAITING_PROGRAMMING`; detail toont juiste pad en programmeerknop.
+- [x] **W8** Gebruiker bevestigt werkende artikelen 73023059 en 73023060 en behoud
+  van CAM-operaties in NX. Toolpath-regeneratie is een afzonderlijke vervolgstap.
 
-- `minuten/stuk = seconden / 60`; ordertijd = stukschatting × aantal.
-- Productmassa: afgewerkte solid in `<artikel>_PART.prt`.
-- Ruwmassa: `BLANK_REVOLVE_OUTLINE_BODY` in `<artikel>_BLANK.prt`, met juiste
-  materiaal/dichtheid. Geen SETUP, klemmen of dubbele WAVE-bodies meetellen.
-- Indien afgeleid: `mm³ × kg/m³ × 10^-9 = kg`; ordergewicht = kg/stuk × aantal.
-- Eén ruwdeel per stuk, native Revolve Outline, 360°, offset 5 mm. De huidige
-  Cylinder/Blok/Casting-invoer bepaalt dit niet; toon “NX-gegenereerd ruwdeel”.
-- Importeer in `QuotationOperation.timeMinutes` met `source=NX`. Een nieuwe
-  berekening vervangt NX-rijen, behoudt MANUAL-rijen; meld dat NX-edits dan vervallen.
-- NX levert geen uurtarief. Bestaande verplichte `hourlyRate` kan voor import 0
-  als oningevulde waarde gebruiken, zichtbaar als “Niet ingesteld”.
-- Slepende offertevolgorde opslaan met organisatiecontrole en gezamenlijke
-  hernummering; dit wijzigt geen NX-gereedschapsbanen. Nieuwe bewerkingen onderaan.
+### NX-afwerking — volgende bouwfase
 
-## 6. Stappenplan en afvinkbare uitvoering
+- [x] **N1a** Automatische CAM-regeneratie na setup-refresh aangesloten; echte
+  statuscallback, save/heropen-controle en retry vanaf `cam_regeneration`.
+- [x] **N1b** Eerste echte API-regeneratie (59), save/heropen-controle en bevestiging gebruiker.
+- [x] **N1c** ERPNext-materiaalcode uit het begin van de gekozen naam; bibliotheekmateriaal
+  toekennen aan PART-productbody en BLANK-ruwdeelbody tijdens geometrie-update.
+  Native clone/update/save/heropen getest met `1.4301 - RVS 304`: beide bodies
+  hebben `1.4301`, dichtheid 7900 kg/m³; massa wordt op save bijgewerkt.
+- [x] **N2a** Product- en ruwmassa uit de juiste afzonderlijke bodies meten in kg,
+  lokaal bewaren en direct na geometrie-update via voortgangscallback teruggeven.
+  Native test op aparte kopie geslaagd; gebruiker bevestigt de live flow voor
+  73023060 / 1.4462 - Duplex F51 op 16-09-2026.
+- [x] **N2** Eén totale CSE-simulatietijd na geslaagde SimEnd teruggeven; geen
+  operatie-import. Opslag/weergave getest met echte opgeslagen simulatie-uitvoer.
+- [x] **N3a** Postprocessor/extensie uit `journal.py` aangesloten, artikelgebonden `.min`, retry en download in bestaande UI.
+- [x] **N3b** Native API-post en service-download voor 73023059 en 73023060 geslaagd.
+- [x] **N3c — vervallen** Het verschil in koelmiddelcodes van de referentie van 59
+  kwam door een handmatige wijziging. Gebruiker bevestigt op 16-09-2026 dat dit
+  niet relevant is; geen verder onderzoek nodig.
+- [x] **N4** Externe `.min` op kanaal 1, één headless `PlayForward()`, SimEnd en echte fouttellers uitlezen; native bewezen op 59 en 60.
+- [x] **N4a** Externe NC verplicht vóór download; oude geposte aanvragen blijven
+  geblokkeerd. API-retry vanaf `simulation`, uitkomst en bestandsvingerafdruk bewaren.
+- [x] **N4b** Headless externe CSE-uitvoering t/m SimEnd op 59 en 60; nul fouttellers,
+  callbacks ontvangen en vrijgegeven downloads bytegelijk aan gecontroleerde NC.
+- [x] **N4c** Artikel-NC blijvend koppelen in Program Manager en SETUP opslaan
+  vóór simulatie; gebruiker bevestigt op 17-09-2026 dat dit werkt bij handmatig openen.
+- [x] **N5** CAM → post → simulatie automatisch aangesloten na clone/update/refresh,
+  met echte stappen, lokale resultaten en API-retry; gewichtsmeting direct na update.
+  Totale simulatietijd aangesloten; overige resultaatopslag blijft bij R1 open.
+  Ketentests A1–A3 zijn bevestigd.
 
-### Fase 1 — lokale starttoestand
+### Resultaten en einddemo — open
 
-- [ ] **L1** App-dependencies/Prisma-client voorbereiden; bedoelde lokale database,
-  login, ERPNext en S3 controleren. App op poort 3000 starten.
-- [ ] **L2** Lokale URL's uit §3 instellen; NX-service op poort 9009 starten en
-  app → service en service → app aantonen. Nog geen NetBird-inrichting.
-- [ ] **L3** NX 2512, Python 3.12, licentie, journalrunner, templates, machine-,
-  gereedschap-, kaak- en HB-bibliotheken controleren. Bestaande BASELINE bewaren;
-  bepalen of handmatige CAM al is opgeslagen en bruikbaar is.
-- [ ] **L4** Exacte materiaalnaam/dichtheid, postprocessor, uitvoerextensies en
-  simulatiemodus/invoer vastleggen in §8. Automatisering baseren op geïnstalleerde bindings.
-- [ ] **L5** Werkwijze voor een al bestaand artikel, dubbelklik op vrijgave,
-  gelijktijdige klantvragen en herstel na serviceherstart vastleggen in §8.
+- [x] **R1a** Product-/ruwgewicht via huidige job opslaan op de offerte;
+  migratie `20260916010000_add_quotation_weights` toegepast.
+- [ ] **R1** Overige simulatiedetails leveren, opslaan en tonen; afronding naar
+  `READY` na volledige resultaatlevering, inclusief R3. Lokale NC-opslag en de
+  bestaande download volstaan voor de POC; NC naar S3 is niet vereist.
+- [x] **R2a** Gewichtskaarten met echte kg/stuk en ordertotalen; callback → DB → UI
+  getest met native meetuitvoer en aantal 5. Live door gebruiker bevestigd:
+  138,49 kg product en 190,89 kg ruwdeel bij aantal 1, al zichtbaar tijdens
+  setup-refresh. Tijdens deze vroege stap blijft de simulatietijd nog leeg.
+- [x] **R2** Tijdkaart gebruikt de totale simulatietijd; stuk/ordertotalen getest.
+  Geen individuele CAM-operatie-import; handmatige tijden blijven behouden.
+- [x] **R3** Eén automatische bewerkingsregel met totale CSE-tijd per stuk,
+  gekoppeld aan de Okuma; vier overige regels krijgen handmatige tijden.
+  Opslag en UI aangesloten, ook voor de bestaande aanvraag. Herberekening werkt
+  de Okuma-tijd bij zonder duplicaten of verlies van handmatige tijden.
+  Artikel/concept-BOM via knop, ERP-links en acceptatie staan in [ERPNext.md](ERPNext.md).
+- [x] **A1** Bewust lege `NX_DATA_DIR`: 73023059/aantal 5 → nieuwe BASELINE →
+  programmeren/vrijgeven → artikel, simulatie en NC. Bestaande BASELINE behouden.
+  Door gebruiker op 16-09-2026 bevestigd als getest en werkend; metingen zijn
+  inmiddels aangesloten, inclusief machinebewerking. Overige resultaatlevering
+  blijft onder R1 open.
+- [x] **A2** 73023060 direct artikel; afmetingen, simulatie en NC-download werken.
+  Door gebruiker op 16-09-2026 bevestigd; service-download bytegelijk aan lokale
+  uitvoer. Tijd is onder N2 aangesloten; gewichten onder N2a/R1a/R2a.
+- [x] **A3** Vijf parts heropenen: eigen afhankelijkheden; BASELINE en eerste artikel
+  ongewijzigd; handmatige CAM behouden. Door gebruiker op 16-09-2026 bevestigd
+  als getest en werkend.
+- [x] **A4** App-check en productiebuild geslaagd; 13 Python-tests geslaagd.
+  Dit bewijst codecontroles; de NX/CAM-praktijktests zijn afzonderlijk bevestigd.
 
-### Fase 2 — workflow en echte stappen
-
-- [ ] **W1** `api/schema.py`/`main.py`: twee app-acties, offerteverband en
-  artikelvalidatie; PDF bewaren bij `prepare_quotation`; HTTP-sleutelcontrole.
-- [ ] **W2** `pipeline.py`: familiebeslissing uit §4; gevraagd artikel controleren
-  na extractie vóór modelbouw; programmeeroverdracht leveren; goedkeuren → herladen
-  → oorspronkelijk artikel. Lage CLI-stages blijven beschikbaar.
-- [ ] **W3** `worker.py`/`store.py`/`notifier.py`: materiaal/aantal doorgeven,
-  output behouden, echte stap/starttijd/fout melden en polling uitbreiden.
-- [ ] **W4** App-Prisma + migratie: artikel, wachtstatus, jobverband/actieve job,
-  resultaatvelden en ruwgewicht; bestaande offertes met ontbrekende data blijven leesbaar.
-- [ ] **W5** Live formulier/serveractie: artikelnummer, juiste materiaal/ruwdeelbasis,
-  aparte job-ID; offerte/PDF behouden bij verzendfout; programmeringsactie toevoegen.
-- [ ] **W6** App-callbacks: authenticatie, schemas, jobverband, veilige volgorde en
-  BASELINE-uitkomst opslaan. Verwijder de onvoorwaardelijke `COMPLETED → READY` mapping.
-- [ ] **W7** Gedeelde detail-UI aansluiten voor live stappen, fouttekst, setup-pad,
-  programmeerknop en refresh zolang actief. Geen previewtimers in live flow.
-- [ ] **W8** Beide paden aantonen tot echte artikelbestanden. Zolang afwerking en
-  resultaatopslag ontbreken, geen volledige resultaatgereedheid claimen.
-
-### Fase 3 — NX-afwerking
-
-- [ ] **N1** Materiaal op product/ruwdeel toepassen; verse CAM regenereren na
-  geometrie/setup-refresh, met behoud van geprogrammeerde strategie.
-- [ ] **N2** Operaties/volgorde/tijden en beide massa's uitlezen; eenheden en waarden
-  met NX vergelijken. Aantal verandert totalen, niet de geometrie of het aantal clones.
-- [ ] **N3** Werkende postprocessor automatiseren; hoofd- en subprogramma's verzamelen.
-- [ ] **N4** Werkende simulatie automatiseren en echte uitkomst uitlezen. Als de
-  simulatie NC gebruikt: eerst posten. Procesexit of post-succes is geen simulatiebewijs.
-- [ ] **N5** Afwerking via `nx/entry.py`/`nx_runner.py` na clone/update/refresh
-  aanroepen, bijvoorbeeld met samenhangende code in nieuw `nx/finish.py`.
-  Stappen melden en metadata/NC opslaan voor latere herbezorging.
-
-Als een interactieve NX-stap nog niet in de journalruntime kan worden uitgevoerd,
-noteer de concrete blokkade en handmatige procedure; vink de automatisering niet af.
-
-### Fase 4 — resultaatlevering en live presentatie
-
-- [ ] **R1** Resultaatconfiguratie/notifier en multipart-ontvanger bouwen volgens §5;
-  begrensde retries en herbezorging van opgeslagen output, vóór eindstatus.
-- [ ] **R2** NC naar S3; metingen, NX-bewerkingen, simulatie en bestandsverwijzingen
-  opslaan. Duplicaten negeren, handmatige rijen behouden, pas daarna `READY`.
-- [ ] **R3** Downloads met organisatiecontrole; opslagfouten/herhaling en verwijderen
-  van offertes met nieuwe NC-bijlagen consequent afhandelen.
-- [ ] **R4** Live overzicht/formulier/detail aan de herbruikbare UI koppelen:
-  artikel, stuk/orderwaarden, simulatie, bestanden en lege/fouttoestanden.
-- [ ] **R5** Drag/touch/toetsenbordvolgorde duurzaam opslaan en hernummeren;
-  live ERP-opties/PDF gebruiken. Behoud normale validatie, focus, smalle schermen,
-  licht/donker en reduced motion. Preview blijft herkenbaar lokaal, geen foutfallback.
-- [ ] **R6** Contract en schemas vergelijken met echte output; geanonimiseerd
-  werkelijk request/resultaat en definitieve eenheden hier vastleggen.
-
-### Fase 5 — acceptatie en herhaling
-
-- [ ] **A1** Geïsoleerde nieuwe `NX_DATA_DIR`: 73023059, aantal 5, juiste PDF en
-  materiaal → echte BASELINE-stappen → wachten met correct setup-pad.
-- [ ] **A2** BASELINE programmeren/opslaan/sluiten, vrijgeven in app → hetzelfde
-  gevraagde artikel zonder nieuwe formulierinzending → verse CAM/resultaten.
-- [ ] **A3** 73023060 aanvragen → direct artikelpad; nieuwe dimensies/tijden/gewichten
-  controleren in NX. Simulatie is echt; gedownloade NC is identiek aan lokale uitvoer.
-- [ ] **A4** Parts heropenen: vijf artikelafhankelijkheden verwijzen naar eigen
-  bestanden; BASELINE en eerste artikel blijven ongewijzigd; handmatige CAM behouden.
-- [ ] **A5** NX-fout toont werkelijke stap; onbereikbare service behoudt klantvraag;
-  dubbel resultaat geeft geen duplicaten; MANUAL en opgeslagen volgorde blijven behouden.
-- [ ] **A6** Ontbrekende/onbekende IDs en onjuiste sleutels wijzigen geen offertes;
-  oude events overschrijven geen nieuwere job; dubbelklik start geen dubbele generatie.
-- [ ] **A7** Callback-/S3-fout herstellen via herbezorging, zonder clone/CAM opnieuw;
-  serviceherstart en bestaande artikelbestemming volgen de afgesproken procedure.
-- [ ] **A8** App: `bun run check` en `bun run build`; Python: relevante bestaande
-  tests en gerichte contractchecks. Noteer NX-bewijs apart; mocks bewijzen geen CAM.
-
-## 7. Native bestanden en herstel
+## 6. Bestanden en eenvoudige foutafhandeling
 
 ```text
-<NX_DATA_DIR>/
+service/data/
   uploads/<job_id>/drawing.pdf
   elster-rev-d/
     drawing.pdf, family.json
     BASELINE/BASELINE_{PART,ASSY,CAD4CAM,BLANK,SETUP}.prt
     <artikel>/<artikel>_{PART,ASSY,CAD4CAM,BLANK,SETUP}.prt
-    <artikel>/nc/                       beoogde geposte uitvoer
     work/<stage>_<uniek>/request.json, result.json, nx.log
 ```
 
-Alleen de vijf genoemde parts worden native gekloond. Machine/kaak/toolresources
-blijven gedeeld. Extra artikelgebonden parts vereisen een expliciete clone-mapwijziging.
-Geen filesystem-copyfallback. Een benodigde andere kaakselectie wordt momenteel
-afgewezen; geen automatische fixturewissel. Behoud deze grenzen bij afwerking.
+`family.json` is bron voor vrijgave. Bij overdrachtstest: 18 regels, vijf
+BASELINE-parts, `setup_stage=references`, `baseline_ready=false`. Test zette deze
+flag niet op true en startte geen native generatie.
 
-Bestaande CLI, vanuit `service`, **API gestopt**:
+Stop API vóór CLI-stages. `extract`/`baseline` zijn voor nieuwe familie, niet
+hervatten; `setup` hervat na laatst opgeslagen stap. Na echte programmering kan
+lokaal `pixi run stage ready`, dan
+`pixi run stage article --article 73023059 --material "1.4301 - RVS 304"`;
+voor de demo gebruiken we de app-knop.
 
-```powershell
-# Alleen met een bewust gekozen lege NX_DATA_DIR:
-pixi run stage baseline --drawing .\ELSTER_GEHAEUSE_T73023059_REV_D.pdf
-# Of afzonderlijk: extract --drawing <pdf>, part, structure, setup.
-# Na daadwerkelijk programmeren, opslaan en sluiten:
-pixi run stage ready
-pixi run stage article --article 73023059
-```
+Artikelen weigeren bestaande clonebestemmingen. De live detailpagina heeft bij
+`FAILED` een knop **Opnieuw proberen**: dezelfde offerte/PDF, een nieuwe huidige
+job-ID. Artikelretry gebruikt `retry_article` met `resume_from=article_clone`,
+`geometry_update`, `setup_refresh`, `cam_regeneration`, `postprocessing`, `simulation` of `measurement`. Update/refresh/CAM/post hervatten op bestaande
+artikelparts, zonder opnieuw klonen. Wijzigingen alleen in BASELINE worden dan
+niet naar het bestaande artikel gekopieerd. Retry vóór artikelbouw verstuurt de
+bestaande aanvraag opnieuw; gedeeltelijke BASELINE-opbouw vraagt nog lokaal herstel.
+Herstart de service na wijzigingen aan API/pipeline om deze retry-route te laden.
 
-Vandaag stopt `article` na setup-refresh. Gebruik `extract`/`baseline` nooit als
-hervatcommando boven een bestaande familie. `setup` hervat na de laatst opgeslagen
-setup-stap; een mislukte stap kan wel gedeeltelijke bestanden hebben achtergelaten.
-Inspecteer log/bestanden voordat je opnieuw probeert. Artikelen weigeren bestaande
-bestemmingen; archiveer een mislukte map pas bewust na diagnose. Verwijder geen
-geprogrammeerde BASELINE om een proef te laten slagen.
+Bij fout eerst melding/log/bestanden bekijken; alleen bij opnieuw klonen een
+mislukte artikelmap bewust archiveren vóór nieuwe poging. Geen
+geprogrammeerde BASELINE verwijderen om een test te laten slagen. Callbackfouten
+worden gelogd zonder automatische herbezorging. Queue/statussen zijn in geheugen;
+herstart hervat werk niet. Houd servers tijdens demo aan, één aanvraag tegelijk.
+De runner beëindigt zijn NX-procesboom bij timeout/cancel.
 
-De runner beëindigt zijn NX-procesboom bij timeout/cancel. Queue en jobstatussen
-zijn momenteel alleen in geheugen; herstart verliest die informatie. De app moet
-hiervoor een afgesproken herstelroute krijgen, geen onbeperkte automatische rerun.
+Alleen vijf parts native klonen; machine/kaak/toolresources blijven gedeeld.
+Extra artikelgebonden parts vereisen clone-mapwijziging. Geen filesystem-copyfallback.
+Andere kaakselectie wordt afgewezen. `DT=180` ondersteund bij klonen, `DT<180` niet;
+initiële BASELINE vereist `DT>180`. Eerdere servicechecks melden 73023059, 73023060,
+73024126 en 73024154 getest in NX 2512; deze sessie heeft dat niet herhaald.
+Alle 18 varianten blijven buiten de eerste twee scenario's; geen volledige dekking
+claimen. Runtime/licentie/templates/bibliotheken en behoud van CAM bevestigen bij W8.
 
-## 8. Open keuzes en bewijslogboek
+## 7. Bewijslogboek
 
-| Onderwerp | Stand / in te vullen besluit |
-| --- | --- |
-| Runtime | Besloten: beide servers lokaal op deze laptop; NetBird pas later |
-| Materiaal | Open: exacte gedeelde naam, NX-dichtheid en bron |
-| Handmatige BASELINE-CAM | Open: opgeslagen programmering bevestigen; flag momenteel false |
-| Postprocessor | Open: configuratiepad/naam, extensies en subprogramma's |
-| Simulatie | Open: modus, NC/toolpath-invoer, aanroep en resultaatdetectie |
-| Bestaand artikel | Open: expliciet hergebruik of gecontroleerde herberekening; niet overschrijven |
-| Meerdere aanvragen | Open: gedrag bij wachten op dezelfde BASELINE en dubbele vrijgave vastleggen |
-| Herstart/verzendfout | Open: statusherstel, onzekere dispatch en opnieuw bezorgen afspreken |
-| HTTP-sleutels | Open: configuratienamen/controle aan beide kanten; waarden niet documenteren |
-| Alle 18 varianten | Open: na de twee demoscenario's dekking uitbreiden; geen volledige dekking claimen |
-
-| Datum | Taak/bewijs | Uitkomst / volgende stap |
+| Datum | Controle | Uitkomst |
 | --- | --- | --- |
-| 2026-09-16 | Statische controle van beide repos en lokale familiedata | Uitgangssituatie in §2; consolidatie afgerond; start bij L1–L5 |
-| 2026-09-16 | `.pixi/envs/default/python.exe -B -m unittest discover -s tests -v` vanuit `service` (review) | 8 tests geslaagd; geen nieuwe NX-run of app-build |
+| 2026-09-16 | Inventarisatie/consolidatie | Eén DEMO.md; oude PLAN/TODO/FLOW in deze repo vervangen. |
+| 2026-09-16 | Lokale setup/HTTP | Bun-seed hersteld; DB/ERP/S3 en servers bereikbaar. Eerste losse status/resultaatprobes bewezen alleen verbinding. |
+| 2026-09-16 | Workflow-code | Migratie toegepast; Prisma gegenereerd; `bun run check`, `bun run build` geslaagd; 13 Python-tests inclusief familiepaden, vrijgave/herladen en foutstap. NX-aanroepen in tests zijn mocks. |
+| 2026-09-16 | Echte ingelogde aanvraag | ERP-keuzes + Elster-PDF, 73023059/aantal 5 → S3/DB → NX → callback → `AWAITING_PROGRAMMING`. Detail HTTP 200 met setup-pad/programmeerknop. App-herstart na Prisma-migratie nodig. |
+| 2026-09-16 | Clonefout onderzocht en hersteld | Kaakpart `SMW_GG-4002_012479_258-431MM_EXT.prt` onder oude `C:/Heerbaart_Custom/__Custom` en huidige `C:/Heerbaart/NX2512_Custom/NX2512_Custom` library heeft dezelfde SHA-256. Zoekpoging slaagde, maar padvergelijking wees die identieke kopie af. Alleen byte-identieke gedeelde libraryparts mogen nu wisselen; BASELINE-parts niet. NX-laadfouten worden vóór de referentievergelijking gemeld. |
+| 2026-09-16 | Native clone + regressietests | Vijf parts succesvol aangemaakt onder `service/data/clone-check-b39b4de7/73023059`; logs in de bijbehorende `work`-map. Bestaande artikelparts niet gewijzigd. 21 Python-tests geslaagd, inclusief retry vanaf foutstap en identieke/verschillende librarykopieën. Update/refresh niet opnieuw uitgevoerd in deze clonetest. |
+| 2026-09-16 | Native clone → update → refresh | Geslaagd op `service/data/refresh-check-1eac4448/73023059`. Refresh herkent drie identieke kaakparts over beide librarypaden en gebruikt de daadwerkelijk geladen kaak bij aanslagvlakcontrole. Ontbrekende oude positioneringsconstraints worden opnieuw opgebouwd; eindpositie/constraints blijven na save/heropen gevalideerd. `jaw_p3=102.142678938`; 22 Python-tests geslaagd. Bestaande live artikelparts niet gewijzigd. |
 
-Voeg bij volgende sessies datum, taak-ID, relevante bestands-/loglocatie,
-uitgevoerde controle en uitkomst toe. Leg niet alleen “werkt” vast. Actualiseer
-de checklist en fase bovenaan op basis van dat bewijs. Nog geen werkelijk
-end-to-end-resultaat beschikbaar voor opname; previewmetingen zijn fictief.
+Bewaarde testaanvraag:
+[`cmu44ou0r0000s8wi8eff3uae`](http://localhost:3000/app/quotations/cmu44ou0r0000s8wi8eff3uae),
+oorspronkelijke overdrachtsjob `ca6cd9af251ff4e0496ec89e8`. W8 is door gebruiker bevestigd. Nog geen echte tijden, massa's,
+of simulatieresultaten uit de nieuwe app-flow; echte NC-uitvoer is hieronder vastgelegd.
+
+Toolpath-stap toegevoegd op 16-09-2026: 29 Python-tests en app ESLint/TypeScript
+geslaagd. Alleen-lezen NX-inspectie vond 55 operaties, grotendeels `Regen` met
+oude toolpaths. `CreateCamSession` en `GenerateToolPath` zijn gecontroleerd via de
+geïnstalleerde NX 2512-bindings. De eerste API-runs strandden op acht `ONLYNOTES`-
+bewerkingen buiten `O1234`. Na beperking tot `O1234` meldt de nieuwe native run
+47 te regenereren bewerkingen. 59 voltooide save/heropen; gebruiker bevestigt werking.
+
+Posten getest op 16-09-2026: 31 Python-tests en app ESLint/TypeScript geslaagd
+(één bestaande lintwaarschuwing in de result-stub). De Okuma-post vervangt `_` in
+de uitvoernaam door `-`; de integratie gebruikt daarom direct `<artikel>-SETUP.min`.
+API-job 59 `c0b4a3d63a6d84bb38fb2057e` eindigde op `postprocessing` zonder fout,
+log `service/data/elster-rev-d/work/post_ifw_h_4w/nx.log`, NC 297968 bytes.
+API-job 60 `c06f54764c4fd46d0a91c6eed` voltooide CAM → post, log
+`service/data/elster-rev-d/work/post_fdy_04ly/nx.log`, NC 298793 bytes.
+Beide service-downloads: HTTP 200 en bytegelijk aan de lokale `.min`. De app-route
+zonder sessie geeft 401; de gebruiker bevestigt inmiddels dat browserdownload
+werkt en de NC-code oplevert. Ten tijde van deze posttest waren de bestanden nog
+niet gesimuleerd; de geslaagde simulaties staan hieronder. Het verschil met de
+handmatige referentie is door gebruiker als handmatige wijziging verklaard;
+N3c is daarmee vervallen.
+
+Externe simulatie afgerond op 16-09-2026. Twee oorzaken zijn vastgesteld:
+`SuppressAll` is nodig voor headless CSE; alleen graphics onderdrukken blokkeert
+bij de eerste toolwissel. Daarnaast gebruikte batch een andere Okuma-driver dan
+de werkende interactieve snelkoppeling. De oorspronkelijke kit stopte bij
+`TD=130010` met ontbrekende `GV_nPositionNr`, reproduceerbaar via Python en C#.
+Alleen de simulatiestap gebruikt nu de CSE-/toolbibliotheken van
+`C:/Heerbaart_Custom/__Custom`; overige stappen en artikelreferenties behouden
+hun paden. De definitieve uitvoering blijft Python/API, kanaal 1, één
+`PlayForward()`, zonder GUI of handmatige stappen.
+
+| Artikel | API-job | CSE-eindtijd | Bewijslog onder `service/data/elster-rev-d/work` |
+| --- | --- | --- | --- |
+| 73023059 | `cb6a3190573df4a5e8ec20a38` | `01:04:48.790` | `simulation_9v10dy0m/nx.log` |
+| 73023060 | `cbf15dfc41285470a8281afbd` | `01:04:55.880` | `simulation_hlvbc290/nx.log` |
+
+Beide: SimEnd, nul collisions/limits/gouges/singularities, app-callback
+`ARTICLE_CREATED` op stage `simulation`, geen fout. HTTP 409 tijdens verwerking,
+daarna HTTP 200 met byte-identieke NC. 59: 298076 bytes, SHA-256
+`4199872eaa1508061967e2888f60a813ed782a066dd4c2290f76ba0ad42e6061`.
+60: 298793 bytes, SHA-256
+`f7179623d8f800d5e157d84f17127dc4032dda0a398b4e4614ddf5ae4d44b050`.
+De log van 60 bevestigt vooraf alle ingestelde controles actief; zijn vijf parts
+en NC zijn vóór/na simulatie byte-identiek. De gebruiker bevestigt dat alles werkt.
+37 Python-regressietests geslaagd, inclusief bibliotheekscheiding per stage,
+onvolledige simulatie, collision en gewijzigde NC. Gewichten/tijden uitlezen en
+resultaatopslag/-weergave blijven open; materiaaltoekenning is hieronder bevestigd.
+
+Gebruikersbevestiging op 16-09-2026 voor N3c, A1–A3 en browserdownload:
+N3c betrof een handmatige wijziging en is niet relevant. A1–A3 waren al getest
+en werken prima; de browserdownload geeft de NC-code terug. Deze punten zijn
+op basis van die praktijkbevestiging afgesloten, zonder nieuwe runs in deze
+documentatie-update. Er zijn hiervoor geen nieuwe job-ID's of logs aangeleverd.
+
+Opruiming: losse proefscripts, 21 diagnostische testmappen, verouderde testlogs
+en uitgebreide CSE-traces verwijderd (circa 28,6 MB). De twee geslaagde API-runs
+houden hun compacte `nx.log`, `request.json` en `result.json`. Artikelbestanden,
+`simulation.json`, bronjournals en vaste regressietests blijven beschikbaar.
+
+Materiaaltoekenning N1c getest op 16-09-2026, lokale test `material-check-20260916`:
+native clone → geometrie-update → save → heropen van 73023059 met
+`1.4301 - RVS 304`. PART-productbody en BLANK-ruwdeelbody hebben materiaal
+`1.4301` en dichtheid 7900 kg/m³. De ingestelde massa-update op save werkt zonder
+GUI. Gemeten bodies: product 143,396632 kg; ruwdeel 196,507583 kg.
+BLANK-partattribuut `NX_Mass` is 339,904243 kg: inclusief de bronbody, dus niet
+bruikbaar als ruwgewicht. N2a meet daarom uitsluitend de benoemde ruwdeelbody.
+Een herhaalde geometrie-update met hetzelfde materiaal slaagt; BASELINE-hashes
+zijn ongewijzigd. Bewijs onder `service/data/material-check-20260916/`:
+`work/clone_129bziya/nx.log`, `work/update_8z938xjg/nx.log`,
+`work/update_m3p3s20o/nx.log`, `verify.log` en `verified.json`.
+37 Python-regressietests geslaagd. Deze test wijzigde alleen de aparte testkopie;
+bestaande offertes/artikelen zijn niet opnieuw uitgevoerd.
+
+Gewichtslevering N2a/R1a/R2a getest op 16-09-2026, testkopie
+`service/data/material-check-20260916/73023059`: de productie-meetfunctie geeft
+143,396632404 kg product en 196,507583286 kg ruwdeel terug. Log:
+`work/measurement_2tghr225/nx.log`; uitvoer: `73023059/weights.json` en
+`weights-callback.json` onder dezelfde testroot. De echte callback-handler,
+PostgreSQL-opslag en gerenderde offerte-UI zijn getest met deze payload via
+`heerbaart-app/tests/nx-weights.integration.mjs`: beide kg/stuk, totalen voor
+aantal 5, lege bewerkingstijd en beschikbare NC kloppen. Tijdelijke testgegevens
+zijn verwijderd; bestaande offertes zijn niet hervat of gewijzigd.
+39 Python-tests geslaagd, app ESLint/TypeScript geslaagd (bestaande lintwaarschuwing
+in result-stub). Een nieuwe volledige aanvraag is niet gestart in deze controle.
+
+Vroege gewichtslevering op 16-09-2026: `measurement` verplaatst naar direct na
+geometrie-update/save, vóór setup-refresh en CAM. Callback en UI tonen beide
+gewichten al bij `IN_PROGRESS`; ze blijven behouden bij volgende stappen of een
+latere fout. NC blijft geblokkeerd tot geslaagde simulatie. 40 Python-tests slagen,
+inclusief levering vóór CAM en behoud bij CAM-fout. De database/UI-integratietest
+bevestigt zichtbare stuk-/ordertotalen tijdens verwerking, behoud bij callbacks
+zonder gewichten en NC-vrijgave pas bij simulatie. App ESLint/TypeScript slaagt
+(lintwaarschuwingen zonder fouten). Bestaande offertes niet hervat of aangepast.
+
+Gebruikersbevestiging op 16-09-2026: vroege gewichtslevering werkt in de echte app.
+Screenshot van aanvraag `DEMO-GEWICHT`, artikel 73023060, materiaal
+`1.4462 - Duplex F51`, aantal 1 toont productgewicht 138,49 kg en ruwgewicht
+190,89 kg terwijl `setup_refresh` nog actief is. N2a/R1a/R2a zijn daarmee ook
+in de live flow bevestigd. Het gedeelde aanvraagformulier start voortaan met
+aantal 1 (voorheen 5); bestaande aanvragen blijven ongewijzigd.
+
+Scopebesluit N2 op 16-09-2026: gebruiker wil uitsluitend de totale tijd die de
+externe simulatie geeft, na SimEnd. Het eerdere voorstel om individuele
+operatietijden uit CAM op te tellen vervalt voor deze POC-stap.
+`MachineTime` werd al vastgelegd in `simulation.json`; nu geeft de geslaagde
+simulatiestap ook `simulation_time_seconds` terug en draagt de eindcallback deze
+over aan de app. Migratie `20260916020000_add_simulation_time` toegepast.
+Test met echte opgeslagen tijd van 73023059: `01:04:45.790` = 3885,790 seconden.
+Callback → DB → UI inclusief aantal 5 geslaagd; vóór afronding blijft de tijd leeg,
+na afronding kloppen minuten/stuk en ordertotalen. Geen operatieregels aangemaakt.
+41 Python-tests geslaagd, ESLint/TypeScript geslaagd met bestaande lintwaarschuwingen.
+Geen bestaande offertes hervat of achteraf ingevuld; live bevestiging van deze
+nieuwe tijdlevering volgt bij een nieuwe run. App en NX-service zijn daarna
+herstart; de nieuwe callbackvelden zijn op beide draaiende servers gecontroleerd.
+
+Scope en gebruikersbevestiging op 17-09-2026: N4c werkt bij handmatig openen en is
+afgevinkt. Lokale NC-opslag en de bestaande browserdownload zijn voldoende voor
+de POC; NC naar S3 vervalt als eis voor R1. R1 blijft open voor overige
+simulatiedetails en afronding. Nieuw open punt R3: één opgeslagen bewerking voor
+de gebruikte machine met de totale simulatietijd per stuk, zodat deze later naar
+ERPNext kan voor de BOM. Geen individuele CAM-operaties importeren. Deze update
+wijzigt alleen de afspraken/documentatie; R1 en R3 zijn nog niet geïmplementeerd.
+
+ERPNext-uitbreiding uitgevoerd op 17-09-2026: migratie
+`20260917010000_erp_bom_operations`, vijf opgeslagen bewerkingsregels en knop voor
+artikel/concept-BOM. Bestaande aanvraag 73023059 heeft dezelfde routing gekregen,
+met behoud van de berekende NX-tijd en aanvankelijk lege handmatige tijden.
+Tijdens de eindcontrole is deze aanvraag inmiddels via de app geëxporteerd naar
+`BOM-73023059-001`: concept, 1 Piece, vijf juiste bewerkingen en 198,995021 Kg MAT-14404;
+alleen-lezen geverifieerd. R3 is gereed; R1 blijft open voor overige simulatiedetails
+en `READY`. Echte ERP-integratietest en browsertest geslaagd op tijdelijke aanvragen;
+de test-BOMs, testartikelen en lokale testgegevens zijn verwijderd. Vier overige
+werkplekken hergebruikt; Okuma/Draaifrezen/Draaifreesmachine aangemaakt met €0/u.
+De gebruiker autoriseerde uitsluitend de Kg-conversiecorrectie van MAT-14462;
+stock-UOM Meter en overige materiaalgegevens zijn behouden. Zie ERPNext.md.
+
+Voeg volgende controles toe met datum, taak-ID, bestand/log en uitkomst. Vink
+praktische NX-stappen pas af na hun eigen bewijs; maak geen parallel PLAN/TODO/FLOW.
