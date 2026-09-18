@@ -154,6 +154,20 @@ three drilling operations; see DEMO.md N3c before claiming equivalent NC output.
 
 ## HTTP Contract
 
+`POST /drawings/analyze` accepts a `drawing` PDF upload (up to 25 MiB) and
+returns `{ "articleNumbers": ["73023059", "..."] }` with all eighteen numbers
+in printed order. It does not start NX or create `family.json`. The quotation
+form calls this immediately after upload; article selection remains empty until
+the user chooses a number. Material and quantity remain independent inputs.
+
+Before a family exists, the extracted table is cached in
+`<NX_DATA_DIR>/elster-analysis.json`, keyed by the PDF's SHA-256. Baseline creation
+reuses that table. Once the family exists, analysis uses its stored table after
+checking that the uploaded PDF matches `elster-rev-d/drawing.pdf`. The POC still
+supports only the supplied Elster drawing. No product/revision configuration is
+introduced. Restart the service after code changes to enable the route; let
+active NX jobs finish first, since the queue and job statuses are held in memory.
+
 `POST /start/nx-job` accepts multipart form data. `job_id`, `material`, and `amount`
 remain required for the existing caller contract. Material and amount are not
 used to change the family geometry.

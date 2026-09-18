@@ -2,13 +2,16 @@ import asyncio
 import logging
 from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager, suppress
+from pathlib import Path
+from tempfile import TemporaryDirectory
 from typing import Annotated
 
-from fastapi import Depends, FastAPI, Form, HTTPException, status
+from fastapi import Depends, FastAPI, Form, HTTPException, UploadFile, File, status
 from fastapi.responses import FileResponse
 from fastapi import Path as PathParameter
 from pipeline import family_directory
 from nc_release import released_nc
+from drawing_analysis import analyze_drawing
 
 from api.config import LoggingConfig
 from api.dependencies import (
@@ -19,7 +22,7 @@ from api.dependencies import (
   get_job_status_store,
   get_nx_worker_config,
 )
-from api.drawings import DrawingStore, RequestSizeLimit
+from api.drawings import DrawingStore, RequestSizeLimit, MAX_ANALYSIS_BYTES
 from api.notifier import NXWorkerNotifier
 from api.schema import (
   CUID,
@@ -64,6 +67,36 @@ app.add_middleware(RequestSizeLimit)
 @app.get("/")
 async def root():
   return {"service": "Elster Rev.D NX POC"}
+
+
+@app.post("/drawings/analyze")
+async def analyze_uploaded_drawing(drawing: Annotated[UploadFile, File()]):
+  """Read the article choices without queueing NX or creating a family."""
+  try:
+    if not (drawing.filename or "").lower().endswith(".pdf"):
+      raise HTTPException(status_code=422, detail="Select a PDF drawing")
+    with TemporaryDirectory(prefix="elster-analysis-") as directory:
+      path = Path(directory) / "drawing.pdf"
+      size = 0
+      with path.open("wb") as output:
+        while chunk := await drawing.read(1024 * 1024):
+          if size == 0 and not chunk.startswith(b"%PDF-"):
+            raise HTTPException(status_code=422, detail="Select a valid PDF drawing")
+          size += len(chunk)
+          if size > MAX_ANALYSIS_BYTES:
+            raise HTTPException(status_code=413, detail="Drawing exceeds 25 MiB")
+          output.write(chunk)
+      if size == 0:
+        raise HTTPException(status_code=422, detail="Select a valid PDF drawing")
+      table = await analyze_drawing(path, family_directory())
+      return {"articleNumbers": [row.article_number for row in table.articles]}
+  except HTTPException:
+    raise
+  except Exception as exc:
+    logger.exception("Elster drawing analysis failed")
+    raise HTTPException(status_code=422, detail="Could not read the Elster drawing") from exc
+  finally:
+    await drawing.close()
 
 
 @app.get("/articles/{article_number}/nc")

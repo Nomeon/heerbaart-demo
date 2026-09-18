@@ -11,6 +11,7 @@ from api.schema import CUID
 logger = logging.getLogger(__name__)
 
 MAX_DRAWING_BYTES = 32 * 1024 * 1024
+MAX_ANALYSIS_BYTES = 25 * 1024 * 1024
 
 
 class RequestSizeLimit:
@@ -20,12 +21,12 @@ class RequestSizeLimit:
     self.app = app
 
   async def __call__(self, scope, receive, send):
-    if scope["type"] != "http" or scope["path"] != "/start/nx-job":
+    if scope["type"] != "http" or scope["path"] not in {"/start/nx-job", "/drawings/analyze"}:
       return await self.app(scope, receive, send)
-    limit = MAX_DRAWING_BYTES + 1024 * 1024  # Include multipart headers and fields.
+    limit = (MAX_ANALYSIS_BYTES if scope["path"] == "/drawings/analyze" else MAX_DRAWING_BYTES) + 1024 * 1024
     length = dict(scope.get("headers", [])).get(b"content-length")
     if length and length.isdigit() and int(length) > limit:
-      response = JSONResponse({"detail": "Request exceeds 33 MiB"}, status_code=413)
+      response = JSONResponse({"detail": "Drawing upload is too large"}, status_code=413)
       return await response(scope, receive, send)
     size = 0
 
@@ -34,7 +35,7 @@ class RequestSizeLimit:
       message = await receive()
       size += len(message.get("body", b""))
       if size > limit:
-        raise HTTPException(status_code=413, detail="Request exceeds 33 MiB")
+        raise HTTPException(status_code=413, detail="Drawing upload is too large")
       return message
 
     await self.app(scope, limited_receive, send)

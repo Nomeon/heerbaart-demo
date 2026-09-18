@@ -8,7 +8,7 @@ from pathlib import Path
 import shutil
 
 from nx_runner import run_nx
-from pdf_table import extract_table
+from drawing_analysis import analyze_drawing
 from api.config import LoggingConfig, StorageConfig
 
 
@@ -49,7 +49,7 @@ async def read_family(pdf_path: Path) -> dict:
   root = family_directory()
   if (root / "family.json").exists() or any((root / "BASELINE").glob("*.prt")):
     raise FileExistsError("This family already exists; use the individual stages to continue it")
-  table = await extract_table(Path(pdf_path).resolve())
+  table = await analyze_drawing(Path(pdf_path).resolve(), root)
   root.mkdir(parents=True, exist_ok=True)
   shutil.copyfile(pdf_path, root / "drawing.pdf")
   family = {
