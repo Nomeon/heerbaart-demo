@@ -71,7 +71,7 @@ class JobWorker:
   async def _process(self, job: Job) -> None:
     update = JobStatusUpdate(job_id=job.job_id, status=JobStatus.PENDING)
 
-    async def progress(stage, workflow, weights=None):
+    async def progress(stage, workflow, weights=None, simulation_time_seconds=None):
       update.status = JobStatus.IN_PROGRESS
       if update.stage != stage:
         update.stage_started_at = datetime.now(timezone.utc)
@@ -79,6 +79,8 @@ class JobWorker:
       update.workflow = workflow
       if weights is not None:
         update.weights = ArticleWeights.model_validate(weights)
+      if simulation_time_seconds is not None:
+        update.simulation_time_seconds = simulation_time_seconds
       await self._report(update)
 
     try:

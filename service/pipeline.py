@@ -123,7 +123,7 @@ def mark_baseline_ready(family: dict) -> dict:
 
 async def generate_article(family: dict, article_number: str, progress=None, material=None, amount=1,
                            resume_from="article_clone") -> dict:
-  if resume_from not in {"article_clone", "geometry_update", "setup_refresh", "cam_regeneration", "postprocessing", "simulation", "measurement"}:
+  if resume_from not in {"article_clone", "geometry_update", "setup_refresh", "cam_regeneration", "postprocessing", "simulation", "measurement", "setup_sheet"}:
     raise ValueError(f"Unsupported article retry stage: {resume_from}")
   if not family["baseline_ready"]:
     raise ValueError("Save the manually programmed BASELINE and mark it ready first")
@@ -131,8 +131,11 @@ async def generate_article(family: dict, article_number: str, progress=None, mat
   if not article_number.isascii() or not article_number.isdigit():
     raise ValueError("Article numbers must be ASCII digits")
   root = family_directory()
-  from nc_release import invalidate_release
-  invalidate_release(root / article_number)
+  from nc_release import invalidate_release, released_nc
+  item_dir = root / article_number
+  if resume_from != "setup_sheet":
+    invalidate_release(item_dir)
+  (item_dir / f"{article_number}_INSTELBLAD.pdf").unlink(missing_ok=True)
   request = {
     "baseline_dir": str(root / "BASELINE"),
     "item_dir": str(root / article_number), "name": article_number,
@@ -141,6 +144,13 @@ async def generate_article(family: dict, article_number: str, progress=None, mat
   }
   outputs = {kind.lower(): str(root / article_number / f"{article_number}_{kind}.prt")
              for kind in PART_KINDS}
+  if resume_from == "setup_sheet":
+    if released_nc(item_dir, article_number) is None:
+      raise ValueError("Simuleer het NC-programma voordat je het instelblad maakt.")
+    from nx.simulation import machine_time_seconds
+    simulation = json.loads((item_dir / "simulation.json").read_text(encoding="utf-8"))
+    outputs["simulation_time_seconds"] = machine_time_seconds(simulation["machine_time"])
+    return await export_setup_sheet(request, outputs, root, progress)
   if resume_from == "article_clone":
     await report(progress, "article_clone", "article")
     outputs = await run_nx("clone", request, root / "work")
@@ -167,6 +177,13 @@ async def generate_article(family: dict, article_number: str, progress=None, mat
     outputs.update(await run_nx("post", request, root / "work"))
   await report(progress, "simulation", "article")
   outputs.update(await run_nx("simulation", request, root / "work"))
+  return await export_setup_sheet(request, outputs, root, progress)
+
+
+async def export_setup_sheet(request, outputs, root, progress):
+  await report(progress, "setup_sheet", "article",
+               simulation_time_seconds=outputs["simulation_time_seconds"])
+  outputs.update(await run_nx("setup_sheet", request, root / "work"))
   return outputs
 
 

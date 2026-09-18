@@ -11,19 +11,23 @@ Geen extra queue-dienst, jobhistorieplatform, generieke familielaag, automatisch
 herstelketens of extra API-sleutelbeheer voor deze lokale stap. NetBird volgt
 later. Bestaande app-login, organisatiecontrole en invoervalidatie blijven.
 
-**Uitvoering zonder GUI is een harde eis**, ook voor externe NC-simulatie, met het
-oog op latere serveruitvoering. Geen interactieve NX-sessie als uitwijkroute.
+**Uitvoering zonder GUI blijft een harde eis voor modelleren, CAM en externe NC-simulatie.**
+Uitzondering op verzoek van de gebruiker (17-09-2026): het instelblad via Siemens
+Machining Setup Instructions gebruikt een aparte grafische NX-sessie. Deze opent
+en sluit automatisch na de PDF-export en vereist een ingelogde Windows-desktop.
 De simulatiestap gebruikt de meegeleverde NX-Python, zodat het journal en de
 CSE-driver dezelfde runtime gebruiken; API/Pixi en de overige batchstappen blijven
 hun bestaande omgeving gebruiken. Volledige externe simulatie op 59 en 60 is
 via de API bevestigd; zie het bewijslogboek.
 
-**Alleen simulatie gebruikt de bibliotheken van `Heerbaart_NX2512.bat`:**
+**Simulatie gebruikt de bibliotheken van `Heerbaart_NX2512.bat`:**
 `NX_SIMULATION_CUSTOM_DIR=C:/Heerbaart_Custom/__Custom`. Dit stuurt uitsluitend
 de CSE-machinebibliotheek en toolgraphics tijdens `simulation`. Clone, update,
 refresh, CAM, post, artikelreferenties en het laden van de setup behouden hun
 bestaande paden onder `NX_CUSTOM_DIR`. De twee Okuma-kits zijn niet byte-identiek;
 de gebruiker bevestigt dat de kit onder `Heerbaart_Custom` interactief werkt.
+De aparte instelbladexport gebruikt de normale GUI-startomgeving uit dit batchbestand;
+de artikelreferenties blijven ook daar onder `NX_CUSTOM_DIR`.
 
 **Stand 16 september 2026:** lokale verbindingen gereed. Echte aanvraag →
 PDF-opslag → NX → programmeeroverdracht getest. Formulier, overzicht en detail
@@ -79,7 +83,9 @@ volstaan voor deze POC; NC naar S3 is niet vereist. Pas na volledige
 resultaatlevering, inclusief de machinebewerking, volgt `READY`.
 De artikelflow voert nu clone → geometrie-update → gewichten uitlezen/teruggeven → setup-refresh →
 gereedschapsbanen genereren → NC-programma maken → externe NC-simulatie →
-NC-download vrijgeven uit. Geen aparte actieknop.
+NC-download/tijd vrijgeven → instelblad als PDF maken en download vrijgeven uit.
+Geen aparte actieknop. Bij een fout in `setup_sheet` hervat alleen de PDF-export;
+de geslaagde simulatie en CSE-tijd blijven bewaard.
 Materiaal wordt vóór setup-refresh/CAM/post toegekend; de totale simulatietijd volgt na SimEnd.
 
 ## 1. Vaste afspraken
@@ -267,8 +273,8 @@ actuele jobgegevens staan direct op de offerte.
 
 Stap-ID's: `family_check`, `pdf_extract`, `baseline_part`, `baseline_structure`,
 `setup_load`, `setup_constraints`, `setup_holders`, `setup_position`,
-`setup_references`, `article_clone`, `geometry_update`, `measurement`, `setup_refresh`, `cam_regeneration`, `postprocessing`, `simulation`.
-Overige resultaatopslag staat als toekomstige stap in de UI.
+`setup_references`, `article_clone`, `geometry_update`, `measurement`, `setup_refresh`, `cam_regeneration`, `postprocessing`, `simulation`, `setup_sheet`.
+`setup_sheet` maakt `<artikel>_INSTELBLAD.pdf` in de artikelmap, met een downloadknop in de app.
 Een CAM-fout meldt de operatie en houdt de aanvraag op `FAILED` bij stap 5;
 de bestaande retry hervat CAM en gaat daarna verder met posten. Bij een postfout
 herhaalt retry posten en daarna simulatie; bij een simulatiefout alleen de bestaande
@@ -279,11 +285,11 @@ meldt. `Repost` is toegestaan bij de controle vóór het posten.
 
 De statuscallback draagt ook de overdrachtsuitkomst, de gewichten en de totale
 simulatietijd. Beide massa's worden direct tijdens verwerking opgeslagen; de tijd
-alleen bij `COMPLETED` / `ARTICLE_CREATED` op `simulation`, voor de huidige job.
+direct na geslaagde simulatie, bij de start van `setup_sheet`, voor de huidige job.
 `/api/nx/result` is nog een
 loggingstub zonder echte resultaatopslag; `NX_CALLBACK_RESULT_PATH` wordt nog niet
 gebruikt. Bouw één eenvoudige resultaatlevering met overige simulatiedetails voor
-de huidige job. De machinebewerking wordt al door de eindcallback opgeslagen.
+de huidige job. De machinebewerking wordt met dezelfde vroege tijdcallback opgeslagen.
 Bewaar de koppeling naar de lokale NC;
 NC naar S3 is geen vereiste vóór `READY`. Downloaden blijft via
 app-login/organisatiecontrole. Definitieve payload
@@ -396,6 +402,8 @@ Afspraken voor die resultaten:
   Opslag en UI aangesloten, ook voor de bestaande aanvraag. Herberekening werkt
   de Okuma-tijd bij zonder duplicaten of verlies van handmatige tijden.
   Artikel/concept-BOM via knop, ERP-links en acceptatie staan in [ERPNext.md](ERPNext.md).
+- [x] **R4** Automatisch Siemens-instelblad als PDF na simulatie, lokaal in de
+  artikelmap en downloadbaar in de app. Aparte NX-GUI-sessie; geen handmatige klikken.
 - [x] **A1** Bewust lege `NX_DATA_DIR`: 73023059/aantal 5 → nieuwe BASELINE →
   programmeren/vrijgeven → artikel, simulatie en NC. Bestaande BASELINE behouden.
   Door gebruiker op 16-09-2026 bevestigd als getest en werkend; metingen zijn
@@ -608,6 +616,16 @@ de test-BOMs, testartikelen en lokale testgegevens zijn verwijderd. Vier overige
 werkplekken hergebruikt; Okuma/Draaifrezen/Draaifreesmachine aangemaakt met €0/u.
 De gebruiker autoriseerde uitsluitend de Kg-conversiecorrectie van MAT-14462;
 stock-UOM Meter en overige materiaalgegevens zijn behouden. Zie ERPNext.md.
+
+Instelbladexport getest op 17-09-2026: artikel 73023059, 64 pagina's via de
+geïnstalleerde Siemens-app. Automatisch starten/exporteren/sluiten geslaagd;
+de vijf NX-parts, NC en `simulation.json` blijven bytegelijk. Bewijs:
+`service/data/elster-rev-d/work/setup_sheet_94euptb_/` en
+`service/data/elster-rev-d/73023059/73023059_INSTELBLAD.pdf`.
+45 Python-tests en app ESLint/TypeScript geslaagd (bestaande waarschuwingen).
+Callback → database → UI getest, inclusief vroege CSE-tijd en PDF-downloadknop.
+Standaard Siemens-layout behouden zoals afgesproken; geen nieuwe infrastructuur.
+Nieuwe runs exporteren automatisch; bestaande aanvragen zijn niet opnieuw gedraaid.
 
 Voeg volgende controles toe met datum, taak-ID, bestand/log en uitkomst. Vink
 praktische NX-stappen pas af na hun eigen bewijs; maak geen parallel PLAN/TODO/FLOW.

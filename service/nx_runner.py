@@ -91,6 +91,9 @@ async def _stop_process(process) -> None:
 async def run_nx(stage: str, request: dict, work_root: Path) -> dict:
   if os.name != "nt":
     raise RuntimeError("NX stages run on the Windows NX laptop, not this platform")
+  if stage == "setup_sheet":
+    from setup_sheet_runner import run_setup_sheet
+    return await run_setup_sheet(request, work_root)
   timeout = float(os.environ.get("NX_JOURNAL_TIMEOUT", "900"))
   if not math.isfinite(timeout) or timeout <= 0:
     raise ValueError("NX_JOURNAL_TIMEOUT must be a finite positive number of seconds")

@@ -75,6 +75,16 @@ async def get_article_nc(article_number: Annotated[str, PathParameter(pattern=r"
                       headers={"Cache-Control": "no-store"})
 
 
+@app.get("/articles/{article_number}/setup-sheet")
+async def get_article_setup_sheet(article_number: Annotated[str, PathParameter(pattern=r"^[0-9]{8}$")]):
+  item_dir = family_directory() / article_number
+  output = item_dir / f"{article_number}_INSTELBLAD.pdf"
+  if released_nc(item_dir, article_number) is None or not output.is_file():
+    raise HTTPException(status_code=409, detail="Setup sheet is not available")
+  return FileResponse(output, media_type="application/pdf", filename=output.name,
+                      headers={"Cache-Control": "no-store"})
+
+
 @app.post("/start/nx-job", status_code=status.HTTP_201_CREATED)
 async def start_nx_job(
   form: Annotated[JobStartForm, Form()],
